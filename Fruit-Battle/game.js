@@ -6,6 +6,8 @@ let playerY = 70;
 const playerWidth = 40;
 const playerHeight = 40;
 const speed = 10;
+//Track da keys!
+const keys ={};
 
 //The actual player image
 const playerImage = new Image();
@@ -14,6 +16,16 @@ playerImage.src = 'regular.svg';
 function resizeCanvas() {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+//Smooth movement loop
+function gameLoop(){
+  // Keep updating position
+  if (keys['arrowup'] || keys['w']) playerY -= speed;
+  if (keys['arrowdown'] || keys['s']) playerY += speed;
+  if (keys['arrowleft'] || keys['a']) playerX -= speed;
+  if (keys['arrowright'] || keys['d']) playerX += speed;
 
   // The background
   ctx.fillStyle = 'lightgreen';
@@ -21,35 +33,42 @@ function resizeCanvas() {
 
   // Draw player if it's loaded
   if (playerImage.complete) {
-    ctx.drawImage(playerImage, 70, 70, 40, 40);
+    ctx.drawImage(playerImage, playerX, playerY, playerWidth, playerHeight);
   }
-}
 
-// Only draw after image is loaded
+requestAnimationFrame(gameLoop);
+}
 playerImage.onload = () => {
-  resizeCanvas(); // Initial draw
-  window.addEventListener('resize', resizeCanvas); // Redraw on resize
+  resizeCanvas();
+  gameLoop();
 };
+
+// Key listeners
+window.addEventListener('keydown', (e) => {
+  keys[e.key.toLowerCase()] = true;
+});
+window.addEventListener('keyup', (e) => {
+  keys[e.key.toLowerCase()] = false;
+});
+
+
+
 //Movement and its controls
 window.addEventListener('keydown', (e) => {
   switch (e.key) {
     case'Arrowup':
-    case'w':
     playerY -= speed;
       break;
     case 'ArrowDown':
-    case 's':
       playerY += speed;
       break;
     case 'ArrowLeft':
-    case 'a':
       playerX -= speed;
       break;
     case 'ArrowRight':
-    case 'd':
       playerX += speed;
       break;
   }
 
-drawScene();
+resizeCanvas();
 });
