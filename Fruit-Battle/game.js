@@ -38,6 +38,12 @@ function gameLoop(){
 
 requestAnimationFrame(gameLoop);
 }
+document.getElementById('startButton').addEventListener('click', () => {
+  document.getElementById('mainMenu').style.display = 'none';
+  resizeCanvas();
+  gameLoop();
+});
+
 playerImage.onload = () => {
   resizeCanvas();
   gameLoop();
