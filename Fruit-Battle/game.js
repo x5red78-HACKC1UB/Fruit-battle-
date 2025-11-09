@@ -3,6 +3,7 @@ const ctx = canvas.getContext('2d');
 const soundBeamImage = new Image();
 soundBeamImage.src = 'sound z.svg';
 //Player stats & more!
+let mouseInsideCanvas = true;
 let soundBeam = null;
 let showImageBar=true;
 let playerX = 50;
@@ -17,6 +18,15 @@ const speed = 5;
 
 //Track da keys!
 const keys ={};
+//Just an annoying gitch fix!
+canvas.addEventListener('mouseenter', () => {
+  mouseInsideCanvas = true;
+});
+
+canvas.addEventListener('mouseleave', () => {
+  mouseInsideCanvas = false;
+});
+
 
 // Mouse tracking
 let mouseX = 0;
@@ -95,8 +105,8 @@ function gameLoop(){
     return;
   }
 
-  beam.distance += 10;
-  beam.scale += 0.03;
+  beam.distance += 20;
+  beam.scale += 0.02;
   beam.alpha -= 0.02;
   beam.hue = (beam.hue + 2) % 360; // cycle hue
 
@@ -107,8 +117,8 @@ function gameLoop(){
 
   const drawX = beam.x + Math.cos(beam.angle) * beam.distance;
   const drawY = beam.y + Math.sin(beam.angle) * beam.distance;
-  const beamLength = 180 * beam.scale;
-  const beamWidth = 100 * beam.scale;
+  const beamLength = 150 * beam.scale;
+  const beamWidth = 90 * beam.scale;
 
   // Draw original image
   ctx.save();
@@ -131,9 +141,13 @@ function gameLoop(){
 
 
  // Calculates what angle player need to face mouse
+  let angle = 0;
+if (mouseInsideCanvas) {
   const dx = mouseX - (playerX + playerWidth / 2);
   const dy = mouseY - (playerY + playerHeight / 2);
-  const angle = Math.atan2(dy, dx);
+  angle = Math.atan2(dy, dx);
+}
+
 
 // Player go weweweweweweweweeeeee!
   if (playerImage.complete) {
@@ -193,10 +207,10 @@ if (key === 'z' && soundSelected) {
   }
 }
 
-  }
 
 
-);
+
+});
   
 
 
