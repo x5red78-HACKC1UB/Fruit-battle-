@@ -1,7 +1,9 @@
 const canvas = document.getElementById('Battleground');
 const ctx = canvas.getContext('2d');
-
+const soundBeamImage = new Image();
+soundBeamImage.src = 'sound z.svg';
 //Player stats & more!
+let soundBeam = null;
 let showImageBar=true;
 let playerX = 50;
 let playerY = 50;
@@ -85,6 +87,38 @@ function gameLoop(){
   // The background
   ctx.fillStyle = 'lightgreen';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
+  
+// RAINBOW BARF BEAM
+  soundBeams.forEach((beam, index) => {
+  if (beam.delay > 0) {
+    beam.delay--;
+    return;
+  }
+
+  beam.active = true;
+  beam.distance += 7;
+  beam.scale += 0.08;
+  beam.alpha -= 0.015;
+
+  if (beam.alpha <= 0) {
+    soundBeams.splice(index, 1);
+    return;
+  }
+
+  const drawX = beam.x + Math.cos(beam.angle) * beam.distance;
+  const drawY = beam.y + Math.sin(beam.angle) * beam.distance;
+  const beamLength = 200 * beam.scale;
+  const beamWidth = 60 * beam.scale;
+
+  ctx.save();
+  ctx.globalAlpha = beam.alpha;
+  ctx.translate(drawX, drawY);
+  ctx.rotate(beam.angle);
+  ctx.drawImage(soundBeamImage, 0, -beamWidth / 2, beamLength, beamWidth);
+  ctx.restore();
+});
+
+
 
  // Calculates what angle player need to face mouse
   const dx = mouseX - (playerX + playerWidth / 2);
@@ -125,14 +159,33 @@ document.getElementById('startButton').addEventListener('click', () => {
 
 
 // Key listeners
+const soundBeams = [];
 window.addEventListener('keydown', (e) => {
   const key = e.key.toLowerCase();
   keys[key] = true;
+  if (key === 'z' && soundSelected) {
+  const angle = Math.atan2(
+    mouseY - (playerY + playerHeight / 2),
+    mouseX - (playerX + playerWidth / 2)
+  );
 
-  if (key === 'b') {
-    showImageBar = !showImageBar;
+  for (let i = 0; i < 30; i++) {
+    soundBeams.push({
+      x: playerX + playerWidth / 2,
+      y: playerY + playerHeight / 2,
+      angle: angle,
+      distance: 0,
+      scale: 0.5 + i * 0.02,
+      alpha: 1,
+      delay: i * 2, // staggered launch
+      active: false
+    });
   }
+}
+
 });
+  
+
 
 window.addEventListener('keyup', (e) => {
   keys[e.key.toLowerCase()] = false;
@@ -171,6 +224,8 @@ function getActiveFruitName() {
   if (gravitySelected) return 'Gravity';
   return 'None';
 }
+
+
 
 
 
