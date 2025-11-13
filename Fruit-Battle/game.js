@@ -138,29 +138,35 @@ function checkBeamCollisions() {
       const dy = by - ey;
       const dist = Math.sqrt(dx*dx + dy*dy);
 
-    let damage = 0.5;
-const now = Date.now(); // current time in ms
+      const now = Date.now();
 
-if (dist < enemy.width / 2) {
-  // Only apply damage if enough time has passed
-  if (now - enemy.lastHitTime > (25)){ // 25ms = 40 hits/sec max
-    let damage = 4;
+      if (dist < enemy.width / 2) {
+        if (now - enemy.lastHitTime > 25) { // limit hits per enemy
+          let damage = 4;
 
-    if (isTouchingPlayer(enemy)) {
-      damage = 0.5; // touching = reduced damage
-    }
+          if (isTouchingPlayer(enemy)) {
+            damage = 0.5; // touching = reduced damage
+          }
 
-    enemy.hp -= damage;
-    enemy.hp = Math.round(enemy.hp);
-    enemy.lastHitTime = now; // update last hit time
-  }
-}
+          enemy.hp -= damage;
+          enemy.hp = Math.round(enemy.hp);
+          enemy.lastHitTime = now;
 
-    
-    
-});
+          //Knockback effect
+          const dxFromPlayer = enemy.x + enemy.width / 2 - (playerX + playerWidth / 2);
+          const dyFromPlayer = enemy.y + enemy.height / 2 - (playerY + playerHeight / 2);
+          const distFromPlayer = Math.sqrt(dxFromPlayer * dxFromPlayer + dyFromPlayer * dyFromPlayer);
+
+          if (distFromPlayer > 0) {
+            enemy.x += (dxFromPlayer / distFromPlayer) * knockback;
+            enemy.y += (dyFromPlayer / distFromPlayer) * knockback;
+          }
+        }
+      }
+    });
   });
 }
+
 
 // RAINBOW BARF BEAM
  soundBeams.forEach((beam, index) => {
