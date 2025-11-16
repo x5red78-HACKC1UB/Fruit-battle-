@@ -104,8 +104,6 @@ function gameLoop(){
   if (keys['arrowdown'] || keys['s']) playerY += speed;
   if (keys['arrowleft'] || keys['a']) playerX -= speed;
   if (keys['arrowright'] || keys['d']) playerX += speed;
-// Border to keep the player in
-// Border collision (clamp position)
 if (playerX < 0) playerX = 0;
 if (playerY < 0) playerY = 0;
 if (playerX + playerWidth > canvas.width) playerX = canvas.width - playerWidth;
@@ -248,10 +246,11 @@ playerImage.onload = () => {
 document.getElementById('startButton').addEventListener('click', () => {
   document.getElementById('mainMenu').style.display = 'none';
   resizeCanvas();
-  spawnEnemy(); // spawn first enemy when game starts
+  spawnEnemy();
+  spawnEnemy();  // self-explainatory(plz say i spelled that right)
   gameLoop();
 });
-
+//enemy stats!
 const enemies=[];
 function spawnEnemy(){
   enemies.push({
@@ -301,7 +300,7 @@ if (key === 'z' && soundSelected) {
     mouseY - (playerY + playerHeight / 2),
     mouseX - (playerX + playerWidth / 2)
   );
-
+// Sound z stats
   for (let i = 0; i < 30; i++) {
     soundBeams.push({
       x: playerX + playerWidth / 2,
@@ -354,7 +353,7 @@ function handleImageClick(name){
         break;
   }
 }
-// Information on what fruit you have
+// What fruit you have
 function getActiveFruitName() {
   if (flameSelected) return 'Flame';
   if (soundSelected) return 'Sound';
