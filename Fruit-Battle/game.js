@@ -131,17 +131,83 @@ if (playerY + playerHeight > canvas.height) playerY = canvas.height - playerHeig
 if (xMoveActive) {
   // Flash colors
   playerHue = (playerHue + 40) % 360;
+if (xMoveActive) {
+  // Spawn lines in all directions
+  if (xLines.length === 0) {
+    for (let i = 0; i < 12; i++) {
+      const angle = (Math.PI * 2 / 12) * i;
+      xLines.push({
+        angle,
+        distance: 0,
+        growing: true
+      });
+    }
+  }
+
+  // Update and draw lines
+  ctx.strokeStyle = `hsl(${(Date.now()/10)%360}, 100%, 50%)`; // flashy colors
+  ctx.lineWidth = 3;
+
+  xLines.forEach(line => {
+    if (line.growing) {
+      line.distance += 10;
+      if (line.distance > 150) line.growing = false;
+    } else {
+      line.distance -= 10;
+      if (line.distance <= 0) line.distance = 0;
+    }
+
+    const startX = playerX + playerWidth / 2;
+    const startY = playerY + playerHeight / 2;
+    const endX = startX + Math.cos(line.angle) * line.distance;
+    const endY = startY + Math.sin(line.angle) * line.distance;
+
+    ctx.beginPath();
+    ctx.moveTo(startX, startY);
+    ctx.lineTo(endX, endY);
+    ctx.stroke();
+  });
 
   
 
+}
+
+  // Update and draw lines
+  ctx.strokeStyle = `hsl(${(Date.now()/10)%360}, 100%, 50%)`; // flashy colors
+  ctx.lineWidth = 6;
+
+  xLines.forEach(line => {
+    if (line.growing) {
+      line.distance += 10;
+      if (line.distance > 150) line.growing = false;
+    } else {
+      line.distance -= 10;
+      if (line.distance <= 0) line.growing = true;
+    }
+
+    const startX = playerX + playerWidth / 2;
+    const startY = playerY + playerHeight / 2;
+    const endX = startX + Math.cos(line.angle) * line.distance;
+    const endY = startY + Math.sin(line.angle) * line.distance;
+
+    ctx.beginPath();
+    ctx.moveTo(startX, startY);
+    ctx.lineTo(endX, endY);
+    ctx.stroke();
+  });
+checkXLineCollisions();
   // Countdown
   xMoveTimer--;
   if (xMoveTimer <= 0) {
     xMoveActive = false;
+    xLines = [];
   }
 }
+  
 
-checkBeamCollisions();
+
+
+
 
 // RAINBOW BARF BEAM
  soundBeams.forEach((beam, index) => {
@@ -221,6 +287,7 @@ ctx.fillText('Active Fruit: ' + getActiveFruitName(), 20, canvas.height - 30);
 drawImageBar();
 requestAnimationFrame(gameLoop);
 }
+
 function checkBeamCollisions() {
   soundBeams.forEach(beam => {
     enemies.forEach(enemy => {
@@ -262,6 +329,39 @@ function checkBeamCollisions() {
     });
   });
 }
+function checkXLineCollisions() {
+  const now = Date.now();
+  enemies.forEach(enemy => {
+    const ex = enemy.x + enemy.width / 2;
+    const ey = enemy.y + enemy.height / 2;
+
+    xLines.forEach(line => {
+      const startX = playerX + playerWidth / 2;
+      const startY = playerY + playerHeight / 2;
+      const endX = startX + Math.cos(line.angle) * line.distance;
+      const endY = startY + Math.sin(line.angle) * line.distance;
+
+      // Distance from enemy center to line segment
+      const dx = endX - startX;
+      const dy = endY - startY;
+      const lengthSq = dx*dx + dy*dy;
+      let t = ((ex - startX) * dx + (ey - startY) * dy) / lengthSq;
+      t = Math.max(0, Math.min(1, t));
+      const closestX = startX + t * dx;
+      const closestY = startY + t * dy;
+      const dist = Math.sqrt((ex - closestX)**2 + (ey - closestY)**2);
+
+   if (dist < enemy.width/2) {
+        if (now - enemy.lastHitTime > 100) { // limit hits
+          enemy.hp -= 10; // damage per hit
+          enemy.hp = Math.max(0, enemy.hp);
+          enemy.lastHitTime = now;
+        }
+      }
+    });
+  });
+}
+
 //enemy stats!
 const enemies=[];
 function spawnEnemy(){
@@ -309,7 +409,7 @@ window.addEventListener('keydown', (e) => {
 
   if (key === 'x' && soundSelected) {
   xMoveActive = true;
-  xMoveTimer = 60; // lasts ~1 second
+  xMoveTimer = 80; // lasts ~1 second
    xLines = []; // reset lines
 }
 
@@ -387,7 +487,6 @@ playerImage.onload = () => {
 document.getElementById('startButton').addEventListener('click', () => {
   document.getElementById('mainMenu').style.display = 'none';
   resizeCanvas();
-  spawnEnemy();
   spawnEnemy();  // self-explainatory(plz say i spelled that right)
   gameLoop();
 });
