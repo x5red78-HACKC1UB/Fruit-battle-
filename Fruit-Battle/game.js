@@ -18,6 +18,11 @@ let flameSelected = 0;
 let soundSelected = 0;
 let iceSelected = 0;
 let gravitySelected = 0;
+let xMoveActive = false;
+let xMoveTimer = 0;
+let xLines = []; // store line objects
+let playerHue = 0; // flasy flash
+const soundBeams = [];
 const playerWidth = 40;
 const playerHeight = 40;
 const speed = 5;
@@ -122,49 +127,21 @@ if (playerY + playerHeight > canvas.height) playerY = canvas.height - playerHeig
   ctx.font = '14px Arial';
   ctx.fillText('HP: ' + enemy.hp, enemy.x, enemy.y - 5);
 });
+// X move special
+if (xMoveActive) {
+  // Flash colors
+  playerHue = (playerHue + 40) % 360;
 
-function checkBeamCollisions() {
-  soundBeams.forEach(beam => {
-    enemies.forEach(enemy => {
-      const ex = enemy.x + enemy.width / 2;
-      const ey = enemy.y + enemy.height / 2;
+  
 
-      const bx = beam.x + Math.cos(beam.angle) * beam.distance;
-      const by = beam.y + Math.sin(beam.angle) * beam.distance;
-
-      const dx = bx - ex;
-      const dy = by - ey;
-      const dist = Math.sqrt(dx*dx + dy*dy);
-
-      const now = Date.now();
-
-      if (dist < enemy.width / 2) {
-        if (now - enemy.lastHitTime > 25) { // limit hits per enemy
-          let damage = 4;
-
-          if (isTouchingPlayer(enemy)) {
-            damage = 0.5; // touching = reduced damage
-          }
-
-          enemy.hp -= damage;
-          enemy.hp = Math.round(enemy.hp);
-          enemy.lastHitTime = now;
-
-          //Knockback effect
-          const dxFromPlayer = enemy.x + enemy.width / 2 - (playerX + playerWidth / 2);
-          const dyFromPlayer = enemy.y + enemy.height / 2 - (playerY + playerHeight / 2);
-          const distFromPlayer = Math.sqrt(dxFromPlayer * dxFromPlayer + dyFromPlayer * dyFromPlayer);
-
-          if (distFromPlayer > 0) {
-            enemy.x += (dxFromPlayer / distFromPlayer) * knockback;
-            enemy.y += (dyFromPlayer / distFromPlayer) * knockback;
-          }
-        }
-      }
-    });
-  });
+  // Countdown
+  xMoveTimer--;
+  if (xMoveTimer <= 0) {
+    xMoveActive = false;
+  }
 }
 
+checkBeamCollisions();
 
 // RAINBOW BARF BEAM
  soundBeams.forEach((beam, index) => {
@@ -216,17 +193,24 @@ if (mouseInsideCanvas) {
   lastAngle = angle;
 }
 
-checkBeamCollisions()
-
 // Player go weweweweweweweweeeeee!
   if (playerImage.complete) {
     ctx.save();
     ctx.translate(playerX + playerWidth / 2, playerY + playerHeight / 2);
     ctx.rotate(angle);
     ctx.drawImage(playerImage, -playerWidth / 2, -playerHeight / 2, playerWidth, playerHeight);
+  
+    if (xMoveActive) {
+    ctx.globalCompositeOperation = 'source-atop';
+    ctx.fillStyle = `hsla(${playerHue}, 100%, 50%, 0.6)`;
+    ctx.fillRect(-playerWidth / 2, -playerHeight / 2, playerWidth, playerHeight);
+    ctx.globalCompositeOperation = 'source-over';
+    }
     ctx.restore();
   }
+
 updateEnemies()
+
   // Text of what fruit u have
 ctx.fillStyle = 'black';
 ctx.font = '20px Arial';
@@ -237,19 +221,47 @@ ctx.fillText('Active Fruit: ' + getActiveFruitName(), 20, canvas.height - 30);
 drawImageBar();
 requestAnimationFrame(gameLoop);
 }
+function checkBeamCollisions() {
+  soundBeams.forEach(beam => {
+    enemies.forEach(enemy => {
+      const ex = enemy.x + enemy.width / 2;
+      const ey = enemy.y + enemy.height / 2;
 
-playerImage.onload = () => {
-  resizeCanvas();
-};
+      const bx = beam.x + Math.cos(beam.angle) * beam.distance;
+      const by = beam.y + Math.sin(beam.angle) * beam.distance;
 
-// Main menu & start button
-document.getElementById('startButton').addEventListener('click', () => {
-  document.getElementById('mainMenu').style.display = 'none';
-  resizeCanvas();
-  spawnEnemy();
-  spawnEnemy();  // self-explainatory(plz say i spelled that right)
-  gameLoop();
-});
+      const dx = bx - ex;
+      const dy = by - ey;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+
+      const now = Date.now();
+
+      if (dist < enemy.width / 2) {
+        if (now - enemy.lastHitTime > 25) { // limit hits per enemy
+          let damage = 4;
+
+          if (isTouchingPlayer(enemy)) {
+            damage = 0.5; // touching = reduced damage
+          }
+
+          enemy.hp -= damage;
+          enemy.hp = Math.round(enemy.hp);
+          enemy.lastHitTime = now;
+
+          //Knockback effect
+          const dxFromPlayer = enemy.x + enemy.width / 2 - (playerX + playerWidth / 2);
+          const dyFromPlayer = enemy.y + enemy.height / 2 - (playerY + playerHeight / 2);
+          const distFromPlayer = Math.sqrt(dxFromPlayer * dxFromPlayer + dyFromPlayer * dyFromPlayer);
+
+          if (distFromPlayer > 0) {
+            enemy.x += (dxFromPlayer / distFromPlayer) * knockback;
+            enemy.y += (dyFromPlayer / distFromPlayer) * knockback;
+          }
+        }
+      }
+    });
+  });
+}
 //enemy stats!
 const enemies=[];
 function spawnEnemy(){
@@ -291,10 +303,16 @@ function isTouchingPlayer(enemy) {
 
 
 // Key listeners
-const soundBeams = [];
 window.addEventListener('keydown', (e) => {
   const key = e.key.toLowerCase();
   keys[key] = true;
+
+  if (key === 'x' && soundSelected) {
+  xMoveActive = true;
+  xMoveTimer = 60; // lasts ~1 second
+   xLines = []; // reset lines
+}
+
 if (key === 'z' && soundSelected) {
   const angle = Math.atan2(
     mouseY - (playerY + playerHeight / 2),
@@ -361,23 +379,16 @@ function getActiveFruitName() {
   if (gravitySelected) return 'Gravity';
   return 'None';
 }
+playerImage.onload = () => {
+  resizeCanvas();
+};
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// Main menu & start button
+document.getElementById('startButton').addEventListener('click', () => {
+  document.getElementById('mainMenu').style.display = 'none';
+  resizeCanvas();
+  spawnEnemy();
+  spawnEnemy();  // self-explainatory(plz say i spelled that right)
+  gameLoop();
+});
 
