@@ -246,7 +246,7 @@ checkXLineCollisions();
   ctx.restore();
   ctx.globalCompositeOperation = 'source-over'; // reset blend mode
 });
-
+checkBeamCollisions();
  // Calculates what angle player need to face mouse
   let angle = lastAngle; // default to last known angle
 
