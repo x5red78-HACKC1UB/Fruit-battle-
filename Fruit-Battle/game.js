@@ -313,6 +313,7 @@ function checkBeamCollisions() {
 
           enemy.hp -= damage;
           enemy.hp = Math.round(enemy.hp);
+          enemy.hp = Math.max(0, enemy.hp);
           enemy.lastHitTime = now;
 
           //Knockback effect
@@ -358,6 +359,15 @@ function checkXLineCollisions() {
           enemy.lastHitTime = now;
         }
       }
+      
+      const dxFromPlayer = enemy.x + enemy.width / 2 - (playerX + playerWidth / 2);
+          const dyFromPlayer = enemy.y + enemy.height / 2 - (playerY + playerHeight / 2);
+          const distFromPlayer = Math.sqrt(dxFromPlayer * dxFromPlayer + dyFromPlayer * dyFromPlayer);
+
+          if (distFromPlayer > 0) {
+            enemy.x += (dxFromPlayer / distFromPlayer) * knockback/20;
+            enemy.y += (dyFromPlayer / distFromPlayer) * knockback/20;
+          }
     });
   });
 }
