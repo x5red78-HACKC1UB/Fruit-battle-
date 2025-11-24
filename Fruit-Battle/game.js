@@ -127,6 +127,9 @@ if (playerY + playerHeight > canvas.height) playerY = canvas.height - playerHeig
   ctx.font = '14px Arial';
   ctx.fillText('HP: ' + enemy.hp, enemy.x, enemy.y - 5);
 });
+
+
+
 // X move special
 if (xMoveActive) {
   // Flash colors
@@ -203,6 +206,8 @@ checkXLineCollisions();
     xLines = [];
   }
 }
+
+
   
 
 
@@ -274,6 +279,8 @@ if (mouseInsideCanvas) {
     }
     ctx.restore();
   }
+  
+
 
 updateEnemies()
 
@@ -283,10 +290,12 @@ ctx.font = '20px Arial';
 ctx.fillText('Active Fruit: ' + getActiveFruitName(), 20, canvas.height - 30);
 
 
+
   // makes image bar(again)
 drawImageBar();
 requestAnimationFrame(gameLoop);
 }
+
 
 function checkBeamCollisions() {
   soundBeams.forEach(beam => {
@@ -418,6 +427,22 @@ function isTouchingPlayer(enemy) {
 window.addEventListener('keydown', (e) => {
   const key = e.key.toLowerCase();
   keys[key] = true;
+if (key === 'c' && soundSelected) {
+  cMoveActive = true;
+  cMoveTimer = 120; // lasts ~2 seconds
+  orbitCircles = [];
+  flashyCircle = null;
+
+  // Spawn 4 orbiting circles
+  for (let i = 0; i < 4; i++) {
+    orbitCircles.push({
+      angle: (Math.PI * 2 / 4) * i,
+      radius: 100, // starting distance from player
+      speed: 0.1   // spin speed
+    });
+  }
+}
+
 
   if (key === 'x' && soundSelected) {
   xMoveActive = true;
