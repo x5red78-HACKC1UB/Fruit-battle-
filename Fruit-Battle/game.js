@@ -141,13 +141,14 @@ if (playerY + playerHeight > canvas.height) playerY = canvas.height - playerHeig
 // The background (nothing much to say)
 ctx.fillStyle = 'lightgreen';
 ctx.fillRect(0, 0, canvas.width, canvas.height);
+// enemy's beautiful looks
 enemies.forEach(enemy => {
 if (enemy.img.complete) {
     ctx.drawImage(enemy.img, enemy.x, enemy.y, enemy.width, enemy.height);
   }
 // the text above the enemy
   ctx.fillStyle = 'black';
-  ctx.font = '14px Arial';
+  ctx.font = '14px Comic Sans MS';
   ctx.fillText('HP: ' + enemy.hp, enemy.x, enemy.y - 5);
 });
 // WARNING: EVERYTHING FROM 174 to 253 IS JUST ABT LINES, AHHHHHHHH I HATE LINES THEIR BORING, JUST LINES AND LINES.
