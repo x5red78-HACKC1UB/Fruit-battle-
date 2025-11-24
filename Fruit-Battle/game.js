@@ -7,8 +7,11 @@ soundBeamImage.src = 'sound z.svg';
 const enemyImage =new Image();
 enemyImage.src = 'Base.svg';
 //Player stats & more!
+//Knockback
 let knockback=5
+// Last place da mouse was
 let lastAngle=0
+// Mouse in window???!?!?!?!??! 💀💀i
 let mouseInsideCanvas = true;
 let soundBeam = null;
 let showImageBar=true;
