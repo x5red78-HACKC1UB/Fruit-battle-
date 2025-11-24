@@ -314,8 +314,8 @@ if (flashyCircle) {
       const distFromPlayer = Math.sqrt(dxFromPlayer * dxFromPlayer + dyFromPlayer * dyFromPlayer);
 
       if (distFromPlayer > 0) {
-        enemy.x += (dxFromPlayer / distFromPlayer) * (knockback / 5); // stronger push
-        enemy.y += (dyFromPlayer / distFromPlayer) * (knockback / 5);
+        enemy.x += (dxFromPlayer / distFromPlayer) * (knockback / 0.7); // pushy push in x-axis
+        enemy.y += (dyFromPlayer / distFromPlayer) * (knockback / 0.7);//pushy push in y-axis
       }
     }
   });
