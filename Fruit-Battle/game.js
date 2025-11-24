@@ -169,10 +169,11 @@ if (enemy.img.complete) {
 });
 // WARNING: EVERYTHING FROM 174 to 253 IS JUST ABT LINES, AHHHHHHHH I HATE LINES THEIR BORING, JUST LINES AND LINES.
 // x move 
+
+ 
 if (xMoveActive) {
-  // I fEeL tHe RaInBoW🌈🌈🌈🌈🌈
+   // I fEeL tHe RaInBoW🌈🌈🌈🌈🌈
   playerHue = (playerHue + 40) % 360;
-if (xMoveActive) {
   // Spawn lines, lines, and more lines..................😔😔😔
   if (xLines.length === 0) {
     for (let i = 0; i < 12; i++) {
@@ -253,7 +254,7 @@ checkXLineCollisions();
 // the only reason i put this is because it didn't realize i didn't define flashyCircle, and because of that it kept crashing my entire game.
 if (flashyCircle) {
   flashyCircle.radius += 15;
-}
+
 // when c clicked,
 if (cMoveActive) {
   // make center that circles rotate around
