@@ -7,40 +7,28 @@ soundBeamImage.src = 'sound z.svg';
 const enemyImage =new Image();
 enemyImage.src = 'Base.svg';
 //Player stats & more!
-
-//Knockback
+// //Knockback
 let knockback=5
-
 // Last place da mouse was
 let lastAngle=0
-
 // Mouse in window???!?!?!?!??! 💀💀💀🪑🪑🪑🔥🔥🔥💯💯
 let mouseInsideCanvas = true;
-
 // uh the tutorial didn't explain this tbh ☹️☹️👎👎😡😡
 let soundBeam = null;
-
 // just read lol
 let showImageBar=true;
-
 // how wide and chunky the player is
 let playerX = 50;
-
 // I'm 6'1 stand on my money now i'm 6'1
 let playerY = 50;
-
 // YOU CHOSE FLAME?!?!?!?!?!?!?!?!😲😲😲😲😲😲😲😲😲😲😲😲
 let flameSelected = 0;
-
 // the first fruit made in both versions
 let soundSelected = 0;
-
 // Ok, Timmy Tough Knuckles, Dangerous Dan, Scary Sammy.
 let iceSelected = 0;
-
 // Lowkey, you just wanna be different, why choose this?
 let gravitySelected = 0;
-
 //Literally just read it bro
 let xMoveActive = false;
 let xMoveTimer = 0;
@@ -81,7 +69,6 @@ canvas.addEventListener('mousemove', (e) => {
     mouseX >= 0 && mouseX <= canvas.width &&
     mouseY >= 0 && mouseY <= canvas.height;
 });
-
 //The actual player image
 const playerImage = new Image();
 playerImage.src = 'regular.svg';
@@ -94,7 +81,6 @@ function resizeCanvas() {
 
 window.addEventListener('resize', resizeCanvas);
 resizeCanvas();
-
 //Toolbar and what it got in it
 const imageBar =[
 { name: 'flame' ,src: 'flame.svg', img: new Image(), x:50, y:20},
@@ -121,7 +107,6 @@ canvas.addEventListener('click', (e) => {
     }
   });
 });
-
 imageBar.forEach(item => item.img.src = item.src);
 //Make toolbar
 function drawImageBar() {
@@ -141,7 +126,6 @@ document.getElementById('startButton').addEventListener('click', () => {
   spawnEnemy();  // self-explainatory(plz say i spelled that right)
   gameLoop();
 });
-
 // I used to think this was just for smooth movement, but I slowly realize this is just the entire game.
 function gameLoop(){
   // Keep updating position
@@ -161,16 +145,13 @@ enemies.forEach(enemy => {
 if (enemy.img.complete) {
     ctx.drawImage(enemy.img, enemy.x, enemy.y, enemy.width, enemy.height);
   }
-
-  // the text above the enemy
+// the text above the enemy
   ctx.fillStyle = 'black';
   ctx.font = '14px Arial';
   ctx.fillText('HP: ' + enemy.hp, enemy.x, enemy.y - 5);
 });
 // WARNING: EVERYTHING FROM 174 to 253 IS JUST ABT LINES, AHHHHHHHH I HATE LINES THEIR BORING, JUST LINES AND LINES.
 // x move 
-
- 
 if (xMoveActive) {
    // I fEeL tHe RaInBoW🌈🌈🌈🌈🌈
   playerHue = (playerHue + 40) % 360;
@@ -212,8 +193,7 @@ if (xMoveActive) {
   ctx.stroke();
   });
 }
-
-  // draw lines........ D:
+// draw lines........ D:
   ctx.strokeStyle = `hsl(${(Date.now()/10)%360}, 100%, 50%)`; // flashy colors
   ctx.lineWidth = 6;
 // when x clicked,
@@ -242,8 +222,7 @@ if (xMoveActive) {
   });
 // Lines touching??????? 😕😕😕😕😕😕😕😕😕😕🤔🤔🤔🤔
 checkXLineCollisions();
-
-  // move time
+// move time
   xMoveTimer--;
   // so if like, the timer runs out, you wouldn't believe if i said this, the move stops.
   if (xMoveTimer <= 0) {
@@ -269,8 +248,7 @@ if (cMoveActive) {
 // some trigonometry nonsense 
     const x = centerX + Math.cos(circle.angle) * circle.radius;
     const y = centerY + Math.sin(circle.angle) * circle.radius;
-
-    ctx.beginPath();
+  ctx.beginPath();
     ctx.arc(x, y, 10, 0, Math.PI * 2);
     ctx.fillStyle = `hsl(${(Date.now()/10)%360}, 100%, 50%)`;
     ctx.fill();
@@ -295,17 +273,14 @@ if (flashyCircle) {
     flashyCircle.radius -= 15;
     if (flashyCircle.radius <= 0) flashyCircle = null;
   }
-
   ctx.beginPath();
   ctx.arc(centerX, centerY, flashyCircle.radius, 0, Math.PI * 2);
   ctx.fillStyle = `hsla(${(Date.now()/5)%360}, 100%, 50%, 0.4)`; // colorful fill
   ctx.fill();
-
   ctx.strokeStyle = `hsl(${(Date.now()/5)%360}, 100%, 50%)`; // outline
   ctx.lineWidth = 6;
   ctx.stroke();
-
-   enemies.forEach(enemy => {
+  enemies.forEach(enemy => {
     const ex = enemy.x + enemy.width / 2;
     const ey = enemy.y + enemy.height / 2;
     const dist = Math.sqrt((ex - centerX) ** 2 + (ey - centerY) ** 2);
@@ -373,28 +348,23 @@ if (flashyCircle) {
   ctx.translate(drawX, drawY);
   ctx.rotate(beam.angle);
   ctx.drawImage(soundBeamImage, 0, -beamWidth / 2, beamLength, beamWidth);
-
   ctx.globalCompositeOperation = 'source-atop';
   ctx.fillStyle = `hsla(${beam.hue}, 100%, 50%, ${beam.alpha})`;
   ctx.fillRect(0, -beamWidth / 2, beamLength, beamWidth);
-
   ctx.restore();
   ctx.globalCompositeOperation = 'source-over'; // reset blend mode
  });
 
 checkBeamCollisions();
-
-  let angle = lastAngle; 
+let angle = lastAngle; 
 
 if (mouseInsideCanvas) {
   const dx = mouseX - (playerX + playerWidth / 2);
   const dy = mouseY - (playerY + playerHeight / 2);
   angle = Math.atan2(dy, dx);
-
   // store the latest angle so we can freeze it later
   lastAngle = angle;
 }
-
 // Player go weweweweweweweweeeeee!
   if (playerImage.complete) {
     ctx.save();
@@ -425,7 +395,6 @@ ctx.fillText('Active Fruit: ' + getActiveFruitName(), 20, canvas.height - 30);
 drawImageBar();
 requestAnimationFrame(gameLoop);
 }
-
 //beam touching the enemy
 function checkBeamCollisions() {
   soundBeams.forEach(beam => {
@@ -512,8 +481,6 @@ function checkXLineCollisions() {
     });
   });
 }
-
-
 //enemy stats!
 const enemies=[];
 function spawnEnemy(){
@@ -573,9 +540,7 @@ if (key === 'c' && soundSelected) {
     });
   }
 }
-
-
-  if (key === 'x' && soundSelected) {
+if (key === 'x' && soundSelected) {
   xMoveActive = true;
   xMoveTimer = 90; // lasts 1.5 second
    xLines = []; // reset lines
@@ -619,8 +584,7 @@ function handleImageClick(name){
   soundSelected=0;
   gravitySelected=0;
   iceSelected=0;
-
-  switch (name){
+ switch (name){
     case 'flame':
       flameSelected=1;
       console.log('Flame fruit activated');
