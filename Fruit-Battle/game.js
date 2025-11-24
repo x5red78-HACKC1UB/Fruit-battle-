@@ -102,6 +102,14 @@ function drawImageBar() {
     }
   });
 }
+
+// Main menu & start button
+document.getElementById('startButton').addEventListener('click', () => {
+  document.getElementById('mainMenu').style.display = 'none';
+  resizeCanvas();
+  spawnEnemy();  // self-explainatory(plz say i spelled that right)
+  gameLoop();
+});
 //Smooth movement loop
 function gameLoop(){
   // Keep updating position
@@ -279,52 +287,7 @@ if (mouseInsideCanvas) {
     }
     ctx.restore();
   }
-  if (cMoveActive) {
-  const centerX = playerX + playerWidth / 2;
-  const centerY = playerY + playerHeight / 2;
-
-  // Animate orbiting circles
-  orbitCircles.forEach(circle => {
-    circle.angle += circle.speed;
-    circle.radius = Math.max(0, circle.radius - 2); // clamp at 0
-
-    const x = centerX + Math.cos(circle.angle) * circle.radius;
-    const y = centerY + Math.sin(circle.angle) * circle.radius;
-
-    ctx.beginPath();
-    ctx.arc(x, y, 10, 0, Math.PI * 2);
-    ctx.fillStyle = `hsl(${(Date.now()/10)%360}, 100%, 50%)`;
-    ctx.fill();
-
-    if (circle.radius <= 0 && !flashyCircle) {
-      flashyCircle = { radius: 0, growing: true };
-    }
-  });
-
-  // Animate flashy circle
-  if (flashyCircle) {
-    if (flashyCircle.growing) {
-      flashyCircle.radius += 15;
-      if (flashyCircle.radius > 150) flashyCircle.growing = false;
-    } else {
-      flashyCircle.radius -= 15;
-      if (flashyCircle.radius <= 0) flashyCircle = null;
-    }
-
-    ctx.beginPath();
-    ctx.arc(centerX, centerY, flashyCircle.radius, 0, Math.PI * 2);
-    ctx.strokeStyle = `hsl(${(Date.now()/5)%360}, 100%, 50%)`;
-    ctx.lineWidth = 6;
-    ctx.stroke();
-  }
- // Countdown
-  cMoveTimer--;
-  if (cMoveTimer <= 0) {
-    cMoveActive = false;
-    orbitCircles = [];
-    flashyCircle = null;
-  }
-}
+  
 
 updateEnemies()
 
@@ -564,11 +527,5 @@ playerImage.onload = () => {
   resizeCanvas();
 };
 
-// Main menu & start button
-document.getElementById('startButton').addEventListener('click', () => {
-  document.getElementById('mainMenu').style.display = 'none';
-  resizeCanvas();
-  spawnEnemy();  // self-explainatory(plz say i spelled that right)
-  gameLoop();
-});
+
 
