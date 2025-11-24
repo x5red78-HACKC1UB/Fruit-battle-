@@ -557,8 +557,8 @@ if (key === 'c' && soundSelected) {
   for (let i = 0; i < 4; i++) {
     orbitCircles.push({
       angle: (Math.PI * 2 / 4) * i,
-      radius: 150, // hwo far the circle start
-      speed: 0.3   // spinny circle go weweweweweweweweweweeweweweweeweweweweweeweweweweweweweweeweweweweweweweeweweweweweweweweweeweweweweweweweweweweweweweweweeweweweweweweweweweweweeweweweweweweweweweweweweeweweweweweweweweeweweweweweweweweweweeweweweweweeweweweweweweweweeweweweweweeweweweweweeweweweweweweeweweweweweeweweweweweweweweew
+      radius: 130, // hwo far the circle start
+      speed: 0.25   // spinny circle go weweweweweweweweweweeweweweweeweweweweweeweweweweweweweweeweweweweweweweeweweweweweweweweweeweweweweweweweweweweweweweweweeweweweweweweweweweweweeweweweweweweweweweweweweeweweweweweweweweeweweweweweweweweweweeweweweweweeweweweweweweweweeweweweweweeweweweweweeweweweweweweeweweweweweeweweweweweweweweew
     });
   }
 }
