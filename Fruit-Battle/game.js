@@ -294,7 +294,33 @@ if (flashyCircle) {
   ctx.strokeStyle = `hsl(${(Date.now()/5)%360}, 100%, 50%)`; // outline
   ctx.lineWidth = 6;
   ctx.stroke();
+
+   enemies.forEach(enemy => {
+    const ex = enemy.x + enemy.width / 2;
+    const ey = enemy.y + enemy.height / 2;
+    const dist = Math.sqrt((ex - centerX) ** 2 + (ey - centerY) ** 2);
+
+    if (dist < flashyCircle.radius) {
+      // Damage throttle
+      if (Date.now() - enemy.lastHitTime > 100) {
+        enemy.hp -= 15; // stronger than X move
+        enemy.hp = Math.max(0, enemy.hp);
+        enemy.lastHitTime = Date.now();
+      }
+
+      // Knockback
+      const dxFromPlayer = ex - centerX;
+      const dyFromPlayer = ey - centerY;
+      const distFromPlayer = Math.sqrt(dxFromPlayer * dxFromPlayer + dyFromPlayer * dyFromPlayer);
+
+      if (distFromPlayer > 0) {
+        enemy.x += (dxFromPlayer / distFromPlayer) * (knockback / 5); // stronger push
+        enemy.y += (dyFromPlayer / distFromPlayer) * (knockback / 5);
+      }
+    }
+  });
 }
+
 
 
   // Countdown
@@ -343,7 +369,7 @@ if (flashyCircle) {
 
   ctx.restore();
   ctx.globalCompositeOperation = 'source-over'; // reset blend mode
-});
+ });
 
 checkBeamCollisions();
 
