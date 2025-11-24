@@ -524,6 +524,7 @@ function isTouchingPlayer(enemy) {
 window.addEventListener('keydown', (e) => {
   const key = e.key.toLowerCase();
   keys[key] = true;
+  // Sound C
 if (key === 'c' && soundSelected) {
   cMoveActive = true;
   cMoveTimer = 200; // lasts 2 seconds
@@ -539,12 +540,13 @@ if (key === 'c' && soundSelected) {
     });
   }
 }
+//Sound x
 if (key === 'x' && soundSelected) {
   xMoveActive = true;
   xMoveTimer = 90; // lasts 1.5 second
    xLines = []; // reset lines
 }
-
+//sound z
 if (key === 'z' && soundSelected) {
   const angle = Math.atan2(
     mouseY - (playerY + playerHeight / 2),
