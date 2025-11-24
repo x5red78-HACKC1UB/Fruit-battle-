@@ -433,7 +433,7 @@ function checkBeamCollisions() {
 
       if (dist < enemy.width / 2) {
         if (now - enemy.lastHitTime > 40) { // limit hits per enemy so the z move didn't do 2642.393939393023974567236424638 dmg (yes that's the actual dmg)
-          let damage = 4;
+          let damage = 3.5;
 
           if (isTouchingPlayer(enemy)) {
             damage = 0.5; // touching = reduced damage
@@ -451,8 +451,8 @@ function checkBeamCollisions() {
           const distFromPlayer = Math.sqrt(dxFromPlayer * dxFromPlayer + dyFromPlayer * dyFromPlayer);
 
           if (distFromPlayer > 0) {
-            enemy.x += (dxFromPlayer / distFromPlayer) * knockback;
-            enemy.y += (dyFromPlayer / distFromPlayer) * knockback;
+            enemy.x += (dxFromPlayer / distFromPlayer) * knockback/0.8;
+            enemy.y += (dyFromPlayer / distFromPlayer) * knockback/0.8;
           }
         }
       }
@@ -494,8 +494,8 @@ function checkXLineCollisions() {
         const distFromPlayer = Math.sqrt(dxFromPlayer * dxFromPlayer + dyFromPlayer * dyFromPlayer);
 
         if (distFromPlayer > 0) {
-          enemy.x += (dxFromPlayer / distFromPlayer) * (knockback/1.5);
-          enemy.y += (dyFromPlayer / distFromPlayer) * (knockback/1.5);
+          enemy.x += (dxFromPlayer / distFromPlayer) * (knockback/1.4);
+          enemy.y += (dyFromPlayer / distFromPlayer) * (knockback/1.4);
         }
       }
     });
@@ -549,7 +549,7 @@ window.addEventListener('keydown', (e) => {
   keys[key] = true;
 if (key === 'c' && soundSelected) {
   cMoveActive = true;
-  cMoveTimer = 120; // lasts 2 seconds
+  cMoveTimer = 200; // lasts 2 seconds
   orbitCircles = [];
   flashyCircle = null;
 
@@ -557,8 +557,8 @@ if (key === 'c' && soundSelected) {
   for (let i = 0; i < 4; i++) {
     orbitCircles.push({
       angle: (Math.PI * 2 / 4) * i,
-      radius: 100, // hwo far the circle start
-      speed: 0.2   // spinny circle go weweweweweweweweweweeweweweweeweweweweweeweweweweweweweweeweweweweweweweeweweweweweweweweweeweweweweweweweweweweweweweweweeweweweweweweweweweweweeweweweweweweweweweweweweeweweweweweweweweeweweweweweweweweweweeweweweweweeweweweweweweweweeweweweweweeweweweweweeweweweweweweeweweweweweeweweweweweweweweew
+      radius: 150, // hwo far the circle start
+      speed: 0.3   // spinny circle go weweweweweweweweweweeweweweweeweweweweweeweweweweweweweweeweweweweweweweeweweweweweweweweweeweweweweweweweweweweweweweweweeweweweweweweweweweweweeweweweweweweweweweweweweeweweweweweweweweeweweweweweweweweweweeweweweweweeweweweweweweweweeweweweweweeweweweweweeweweweweweweeweweweweweeweweweweweweweweew
     });
   }
 }
@@ -566,7 +566,7 @@ if (key === 'c' && soundSelected) {
 
   if (key === 'x' && soundSelected) {
   xMoveActive = true;
-  xMoveTimer = 80; // lasts 1 second
+  xMoveTimer = 90; // lasts 1.5 second
    xLines = []; // reset lines
 }
 
