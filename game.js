@@ -299,8 +299,9 @@ checkXLineCollisions();
   stars = [];
   soundVExploded = false;
   soundcooldownV = 300; 
-}
-if (soundcooldownV > 0) soundcooldownV--;
+  if (soundcooldownV > 0) soundcooldownV--;
+  }
+
 }
 
 
@@ -472,7 +473,11 @@ if (soundcooldownX > 0) {
 if (soundcooldownZ > 0) {
   soundcooldownZ--;
 }
-
+ctx.fillStyle = 'black';
+ctx.font = '20px Arial';
+ctx.fillText('Sound V Timer: ' + soundVTimer, 20, 40);
+ctx.fillText('Sound V Cooldown: ' + soundcooldownV, 20, 70);
+ctx.fillText('Sound V Active: ' + soundVon, 20, 100);
   // TH3 END 0F THE GAM3L00P
 drawImageBar();
 requestAnimationFrame(gameLoop);
@@ -614,7 +619,6 @@ window.addEventListener('keydown', (e) => {
   if (key === 'v' && activeFruit === 'sound' && soundVon === false && soundcooldownV<=0) {
   soundVon = true;
   soundVTimer = 180;
-  soundcooldownV = 300;
   centerofSoundV.x = playerX + playerWidth / 2;
   centerofSoundV.y = playerY + playerHeight / 2;
 
