@@ -483,11 +483,7 @@ if (soundcooldownX > 0) {
 if (soundcooldownZ > 0) {
   soundcooldownZ--;
 }
-ctx.fillStyle = 'black';
-ctx.font = '20px Arial';
-ctx.fillText('Sound V Timer: ' + soundVTimer, 20, 40);
-ctx.fillText('Sound V Cooldown: ' + soundcooldownV, 20, 70);
-ctx.fillText('Sound V Active: ' + soundVon, 20, 100);
+
   // TH3 END 0F THE GAM3L00P
 drawImageBar();
 requestAnimationFrame(gameLoop);
@@ -626,7 +622,7 @@ window.addEventListener('keydown', (e) => {
   const key = e.key.toLowerCase();
   keys[key] = true;
   //Sound V
-  if (key === 'v' && activeFruit === 'sound' && !soundVon && soundcooldownV <= 0) {
+  if (key === 'v' && soundSelected && !soundVon && soundcooldownV <= 0) {
   soundVon = true;
   soundVTimer = 180; // duration (~3s at 60fps)
   centerofSoundV.x = playerX + playerWidth / 2;
