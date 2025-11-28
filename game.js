@@ -379,7 +379,7 @@ if (soundVon) {
       const dy = ey - centerofSoundV.y;
       const dist = Math.sqrt(dx*dx + dy*dy);
 
-      if (dist < 200) {
+      if (dist < 400) {//dmg blast radius
         enemy.hp -= 30;
         enemy.x += dx / dist * 50;
         enemy.y += dy / dist * 50;
@@ -387,7 +387,7 @@ if (soundVon) {
     });
 
     ctx.beginPath();
-    ctx.arc(centerofSoundV.x, centerofSoundV.y, 200, 0, Math.PI * 2);
+    ctx.arc(centerofSoundV.x, centerofSoundV.y, 400, 0, Math.PI * 2);//visual blast radius
     ctx.fillStyle = 'rgba(255, 200, 0, 0.5)';
     ctx.fill();
   }
