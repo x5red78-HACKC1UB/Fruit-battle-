@@ -611,7 +611,8 @@ window.addEventListener('keydown', (e) => {
   //Sound V
   if (key === 'v' && activeFruit === 'sound' && soundVon === false && soundcooldownV<=0) {
   soundVon = true;
-  soundcooldownV = 180;
+  soundVTimer = 180;
+  soundcooldownV = 300;
   centerofSoundV.x = playerX + playerWidth / 2;
   centerofSoundV.y = playerY + playerHeight / 2;
 
