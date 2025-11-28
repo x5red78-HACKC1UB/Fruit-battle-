@@ -392,8 +392,14 @@ ctx.fillStyle = 'black';
 ctx.font = '20px Arial';
 ctx.fillText('Active Fruit: ' + getActiveFruitName(), 20, canvas.height - 30);
 
-if (soundcooldownC > 0) {
+if (soundcooldownC > 0){
   soundcooldownC--;
+}
+if (soundcooldownX > 0) {
+  soundcooldownX--;
+}
+if (soundcooldownZ > 0) {
+  soundcooldownZ--;
 }
 
   // TH3 END 0F THE GAM3L00P
@@ -545,17 +551,18 @@ if (key === 'c' && soundSelected && soundcooldownC <= 0) {
       speed: 0.27   // spinny circle go weweweweweweweweweweeweweweweeweweweweweeweweweweweweweweeweweweweweweweeweweweweweweweweweeweweweweweweweweweweweweweweweeweweweweweweweweweweweeweweweweweweweweweweweweeweweweweweweweweeweweweweweweweweweweeweweweweweeweweweweweweweweeweweweweweeweweweweweeweweweweweweeweweweweweeweweweweweweweweew
     });
   }
-  soundcooldownC = 300; 
+  soundcooldownC = 480; 
 }
 
 //Sound x
-if (key === 'x' && soundSelected) {
+if (key === 'x' && soundSelected && soundcooldownX <= 0) {
   xMoveActive = true;
   xMoveTimer = 90; // lasts 1.5 second
    xLines = []; // reset lines
+   soundcooldownX =360;
 }
 //sound z
-if (key === 'z' && soundSelected) {
+if (key === 'z' && soundSelected && soundcooldownZ <= 0) {
   const angle = Math.atan2(
     mouseY - (playerY + playerHeight / 2),
     mouseX - (playerX + playerWidth / 2)
@@ -573,6 +580,7 @@ if (key === 'z' && soundSelected) {
        hue: i * 50
     });
   }
+  soundcooldownZ= 210;
 }
 // hue hue hue
 
