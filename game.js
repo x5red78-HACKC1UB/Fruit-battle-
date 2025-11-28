@@ -621,10 +621,10 @@ function isTouchingPlayer(enemy) {
 window.addEventListener('keydown', (e) => {
   const key = e.key.toLowerCase();
   keys[key] = true;
-  //Sound V
+  //Sound V I SPENT 2 HOURSSSSSS
   if (key === 'v' && soundSelected && !soundVon && soundcooldownV <= 0) {
   soundVon = true;
-  soundVTimer = 180; // duration (~3s at 60fps)
+  soundVTimer = 180; 
   centerofSoundV.x = playerX + playerWidth / 2;
   centerofSoundV.y = playerY + playerHeight / 2;
 
