@@ -46,6 +46,7 @@ let soundVon = false;
 let centerofSoundV={x:0,y : 0};
 let soundVTimer=0;
 let stars=[];
+let soundVExploded = false;
 const soundBeams = [];
 const playerWidth = 40;
 const playerHeight = 40;
@@ -238,6 +239,7 @@ checkXLineCollisions();
     xMoveActive = false;
     xLines = [];
   }
+  if (soundcooldownV > 0) soundcooldownV--;
   if (soundVon) {
   enemies.forEach(enemy => {
     const ex = enemy.x + enemy.width / 2;
@@ -268,7 +270,8 @@ checkXLineCollisions();
   });
 
   soundVTimer--;
-  if (soundVTimer === 60) { // kaboom, there go your.....(can't remember rest of lyrics)
+   if (soundVTimer === 60 && !soundVExploded) {
+  soundVExploded = true; // kaboom, there go your.....(can't remember rest of lyrics)
     enemies.forEach(enemy => {
       const ex = enemy.x + enemy.width / 2;
       const ey = enemy.y + enemy.height / 2;
@@ -291,9 +294,12 @@ checkXLineCollisions();
   }
 
   if (soundVTimer <= 0) {
-    soundVon = false;
-    stars = [];
-  }
+  soundVon = false;
+  stars = [];
+  soundVExploded = false;
+  soundcooldownV = 300; 
+}
+
   }
 
 
@@ -604,7 +610,7 @@ window.addEventListener('keydown', (e) => {
   const key = e.key.toLowerCase();
   keys[key] = true;
   //Sound V
-  if (key === 'v' && activeFruit === 'sound' && soundVon === false) {
+  if (key === 'v' && activeFruit === 'sound' && soundVon === false && soundcooldownV<=0) {
   soundVon = true;
   soundcooldownV = 180;
   centerofSoundV.x = playerX + playerWidth / 2;
