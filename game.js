@@ -290,8 +290,8 @@ if (flashyCircle) {
 
     if (dist < flashyCircle.radius) {
       // stops damage from hitting 60 times a second bc, just too juch to handle
-      if (Date.now() - enemy.lastHitTime > 100) {
-        enemy.hp -= 15; // stronger than X move
+      if (Date.now() - enemy.lastHitTime > 80) {
+        enemy.hp -= 10; 
         enemy.hp = Math.max(0, enemy.hp);
         enemy.lastHitTime = Date.now();
       }
