@@ -239,8 +239,9 @@ checkXLineCollisions();
     xMoveActive = false;
     xLines = [];
   }
-  if (soundcooldownV > 0) soundcooldownV--;
+  
   if (soundVon) {
+    soundVTimer--;
   enemies.forEach(enemy => {
     const ex = enemy.x + enemy.width / 2;
     const ey = enemy.y + enemy.height / 2;
@@ -269,7 +270,7 @@ checkXLineCollisions();
     ctx.fill();
   });
 
-  soundVTimer--;
+  
    if (soundVTimer === 60 && !soundVExploded) {
   soundVExploded = true; // kaboom, there go your.....(can't remember rest of lyrics)
     enemies.forEach(enemy => {
@@ -299,6 +300,7 @@ checkXLineCollisions();
   soundVExploded = false;
   soundcooldownV = 300; 
 }
+if (soundcooldownV > 0) soundcooldownV--;
 }
 
 
