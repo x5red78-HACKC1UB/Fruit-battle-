@@ -240,7 +240,7 @@ checkXLineCollisions();
     xLines = [];
   }
   
-  if (soundVon) {
+  if (soundVon=true) {
     soundVTimer--;
   enemies.forEach(enemy => {
     const ex = enemy.x + enemy.width / 2;
