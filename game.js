@@ -507,6 +507,8 @@ function spawnEnemy(){
     lastHitTime: 0
   });
 }
+if (enemy.hp==0)
+  enemy.hp=1000
 
 //Enemy movement
 function updateEnemies(){
@@ -530,8 +532,7 @@ function isTouchingPlayer(enemy) {
     enemy.y + enemy.height > playerY
   );
 }
-if (enemy.hp=0)
-  enemy.hp=1000
+
 
 
 // Key listeners
