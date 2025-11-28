@@ -41,12 +41,12 @@ let flashyCircle = null;
 let soundcooldownZ=0;
 let soundcooldownX=0;
 let soundcooldownC=0;
-let soundcooldownV=0;
 let soundVon = false;
-let centerofSoundV={x:0,y : 0};
-let soundVTimer=0;
-let stars=[];
+let soundVTimer = 0;
+let soundcooldownV = 0;
 let soundVExploded = false;
+let centerofSoundV = { x: 0, y: 0 };
+let stars = [];
 const soundBeams = [];
 const playerWidth = 40;
 const playerHeight = 40;
@@ -239,69 +239,7 @@ checkXLineCollisions();
     xMoveActive = false;
     xLines = [];
   }
-  if (soundcooldownV > 0) soundcooldownV--;
-  if (soundVon) {
-    soundVTimer--;
-  enemies.forEach(enemy => {
-    const ex = enemy.x + enemy.width / 2;
-    const ey = enemy.y + enemy.height / 2;
-
-    const dx = centerofSoundV.x - ex;
-    const dy = centerofSoundV.y - ey;
-    const dist = Math.sqrt(dx*dx + dy*dy);
-
-    if (dist > 5) { // how strong the cool big circle is
-      enemy.x += dx / dist * 2; // how fst the circle sucks💀
-      enemy.y += dy / dist * 2;
-    }
-  });
   
-    stars.forEach(star => {
-    const dx = centerofSoundV.x - star.x;
-    const dy = centerofSoundV.y - star.y;
-    const dist = Math.sqrt(dx*dx + dy*dy);
-
-    star.x += dx / dist * star.speed;
-    star.y += dy / dist * star.speed;
-
-    ctx.beginPath();
-    ctx.arc(star.x, star.y, 3, 0, Math.PI * 2);
-    ctx.fillStyle = 'yellow';
-    ctx.fill();
-  });
-
-  
-   if (soundVTimer <=60 && !soundVExploded) {
-  soundVExploded = true; // kaboom, there go your.....(can't remember rest of lyrics)
-    enemies.forEach(enemy => {
-      const ex = enemy.x + enemy.width / 2;
-      const ey = enemy.y + enemy.height / 2;
-      const dx = ex - centerofSoundV.x;
-      const dy = ey - centerofSoundV.y;
-      const dist = Math.sqrt(dx*dx + dy*dy);
-
-      if (dist < 200) { // how big the BOOM is
-        enemy.hp -= 30; 
-        enemy.x += dx / dist * 50; // knockback
-        enemy.y += dy / dist * 50;
-      }
-    });
-
-    
-    ctx.beginPath();
-    ctx.arc(centerofSoundV.x, centerofSoundV.y, 200, 0, Math.PI * 2);
-    ctx.fillStyle = 'rgba(255, 200, 0, 0.5)';
-    ctx.fill();
-  }
-
-  if (soundVTimer <= 0) {
-  soundVon = false;
-  stars = [];
-  soundVExploded = false;
-  soundcooldownV = 300; 
-  }
-
-}
 
 
 // the only reason i put this is because it didn't realize i didn't define flashyCircle, and because of that it kept crashing my entire game.
@@ -390,6 +328,79 @@ if (flashyCircle) {
     flashyCircle = null;
   }
 }
+// Cooldown countdown
+if (soundcooldownV > 0) soundcooldownV--;
+
+if (soundVon) {
+  // Draw orb so you see it
+  ctx.beginPath();
+  ctx.arc(centerofSoundV.x, centerofSoundV.y, 20, 0, Math.PI * 2);
+  ctx.fillStyle = 'rgba(0,0,255,0.3)';
+  ctx.fill();
+
+  // Pull enemies
+  enemies.forEach(enemy => {
+    const ex = enemy.x + enemy.width / 2;
+    const ey = enemy.y + enemy.height / 2;
+    const dx = centerofSoundV.x - ex;
+    const dy = centerofSoundV.y - ey;
+    const dist = Math.sqrt(dx*dx + dy*dy);
+
+    if (dist > 5) {
+      enemy.x += dx / dist * 2;
+      enemy.y += dy / dist * 2;
+    }
+  });
+
+  // Stars drift in
+  stars.forEach(star => {
+    const dx = centerofSoundV.x - star.x;
+    const dy = centerofSoundV.y - star.y;
+    const dist = Math.sqrt(dx*dx + dy*dy);
+
+    star.x += dx / dist * star.speed;
+    star.y += dy / dist * star.speed;
+
+    ctx.beginPath();
+    ctx.arc(star.x, star.y, 3, 0, Math.PI * 2);
+    ctx.fillStyle = 'yellow';
+    ctx.fill();
+  });
+
+  // Explosion moment
+  soundVTimer--;
+  if (soundVTimer <= 60 && !soundVExploded) {
+    soundVExploded = true;
+
+    enemies.forEach(enemy => {
+      const ex = enemy.x + enemy.width / 2;
+      const ey = enemy.y + enemy.height / 2;
+      const dx = ex - centerofSoundV.x;
+      const dy = ey - centerofSoundV.y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+
+      if (dist < 200) {
+        enemy.hp -= 30;
+        enemy.x += dx / dist * 50;
+        enemy.y += dy / dist * 50;
+      }
+    });
+
+    ctx.beginPath();
+    ctx.arc(centerofSoundV.x, centerofSoundV.y, 200, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(255, 200, 0, 0.5)';
+    ctx.fill();
+  }
+
+  // End move
+  if (soundVTimer <= 0) {
+    soundVon = false;
+    stars = [];
+    soundVExploded = false;
+    soundcooldownV = 300; // cooldown starts AFTER move ends
+  }
+}
+
 
 // RAINBOW BARF BEAM
  soundBeams.forEach((beam, index) => {
@@ -615,9 +626,9 @@ window.addEventListener('keydown', (e) => {
   const key = e.key.toLowerCase();
   keys[key] = true;
   //Sound V
-  if (key === 'v' && activeFruit === 'sound' && !soundVon === false && soundcooldownV<=0) {
+  if (key === 'v' && activeFruit === 'sound' && !soundVon && soundcooldownV <= 0) {
   soundVon = true;
-  soundVTimer = 180;
+  soundVTimer = 180; // duration (~3s at 60fps)
   centerofSoundV.x = playerX + playerWidth / 2;
   centerofSoundV.y = playerY + playerHeight / 2;
 
