@@ -243,8 +243,8 @@ checkXLineCollisions();
     const ex = enemy.x + enemy.width / 2;
     const ey = enemy.y + enemy.height / 2;
 
-    const dx = soundVCenter.x - ex;
-    const dy = soundVCenter.y - ey;
+    const dx = centerofSoundV.x - ex;
+    const dy = centerofSoundV.y - ey;
     const dist = Math.sqrt(dx*dx + dy*dy);
 
     if (dist > 5) { // how strong the cool big circle is
@@ -252,7 +252,7 @@ checkXLineCollisions();
       enemy.y += dy / dist * 2;
     }
   });
-  }
+  
     stars.forEach(star => {
     const dx = centerofSoundV.x - star.x;
     const dy = centerofSoundV.y - star.y;
@@ -290,11 +290,11 @@ checkXLineCollisions();
     ctx.fill();
   }
 
-  if (soundcooldownV <= 0) {
+  if (soundVTimer <= 0) {
     soundVon = false;
     stars = [];
   }
-
+  }
 
 
 // the only reason i put this is because it didn't realize i didn't define flashyCircle, and because of that it kept crashing my entire game.
