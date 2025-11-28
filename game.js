@@ -239,8 +239,8 @@ checkXLineCollisions();
     xMoveActive = false;
     xLines = [];
   }
-  
-  if (soundVon=true) {
+  if (soundcooldownV > 0) soundcooldownV--;
+  if (soundVon) {
     soundVTimer--;
   enemies.forEach(enemy => {
     const ex = enemy.x + enemy.width / 2;
@@ -271,7 +271,7 @@ checkXLineCollisions();
   });
 
   
-   if (soundVTimer === 60 && !soundVExploded) {
+   if (soundVTimer <=60 && !soundVExploded) {
   soundVExploded = true; // kaboom, there go your.....(can't remember rest of lyrics)
     enemies.forEach(enemy => {
       const ex = enemy.x + enemy.width / 2;
@@ -299,7 +299,6 @@ checkXLineCollisions();
   stars = [];
   soundVExploded = false;
   soundcooldownV = 300; 
-  if (soundcooldownV > 0) soundcooldownV--;
   }
 
 }
@@ -616,7 +615,7 @@ window.addEventListener('keydown', (e) => {
   const key = e.key.toLowerCase();
   keys[key] = true;
   //Sound V
-  if (key === 'v' && activeFruit === 'sound' && soundVon === false && soundcooldownV<=0) {
+  if (key === 'v' && activeFruit === 'sound' && !soundVon === false && soundcooldownV<=0) {
   soundVon = true;
   soundVTimer = 180;
   centerofSoundV.x = playerX + playerWidth / 2;
