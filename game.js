@@ -299,8 +299,7 @@ checkXLineCollisions();
   soundVExploded = false;
   soundcooldownV = 300; 
 }
-
-  }
+}
 
 
 // the only reason i put this is because it didn't realize i didn't define flashyCircle, and because of that it kept crashing my entire game.
