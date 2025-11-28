@@ -347,8 +347,9 @@ if (soundVon) {
     const dist = Math.sqrt(dx*dx + dy*dy);
 
     if (dist > 5) {
-      enemy.x += dx / dist * 2;
-      enemy.y += dy / dist * 2;
+      enemy.x += dx / dist * 5;//}
+                               //} speed & streength of sucking
+      enemy.y += dy / dist * 5;//}
     }
   });
 
@@ -380,7 +381,7 @@ if (soundVon) {
       const dist = Math.sqrt(dx*dx + dy*dy);
 
       if (dist < 400) {//dmg blast radius
-        enemy.hp -= 30;
+        enemy.hp -= 250;
         enemy.x += dx / dist * 50;
         enemy.y += dy / dist * 50;
       }
