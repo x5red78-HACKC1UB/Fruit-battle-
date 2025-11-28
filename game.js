@@ -424,15 +424,15 @@ function checkBeamCollisions() {
 
       if (dist < enemy.width / 2) {
         if (now - enemy.lastHitTime > 40) { // limit hits per enemy so the z move didn't do 2642.393939393023974567236424638 dmg (yes that's the actual dmg)
-          let damage = 3.5;
+          let damage = 4;
 
           if (isTouchingPlayer(enemy)) {
-            damage = 0.5; // touching = reduced damage
+            damage = 1; // touching = reduced damage
           }
 
           enemy.hp -= damage;
           enemy.hp = Math.round(enemy.hp);
-          //so enemy hp doesn't fly into the negative
+          //so enemy hp doesn't fly into the negatives
           enemy.hp = Math.max(0, enemy.hp);
           enemy.lastHitTime = now;
 
@@ -474,7 +474,7 @@ function checkXLineCollisions() {
       // same thing as the beam
       if (dist < enemy.width/2) {
         if (now - enemy.lastHitTime > 75) {
-          enemy.hp -= 9;
+          enemy.hp -= 11;
           enemy.hp = Math.max(0, enemy.hp);
           enemy.lastHitTime = now;
         }
@@ -502,7 +502,7 @@ function spawnEnemy(){
     height:50,
     hp:1000,
     maxhp:100,
-    speed:1.75,
+    speed:1.9,
     img: enemyImage,
     lastHitTime: 0
   });
@@ -530,6 +530,8 @@ function isTouchingPlayer(enemy) {
     enemy.y + enemy.height > playerY
   );
 }
+if (enemy.hp=0)
+  enemy.hp=1000
 
 
 // Key listeners
@@ -539,7 +541,7 @@ window.addEventListener('keydown', (e) => {
   // Sound C
 if (key === 'c' && soundSelected && soundcooldownC <= 0) {
   cMoveActive = true;
-  cMoveTimer = 200; // lasts 2 seconds
+  cMoveTimer = 250; // 
   orbitCircles = [];
   flashyCircle = null;
 
@@ -557,7 +559,7 @@ if (key === 'c' && soundSelected && soundcooldownC <= 0) {
 //Sound x
 if (key === 'x' && soundSelected && soundcooldownX <= 0) {
   xMoveActive = true;
-  xMoveTimer = 90; // lasts 1.5 second
+  xMoveTimer = 150; 
    xLines = []; // reset lines
    soundcooldownX =360;
 }
