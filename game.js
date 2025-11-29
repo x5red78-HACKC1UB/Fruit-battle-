@@ -333,9 +333,10 @@ if (soundcooldownV > 0) soundcooldownV--;
 
 if (soundVon) {
   // Draw orb so you see it
+  const hue = (Date.now() / 20) % 360; //so i just learned that %360 is th 359 colors
+ctx.fillStyle = `hsla(${hue}, 100%, 50%, 0.4)`; 
   ctx.beginPath();
   ctx.arc(centerofSoundV.x, centerofSoundV.y, 20, 0, Math.PI * 2);
-  ctx.fillStyle = 'rgba(0,0,255,0.3)';
   ctx.fill();
 
   // Pull enemies
@@ -347,13 +348,13 @@ if (soundVon) {
     const dist = Math.sqrt(dx*dx + dy*dy);
 
     if (dist > 5) {
-      enemy.x += dx / dist * 5;//}
+      enemy.x += dx / dist * 2.5;//}
                                //} speed & streength of sucking
-      enemy.y += dy / dist * 5;//}
+      enemy.y += dy / dist * 2.5;//}
     }
   });
 
-  // Stars drift in
+  // Stars!
   stars.forEach(star => {
     const dx = centerofSoundV.x - star.x;
     const dy = centerofSoundV.y - star.y;
@@ -361,10 +362,10 @@ if (soundVon) {
 
     star.x += dx / dist * star.speed;
     star.y += dy / dist * star.speed;
-
+  const hue = (Date.now() / 10 + star.x) % 360; //so i love expaining this part, star.x makes it so the stars have variety
+  ctx.fillStyle = `hsl(${hue}, 100%, 50%)`;
     ctx.beginPath();
     ctx.arc(star.x, star.y, 3, 0, Math.PI * 2);
-    ctx.fillStyle = 'yellow';
     ctx.fill();
   });
 
@@ -381,7 +382,7 @@ if (soundVon) {
       const dist = Math.sqrt(dx*dx + dy*dy);
 
       if (dist < 400) {//dmg blast radius
-        enemy.hp -= 250;
+        enemy.hp -= 300;
         enemy.x += dx / dist * 50;
         enemy.y += dy / dist * 50;
       }
@@ -398,7 +399,7 @@ if (soundVon) {
     soundVon = false;
     stars = [];
     soundVExploded = false;
-    soundcooldownV = 300; // cooldown starts AFTER move ends
+    soundcooldownV = 300; 
   }
 }
 
