@@ -749,7 +749,7 @@ function handleImageClick(name){
         break;
   }
 }
-// What fruit you have
+// What fruit you have :)
 function getActiveFruitName() {
   if (flameSelected) return 'Flame';
   if (soundSelected) return 'Sound';
