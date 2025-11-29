@@ -760,6 +760,3 @@ function getActiveFruitName() {
 playerImage.onload = () => {
   resizeCanvas();
 };
-
-
-
