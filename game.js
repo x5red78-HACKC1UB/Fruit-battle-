@@ -383,9 +383,10 @@ ctx.fillStyle = `hsla(${hue}, 100%, 50%, 0.4)`;
 
     // If star touches enemy 
     if (edist < enemy.width / 2) {
-      enemy.hp -= 5; 
+      enemy.hp -= 1; 
       enemy.hp = Math.max(0, enemy.hp);//basically says when enemy hp is 0 it can't go any lower
       console.log('Star hit enemy! HP now:', enemy.hp);//I learned abt console logs! pretty cool
+      
     }
   });
 });
