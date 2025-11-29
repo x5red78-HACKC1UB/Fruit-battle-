@@ -348,9 +348,9 @@ ctx.fillStyle = `hsla(${hue}, 100%, 50%, 0.4)`;
     const dist = Math.sqrt(dx*dx + dy*dy);
 
     if (dist > 5) {
-      enemy.x += dx / dist * 3.5;//}
+      enemy.x += dx / dist * 4.5;//}
                                //} speed & streength of sucking
-      enemy.y += dy / dist * 3.5;//}
+      enemy.y += dy / dist * 4.5;//}
     }
   });
 
