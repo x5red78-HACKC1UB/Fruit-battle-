@@ -356,20 +356,42 @@ ctx.fillStyle = `hsla(${hue}, 100%, 50%, 0.4)`;
 
   // Stars!
   stars.forEach(star => {
-    const dx = centerofSoundV.x - star.x;
-    const dy = centerofSoundV.y - star.y;
-    const dist = Math.sqrt(dx*dx + dy*dy);
+  const dx = centerofSoundV.x - star.x;
+  const dy = centerofSoundV.y - star.y;
+  const dist = Math.sqrt(dx*dx + dy*dy);
 
-    star.x += dx / dist * star.speed;
-    star.y += dy / dist * star.speed;
-  const hue = (Date.now() / 10 + star.x) % 360; //so i love expaining this part, star.x makes it so the stars have variety
+  // Move star toward center
+  star.x += dx / dist * star.speed;
+  star.y += dy / dist * star.speed;
+
+  // Rainbow hue for variety
+  const hue = (Date.now() / 10 + star.x) % 360;
   ctx.fillStyle = `hsl(${hue}, 100%, 50%)`;
-    ctx.beginPath();
-    ctx.arc(star.x, star.y, 3, 0, Math.PI * 2);
-    ctx.fill();
-  });
 
-  // Explosion moment
+  // Draw star
+  ctx.beginPath();
+  ctx.arc(star.x, star.y, 3, 0, Math.PI * 2);
+  ctx.fill();
+
+  // --- Damage check with enemies ---
+  enemies.forEach(enemy => {
+    const ex = enemy.x + enemy.width / 2;
+    const ey = enemy.y + enemy.height / 2;
+    const edx = star.x - ex;
+    const edy = star.y - ey;
+    const edist = Math.sqrt(edx*edx + edy*edy);
+
+    // If star touches enemy 
+    if (edist < enemy.width / 2) {
+      enemy.hp -= 5; 
+      enemy.hp = Math.max(0, enemy.hp);//basically says when enemy hp is 0 it can't go any lower
+      console.log('Star hit enemy! HP now:', enemy.hp);//I learned abt console logs! pretty cool
+    }
+  });
+});
+
+
+  //FAHHHHHHH
   soundVTimer--;
   if (soundVTimer <= 60 && !soundVExploded) {
     soundVExploded = true;
@@ -383,6 +405,7 @@ ctx.fillStyle = `hsla(${hue}, 100%, 50%, 0.4)`;
 
       if (dist < 400) {//dmg blast radius
         enemy.hp -= 300;
+        enemy.hp = Math.max(0, enemy.hp);
         enemy.x += dx / dist * 50;
         enemy.y += dy / dist * 50;
       }
