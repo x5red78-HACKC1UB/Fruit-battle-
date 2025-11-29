@@ -348,9 +348,9 @@ ctx.fillStyle = `hsla(${hue}, 100%, 50%, 0.4)`;
     const dist = Math.sqrt(dx*dx + dy*dy);
 
     if (dist > 5) {
-      enemy.x += dx / dist * 2.5;//}
+      enemy.x += dx / dist * 3.5;//}
                                //} speed & streength of sucking
-      enemy.y += dy / dist * 2.5;//}
+      enemy.y += dy / dist * 3.5;//}
     }
   });
 
@@ -368,12 +368,12 @@ ctx.fillStyle = `hsla(${hue}, 100%, 50%, 0.4)`;
   const hue = (Date.now() / 10 + star.x) % 360;
   ctx.fillStyle = `hsl(${hue}, 100%, 50%)`;
 
-  // Draw star
+  // 
   ctx.beginPath();
   ctx.arc(star.x, star.y, 3, 0, Math.PI * 2);
   ctx.fill();
 
-  // --- Damage check with enemies ---
+  // 
   enemies.forEach(enemy => {
     const ex = enemy.x + enemy.width / 2;
     const ey = enemy.y + enemy.height / 2;
@@ -383,7 +383,11 @@ ctx.fillStyle = `hsla(${hue}, 100%, 50%, 0.4)`;
 
     // If star touches enemy 
     if (edist < enemy.width / 2) {
-      enemy.hp -= 1; 
+      if (!star.lastHitTime || Date.now() - star.lastHitTime > 200) {
+  enemy.hp -= 2;
+  enemy.hp = Math.round(enemy.hp);
+  star.lastHitTime = Date.now();
+}
       enemy.hp = Math.max(0, enemy.hp);//basically says when enemy hp is 0 it can't go any lower
       console.log('Star hit enemy! HP now:', enemy.hp);//I learned abt console logs! pretty cool
       
@@ -394,7 +398,7 @@ ctx.fillStyle = `hsla(${hue}, 100%, 50%, 0.4)`;
 
   //FAHHHHHHH
   soundVTimer--;
-  if (soundVTimer <= 60 && !soundVExploded) {
+  if (soundVTimer <= 120 && !soundVExploded) {
     soundVExploded = true;
 
     enemies.forEach(enemy => {
