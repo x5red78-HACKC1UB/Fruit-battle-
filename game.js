@@ -58,10 +58,12 @@ const keys ={};
 //Just an annoying gitch fix!
 canvas.addEventListener('mouseenter', () => {
   mouseInsideCanvas = true;
+  console.log('Mouse inside the canvas')
 });
 
 canvas.addEventListener('mouseleave', () => {
   mouseInsideCanvas = false;
+  console.log('Mouse not in canvas')
 });
 
 
@@ -134,6 +136,7 @@ document.getElementById('startButton').addEventListener('click', () => {
   resizeCanvas();
   spawnEnemy();  // self-explainatory(plz say i spelled that right)
   gameLoop();
+  console.log('Menu good');
 });
 // I used to think this was just for smooth movement, but I slowly realize this is just the entire game.
 function gameLoop(){
@@ -265,7 +268,7 @@ if (cMoveActive) {
     ctx.fillStyle = `hsl(${(Date.now()/10)%360}, 100%, 50%)`;
     ctx.fill();
 
-    // LET IT GROWWWWWWW(that was cringe ngl but i'll keep it in)
+    
     if (circle.radius <= 0 && !flashyCircle) {
       flashyCircle = { radius: 0, growing: true };
     }
@@ -300,6 +303,7 @@ if (flashyCircle) {
     if (dist < flashyCircle.radius) {
       // stops damage from hitting 60 times a second bc, just too juch to handle
       if (Date.now() - enemy.lastHitTime > 80) {
+        console.log('c move hitting')
         enemy.hp -= 10; 
         enemy.hp = Math.max(0, enemy.hp);
         enemy.lastHitTime = Date.now();
@@ -351,6 +355,7 @@ ctx.fillStyle = `hsla(${hue}, 100%, 50%, 0.4)`;
       enemy.x += dx / dist * 5.5;//}
                                //} speed & streength of sucking
       enemy.y += dy / dist * 5.5;//}
+      console.log('enemy pulled')
     }
   });
 
