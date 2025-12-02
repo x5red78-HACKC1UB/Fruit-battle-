@@ -318,6 +318,10 @@ if (flashyCircle) {
         enemy.x += (dxFromPlayer / distFromPlayer) * (knockback / 0.7); // pushy push in x-axis
         enemy.y += (dyFromPlayer / distFromPlayer) * (knockback / 0.7);//pushy push in y-axis
       }
+      if (enemy.x < 0) enemy.x = 0;
+  if (enemy.y < 0) enemy.y = 0;
+  if (enemy.x + enemy.width > canvasWidth) enemy.x = canvasWidth - enemy.width;
+  if (enemy.y + enemy.height > canvasHeight) enemy.y = canvasHeight - enemy.height;
     }
   });
 }
@@ -419,6 +423,10 @@ ctx.fillStyle = `hsla(${hue}, 100%, 50%, 0.4)`;
         enemy.x += dx / dist * 50;
         enemy.y += dy / dist * 50;
       }
+      if (enemy.x < 0) enemy.x = 0;
+  if (enemy.y < 0) enemy.y = 0;
+  if (enemy.x + enemy.width > canvasWidth) enemy.x = canvasWidth - enemy.width;
+  if (enemy.y + enemy.height > canvasHeight) enemy.y = canvasHeight - enemy.height;
     });
 
     ctx.beginPath();
@@ -562,6 +570,10 @@ function checkBeamCollisions() {
             enemy.x += (dxFromPlayer / distFromPlayer) * knockback/0.8;
             enemy.y += (dyFromPlayer / distFromPlayer) * knockback/0.8;
           }
+          if (enemy.x < 0) enemy.x = 0;
+  if (enemy.y < 0) enemy.y = 0;
+  if (enemy.x + enemy.width > canvasWidth) enemy.x = canvasWidth - enemy.width;
+  if (enemy.y + enemy.height > canvasHeight) enemy.y = canvasHeight - enemy.height;
         }
       }
     });
@@ -605,6 +617,10 @@ function checkXLineCollisions() {
           enemy.x += (dxFromPlayer / distFromPlayer) * (knockback/1.4);
           enemy.y += (dyFromPlayer / distFromPlayer) * (knockback/1.4);
         }
+        if (enemy.x < 0) enemy.x = 0;
+  if (enemy.y < 0) enemy.y = 0;
+  if (enemy.x + enemy.width > canvasWidth) enemy.x = canvasWidth - enemy.width;
+  if (enemy.y + enemy.height > canvasHeight) enemy.y = canvasHeight - enemy.height;
       }
     });
   });
