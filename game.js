@@ -318,6 +318,7 @@ if (flashyCircle) {
         enemy.x += (dxFromPlayer / distFromPlayer) * (knockback / 0.7); // pushy push in x-axis
         enemy.y += (dyFromPlayer / distFromPlayer) * (knockback / 0.7);//pushy push in y-axis
       }
+      enemystayinboundsplzz(enemy, canvas)
     }
   });
 }
@@ -418,6 +419,7 @@ ctx.fillStyle = `hsla(${hue}, 100%, 50%, 0.4)`;
         enemy.hp = Math.max(0, enemy.hp);
         enemy.x += dx / dist * 50;
         enemy.y += dy / dist * 50;
+        enemystayinboundsplzz(enemy, canvas)
       }
     });
 
@@ -562,6 +564,7 @@ function checkBeamCollisions() {
             enemy.x += (dxFromPlayer / distFromPlayer) * knockback/0.8;
             enemy.y += (dyFromPlayer / distFromPlayer) * knockback/0.8;
           }
+          enemystayinboundsplzz(enemy, canvas)
         }
       }
     });
@@ -605,6 +608,7 @@ function checkXLineCollisions() {
           enemy.x += (dxFromPlayer / distFromPlayer) * (knockback/1.4);
           enemy.y += (dyFromPlayer / distFromPlayer) * (knockback/1.4);
         }
+        enemystayinboundsplzz(enemy, canvas)
       }
     });
   });
@@ -638,6 +642,7 @@ function updateEnemies(){
       enemy.x += (dx / dist) * enemy.speed;
       enemy.y += (dy / dist) * enemy.speed;
     }
+    enemystayinboundsplzz(enemy, canvas)
   });
 }
 // Enemy Collision w/player
@@ -649,6 +654,21 @@ function isTouchingPlayer(enemy) {
     enemy.y + enemy.height > playerY
   );
 }
+function enemystayinboundsplzz(enemy, canvas) {
+  
+  if (enemy.x < 0) enemy.x = 0;
+
+   if (enemy.y < 0) enemy.y = 0;
+
+if (enemy.x + enemy.width > canvas.width) {
+    enemy.x = canvas.width - enemy.width;
+  }
+
+if (enemy.y + enemy.height > canvas.height) {
+    enemy.y = canvas.height - enemy.height;
+  }
+}
+
 
 
 
