@@ -527,6 +527,9 @@ requestAnimationFrame(gameLoop);
 }
 //beam touching the enemy
 function checkBeamCollisions() {
+   for (let i = enemies.length - 1; i >= 0; i--) {
+  const enemy = enemies[i];
+       
   soundBeams.forEach(beam => {
     enemies.forEach(enemy => {
       const ex = enemy.x + enemy.width / 2;
@@ -548,7 +551,7 @@ function checkBeamCollisions() {
           if (isTouchingPlayer(enemy)) {
             damage = 1; // touching = reduced damage
           }
-
+      
           enemy.hp -= damage;
           enemy.hp = Math.round(enemy.hp);
           //so enemy hp doesn't fly into the negatives
@@ -565,10 +568,20 @@ function checkBeamCollisions() {
             enemy.y += (dyFromPlayer / distFromPlayer) * knockback/0.8;
           }
           enemystayinboundsplzz(enemy, canvas)
+    // Remove enemy if dead
+          if (enemy.hp <= 0) {
+            enemies.splice(i, 1);
+            return; // stop processing this enemy
         }
+      
       }
+      if (enemy.hp > 0) {
+      ctx.drawImage(enemy.img, enemy.x, enemy.y, enemy.width, enemy.height);
+    }
+    }
     });
   });
+}
 }
 //lines touch i think.
 function checkXLineCollisions() {
