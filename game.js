@@ -296,6 +296,9 @@ if (flashyCircle) {
   ctx.lineWidth = 6;
   ctx.stroke();
   enemies.forEach(enemy => {
+     for (let i = enemies.length - 1; i >= 0; i--) {
+  enemydeathrip(i, enemies, canvas, ctx);
+} console.log('KILL HIM w/ the SOUND C')
     const ex = enemy.x + enemy.width / 2;
     const ey = enemy.y + enemy.height / 2;
     const dist = Math.sqrt((ex - centerX) ** 2 + (ey - centerY) ** 2);
@@ -370,7 +373,7 @@ ctx.fillStyle = `hsla(${hue}, 100%, 50%, 0.4)`;
   star.x += dx / dist * star.speed;
   star.y += dy / dist * star.speed;
 
-  // Rainbow hue for variety
+  // Rainbow for variety
   const hue = (Date.now() / 10 + star.x) % 360;
   ctx.fillStyle = `hsl(${hue}, 100%, 50%)`;
 
@@ -389,6 +392,9 @@ ctx.fillStyle = `hsla(${hue}, 100%, 50%, 0.4)`;
 
     // If star touches enemy 
     if (edist < enemy.width / 2) {
+       for (let i = enemies.length - 1; i >= 0; i--) {
+  enemydeathrip(i, enemies, canvas, ctx);
+}
       if (!star.lastHitTime || Date.now() - star.lastHitTime > 200) {
   enemy.hp -= 2;
   enemy.hp = Math.round(enemy.hp);
@@ -404,6 +410,9 @@ ctx.fillStyle = `hsla(${hue}, 100%, 50%, 0.4)`;
 
   //FAHHHHHHH
   soundVTimer--;
+   for (let i = enemies.length - 1; i >= 0; i--) {
+  enemydeathrip(i, enemies, canvas, ctx);
+} console.log('DESTOY HIM BLAST HIM TO DUST(soundv)')
   if (soundVTimer <= 120 && !soundVExploded) {
     soundVExploded = true;
 
@@ -527,9 +536,9 @@ requestAnimationFrame(gameLoop);
 }
 //beam touching the enemy
 function checkBeamCollisions() {
-   for (let i = enemies.length - 1; i >= 0; i--) {
-  const enemy = enemies[i];
-       
+  for (let i = enemies.length - 1; i >= 0; i--) {
+  enemydeathrip(i, enemies, canvas, ctx);
+} console.log("alr kill him")
   soundBeams.forEach(beam => {
     enemies.forEach(enemy => {
       const ex = enemy.x + enemy.width / 2;
@@ -568,24 +577,18 @@ function checkBeamCollisions() {
             enemy.y += (dyFromPlayer / distFromPlayer) * knockback/0.8;
           }
           enemystayinboundsplzz(enemy, canvas)
-    // Remove enemy if dead
-          if (enemy.hp <= 0) {
-            enemies.splice(i, 1);
-            return; // stop processing this enemy
-        }
-      
       }
-      if (enemy.hp > 0) {
-      ctx.drawImage(enemy.img, enemy.x, enemy.y, enemy.width, enemy.height);
-    }
     }
     });
   });
 }
-}
+
 //lines touch i think.
 function checkXLineCollisions() {
   const now = Date.now();
+   for (let i = enemies.length - 1; i >= 0; i--) {
+  enemydeathrip(i, enemies, canvas, ctx);
+   } console.log ("OFF WITH HIS HEAD")
   enemies.forEach(enemy => {
     const ex = enemy.x + enemy.width / 2;
     const ey = enemy.y + enemy.height / 2;
@@ -640,6 +643,20 @@ function spawnEnemy(){
     img: enemyImage,
     lastHitTime: 0
   });
+}
+//TASK MANGER!
+function enemydeathrip(enemyIndex, enemies, canvas, ctx) {
+  const enemy = enemies[enemyIndex];
+//wait keep him in......
+  enemystayinboundsplzz(enemy, canvas);
+// Alr, now take him out.
+  if (enemy.hp <= 0) {
+    enemies.splice(enemyIndex, 1);
+    return; 
+  }
+//But boss! He isn't dead.
+//alr. he's off the hook for now
+  ctx.drawImage(enemy.img, enemy.x, enemy.y, enemy.width, enemy.height);
 }
 
   
