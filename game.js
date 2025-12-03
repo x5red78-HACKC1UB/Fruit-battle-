@@ -396,7 +396,7 @@ ctx.fillStyle = `hsla(${hue}, 100%, 50%, 0.4)`;
   enemydeathrip(i, enemies, canvas, ctx);
 }
       if (!star.lastHitTime || Date.now() - star.lastHitTime > 200) {
-  enemy.hp -= 2;
+  enemy.hp -= 3;
   enemy.hp = Math.round(enemy.hp);
   star.lastHitTime = Date.now();
 }
@@ -423,8 +423,8 @@ ctx.fillStyle = `hsla(${hue}, 100%, 50%, 0.4)`;
       const dy = ey - centerofSoundV.y;
       const dist = Math.sqrt(dx*dx + dy*dy);
 
-      if (dist < 400) {//dmg blast radius
-        enemy.hp -= 300;
+      if (dist < 450) {//dmg blast radius
+        enemy.hp -= Math.floor(Math.random()*100)+375;
         enemy.hp = Math.max(0, enemy.hp);
         enemy.x += dx / dist * 50;
         enemy.y += dy / dist * 50;
@@ -433,7 +433,7 @@ ctx.fillStyle = `hsla(${hue}, 100%, 50%, 0.4)`;
     });
 
     ctx.beginPath();
-    ctx.arc(centerofSoundV.x, centerofSoundV.y, 400, 0, Math.PI * 2);//visual blast radius
+    ctx.arc(centerofSoundV.x, centerofSoundV.y, 450, 0, Math.PI * 2);//visual blast radius
     ctx.fillStyle = 'rgba(255, 200, 0, 0.5)';
     ctx.fill();
   }
