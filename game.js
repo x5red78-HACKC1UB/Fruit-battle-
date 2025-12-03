@@ -637,9 +637,9 @@ function spawnEnemy(){
     y: Math.random()*canvas.height,
     width:50,
     height:50,
-    hp:1000,
-    maxhp:100,
-    speed:1.9,
+    hp:500,
+    maxhp:5000,
+    speed:1.4,
     img: enemyImage,
     lastHitTime: 0
   });
