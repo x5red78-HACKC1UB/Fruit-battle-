@@ -424,7 +424,7 @@ ctx.fillStyle = `hsla(${hue}, 100%, 50%, 0.4)`;
       const dist = Math.sqrt(dx*dx + dy*dy);
 
       if (dist < 450) {//dmg blast radius
-        enemy.hp -= Math.floor(Math.random()*100)+375;
+        enemy.hp -= 425
         enemy.hp = Math.max(0, enemy.hp);
         enemy.x += dx / dist * 50;
         enemy.y += dy / dist * 50;
