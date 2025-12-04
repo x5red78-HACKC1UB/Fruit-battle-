@@ -52,6 +52,17 @@ const playerWidth = 40;
 const playerHeight = 40;
 const speed = 5;
 
+const tutorial=document.getElementById("tutorial");
+const closetutorial=document.getElementById("closeTutorial");
+const howtoplay=document.getElementById("howtoplay");
+
+
+howtoplay.addEventListener("click", () => {
+    tutorial.classList.remove("hidden");
+});
+closetutorial.addEventListener("click", () => {
+    tutorial.classList.add("hidden");
+});
 //Track da keys!
 const keys ={};
 
@@ -131,15 +142,6 @@ function drawImageBar() {
 }
 
 // Main menu & start button
-document.getElementById("Controls").addEventListener("click", ()=>{ 
-ctx.fillRect="grey";
-ctx.fillRect(75,75,100,100)// (where it is on the x-axis, where is it on the y-axis, how tall the block is, how chunky the block is)
-ctx.fillStyle = "black";         
-    ctx.font = "20px Arial";          
-    ctx.textAlign = "Comfortaa";         
-    ctx.textBaseline = "middle";     
-    ctx.fillText("How to Play", 200, 200);
-});
 document.getElementById('startButton').addEventListener('click', () => {
   document.getElementById('mainMenu').style.display = 'none';
   resizeCanvas();

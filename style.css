@@ -31,7 +31,65 @@ canvas{
   margin-top: 20px;
   cursor: pointer;
   background-color: rgb(36, 231, 218);
-  border: none;
-  border-radius: 8px;
+  
+}
+#howtoplay{
+  padding: 10px 20px;
+  font-size: 1.1em;
+  margin-top: 20px;
+  cursor: pointer;
+  background-color: #444;
+  border-color: black;
+  border-radius: 6px;
+}
+.hidden {
+    display: none !important;
+}
+#tutorial{
+  position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6); 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+#tutorial.show {
+  display: flex; 
+}
+.hidden {
+    display: none !important;
 }
 
+.popupBox{
+  background: rgba(237, 192, 107, 0.684); /* turquoise like Start button */
+    color: rgb(0, 0, 0);
+    width: 300px;
+    height: 400px;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    overflow-y: auto; 
+    font-family: 'Comic Sans MS';
+}
+.closeBtn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: white;
+    color: #00d4c4;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    font-weight: bold;
+}
+.closeBtn:hover {
+    background: #eee;
+}
