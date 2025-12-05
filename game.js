@@ -621,7 +621,6 @@ function checkXLineCollisions() {
       // same thing as the beam
       if (dist < enemy.width/2) {
         if (now - enemy.lastHitTime > 75) {
-          console.log ("OFF WITH HIS HEAD")
           enemy.hp -= 11;
           enemy.hp = Math.max(0, enemy.hp);
           enemy.lastHitTime = now;
