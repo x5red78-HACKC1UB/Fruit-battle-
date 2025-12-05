@@ -549,7 +549,7 @@ requestAnimationFrame(gameLoop);
 function checkBeamCollisions() {
   for (let i = enemies.length - 1; i >= 0; i--) {
   enemydeathrip(i, enemies, canvas, ctx);
-} console.log("alr kill him")
+} 
   soundBeams.forEach(beam => {
     enemies.forEach(enemy => {
       const ex = enemy.x + enemy.width / 2;
@@ -599,7 +599,7 @@ function checkXLineCollisions() {
   const now = Date.now();
    for (let i = enemies.length - 1; i >= 0; i--) {
   enemydeathrip(i, enemies, canvas, ctx);
-   } console.log ("OFF WITH HIS HEAD")
+   } 
   enemies.forEach(enemy => {
     const ex = enemy.x + enemy.width / 2;
     const ey = enemy.y + enemy.height / 2;
@@ -621,6 +621,7 @@ function checkXLineCollisions() {
       // same thing as the beam
       if (dist < enemy.width/2) {
         if (now - enemy.lastHitTime > 75) {
+          console.log ("OFF WITH HIS HEAD")
           enemy.hp -= 11;
           enemy.hp = Math.max(0, enemy.hp);
           enemy.lastHitTime = now;
