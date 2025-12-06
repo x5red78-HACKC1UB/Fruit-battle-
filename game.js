@@ -800,11 +800,11 @@ if (key === 'z' && soundSelected && soundcooldownZ <= 0) {
 }
 // hue hue hue
 //purple guy spawning simulator
-if (key === "h") {
+if (key === "1") {
   spawnEnemy1();
   console.log("enemy created out of nothing")
 }
-if (key === "1") {
+if (key === "2") {
   spawnrandom();
   console.log("enemy created out of nothing")
 }
