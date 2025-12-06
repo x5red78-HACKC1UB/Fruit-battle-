@@ -6,6 +6,8 @@ soundBeamImage.src = 'sound z.svg';
 //Enemy image
 const enemyImage =new Image();
 enemyImage.src = 'Base.svg';
+const randomenemyimage=new Image();
+randomenemyimage.src='random.svg'
 //Player stats & more!
 // //Knockback
 let knockback=5
@@ -145,7 +147,7 @@ function drawImageBar() {
 document.getElementById('startButton').addEventListener('click', () => {
   document.getElementById('mainMenu').style.display = 'none';
   resizeCanvas();
-  spawnEnemy();  // self-explainatory(plz say i spelled that right)
+  spawnEnemy1();  // self-explainatory(plz say i spelled that right)
   gameLoop();
   console.log('Menu good');
 });
@@ -642,17 +644,32 @@ function checkXLineCollisions() {
 }
 //enemy stats!
 const enemies=[];
-function spawnEnemy(){
+function spawnEnemy1(){
   enemies.push({
     x: Math.random()* canvas.width,
     y: Math.random()*canvas.height,
     width:50,
     height:50,
     hp:500,
-    maxhp:5000,
+    maxhp:500,
     speed:1.4,
     img: enemyImage,
     lastHitTime: 0
+  });
+}
+function spawnrandom(){
+  const randomHP = Math.floor(Math.random() * (1100 - 50 + 1)) + 50;
+  const randomSpeed = Math.random() * (5 - 1) + 1;
+  enemies.push({
+    x:Math.random()*canvas.width,
+    y:Math.random()*canvas.height,
+    width:40,
+    height:40,
+    hp:randomHP,
+    maxhp:randomHP,
+    speed:randomSpeed,
+    img:randomenemyimage,
+    lastHitTime:0,
   });
 }
 //TASK MANGER!
@@ -784,10 +801,13 @@ if (key === 'z' && soundSelected && soundcooldownZ <= 0) {
 // hue hue hue
 //purple guy spawning simulator
 if (key === "h") {
-  spawnEnemy();
+  spawnEnemy1();
   console.log("enemy created out of nothing")
 }
-
+if (key === "1") {
+  spawnrandom();
+  console.log("enemy created out of nothing")
+}
 });
   
 document.addEventListener('fullscreenchange', () => {
