@@ -83,6 +83,11 @@ const flameBullets = [];
 let flamexon = false;
 let flamexcooldown = 0;
 let flamextime = 0;
+// Flame C 
+let flameCActive = false;
+let flameCduration = 0;
+let flameCCooldown = 0;
+let flameParticles = [];
 // My radomizer!
 const multiplyrandom = (x, y) => Math.round((Math.random()*(x * y))+1);
 //Player
@@ -627,6 +632,69 @@ enemies.forEach(enemy => {
     flamexcooldown--;
   }
 
+if (flameCActive) {
+  const centerX = playerX + playerWidth / 2;
+  const centerY = playerY + playerHeight / 2;
+
+ 
+  for (let i = 0; i < 8; i++) {
+    flameParticles.push({
+      x: centerX,
+      y: centerY,
+      angle: lastAngle + (Math.random() - 0.5) * 0.6, // spread
+      speed: 6 + Math.random() * 2,
+      radius: 8 + Math.random() * 4,
+      alpha: 1,
+      life: 40 // frames
+    });
+  }
+
+  // Update particles
+  flameParticles.forEach((p, i) => {
+    p.x += Math.cos(p.angle) * p.speed;
+    p.y += Math.sin(p.angle) * p.speed;
+    p.alpha -= 0.03;
+    p.life--;
+
+    // Draw particles :3
+    ctx.fillStyle = `rgba(255, ${100 + Math.random()*155}, 0, ${p.alpha})`;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+    ctx.fill();
+
+    
+    enemies.forEach(enemy => {
+      const ex = enemy.x + enemy.width / 2;
+      const ey = enemy.y + enemy.height / 2;
+      const dist = Math.sqrt((p.x - ex) ** 2 + (p.y - ey) ** 2);
+
+      if (dist < enemy.width / 2) {
+        if (Date.now() - enemy.lastHitTime > 50) {
+          enemy.hp -= 8; // tick damage
+          enemy.hp = Math.max(0, enemy.hp);
+          enemy.lastHitTime = Date.now();
+        }
+
+        enemy.x += Math.cos(p.angle) * (knockback / 1.2);
+        enemy.y += Math.sin(p.angle) * (knockback / 1.2);
+      }
+    });
+
+    
+    if (p.life <= 0 || p.alpha <= 0) {
+      flameParticles.splice(i, 1);
+    }
+  });
+
+
+  flameCduration--;
+  if (flameCduration <= 0) flameCActive = false;
+}
+
+// Cooldown countdown
+if (flameCCooldown > 0) flameCCooldown--;
+
+
   // RAINBOW BARF BEAM
   soundBeams.forEach((beam, index) => {
     if (beam.delay > 0) {
@@ -715,7 +783,7 @@ enemies.forEach(enemy => {
   // TH3 END 0F THE GAM3L00P
   drawImageBar();
   requestAnimationFrame(gameLoop);
-}
+  }
 
 //Collisions here!
 
@@ -814,6 +882,13 @@ function checkXLineCollisions() {
     });
   });
 }
+function activateFlames() {
+  if (!flameCActive && flameCCooldown <= 0) {
+    flameCActive = true;
+    flameCduration = 240; 
+    flameCCooldown = 280;
+  }
+}
 
 //enemy stats!
 const enemies = [];
@@ -907,6 +982,10 @@ function enemystayinboundsplzz(enemy, canvas) {
 window.addEventListener('keydown', (e) => {
   const key = e.key.toLowerCase();
   keys[key] = true;
+
+  if (key === 'c' && flameSelected && flameCCooldown <= 0) {
+  activateFlames();
+}
 
   if (key === 'x' && flameSelected && flamexcooldown <= 0) {
     //  one fast Fireball
