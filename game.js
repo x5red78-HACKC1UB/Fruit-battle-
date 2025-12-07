@@ -6,23 +6,26 @@ const soundBeamImage = new Image();
 soundBeamImage.src = 'sound z.svg';
 
 //Enemy image
-const enemyImage =new Image();
+const enemyImage = new Image();
 enemyImage.src = 'Base.svg';
 
-const randomenemyimage=new Image();
-randomenemyimage.src='random.svg';
+const randomenemyimage = new Image();
+randomenemyimage.src = 'random.svg';
 
-const flameZbullets= new Image();
-flameZbullets.src="flame bullets.svg"
+const flameZbullets = new Image();
+flameZbullets.src = "flame bullets.svg"
 
-const flameZbulletkaboom= new Image();
-flameZbulletkaboom.src="flame explosion.svg"
+const flameZbulletkaboom = new Image();
+flameZbulletkaboom.src = "flame explosion.svg"
+
+const flameXbullet = new Image();
+flameXbullet.src = "flamex.svg"
 //Constants!
 // //Knockback
-let knockback=5;
+let knockback = 5;
 
 // Last place da mouse was
-let lastAngle=0;
+let lastAngle = 0;
 
 // Mouse in window???!?!?!?!??! (grug see mouse)
 let mouseInsideCanvas = true;
@@ -31,7 +34,7 @@ let mouseInsideCanvas = true;
 let soundBeam = null;
 
 // just read lol
-let showImageBar=true;
+let showImageBar = true;
 
 // how wide and chunky the player is
 let playerX = 50;
@@ -54,17 +57,17 @@ let gravitySelected = 0;
 // sound X 
 let xMoveActive = false;
 let xMoveTimer = 0;
-let xLines = []; 
-let playerHue = 0; 
+let xLines = [];
+let playerHue = 0;
 //sound C
 let cMoveActive = false;
-let cMoveTimer = 0; 
+let cMoveTimer = 0;
 let orbitCircles = [];
 let flashyCircle = null;
 //Sound cooldowns
-let soundcooldownZ=0;
-let soundcooldownX=0;
-let soundcooldownC=0;
+let soundcooldownZ = 0;
+let soundcooldownX = 0;
+let soundcooldownC = 0;
 //Sound V
 let soundVon = false;
 let soundVTimer = 0;
@@ -76,29 +79,34 @@ let stars = [];
 let flameZActive = false;
 let flameZTimer = 0;
 let flameZCooldown = 0;
-const flameBullets =[];
+const flameBullets = [];
+let flamexon = false;
+let flamexcooldown = 0;
+let flamextime = 0;
 //Player
 const playerWidth = 40;
 const playerHeight = 40;
 const speed = 5;
 
 const soundBeams = [];
+const flamexProjectiles = [];
+
 
 // how to play
-const tutorial=document.getElementById("tutorial");
-const closetutorial=document.getElementById("closeTutorial");
-const howtoplay=document.getElementById("howtoplay");
+const tutorial = document.getElementById("tutorial");
+const closetutorial = document.getElementById("closeTutorial");
+const howtoplay = document.getElementById("howtoplay");
 
 // Hide and show how to play button
 howtoplay.addEventListener("click", () => {
-    tutorial.classList.remove("hidden");
+  tutorial.classList.remove("hidden");
 });
 closetutorial.addEventListener("click", () => {
-    tutorial.classList.add("hidden");
+  tutorial.classList.add("hidden");
 });
 
 //Track da keys!
-const keys ={};
+const keys = {};
 
 //This is kinda long to explain, but when the mouse leaves the canvas the player would just stare at the last angle so this detects if the mouse is in the game.
 canvas.addEventListener('mouseenter', () => {
@@ -140,12 +148,12 @@ window.addEventListener('resize', resizeCanvas);
 resizeCanvas();
 
 //Toolbar and what it got in it
-const imageBar =[
-{ name: 'flame' ,src: 'flame.svg', img: new Image(), x:50, y:20},
-{ name: 'sound' ,src: 'backdrop1.svg', img: new Image(), x:120, y:20 },
-{ name: 'ice' ,src: 'costume2.svg', img: new Image(), x:190, y:20 },
-{ name: 'gravity' ,src: 'costume1.svg', img: new Image(), x:260, y:20 }
-]; 
+const imageBar = [
+  { name: 'flame', src: 'flame.svg', img: new Image(), x: 50, y: 20 },
+  { name: 'sound', src: 'backdrop1.svg', img: new Image(), x: 120, y: 20 },
+  { name: 'ice', src: 'costume2.svg', img: new Image(), x: 190, y: 20 },
+  { name: 'gravity', src: 'costume1.svg', img: new Image(), x: 260, y: 20 }
+];
 
 canvas.addEventListener('click', (e) => {
   const rect = canvas.getBoundingClientRect();
@@ -188,80 +196,80 @@ document.getElementById('startButton').addEventListener('click', () => {
 });
 
 // I used to think this was just for smooth movement, but I slowly realize this is just the entire game.
-function gameLoop(){
+function gameLoop() {
   // Smooth player movement
   if (keys['arrowup'] || keys['w']) playerY -= speed;
   if (keys['arrowdown'] || keys['s']) playerY += speed;
   if (keys['arrowleft'] || keys['a']) playerX -= speed;
   if (keys['arrowright'] || keys['d']) playerX += speed;
-if (playerX < 0) playerX = 0;
-if (playerY < 0) playerY = 0;
-if (playerX + playerWidth > canvas.width) playerX = canvas.width - playerWidth;
-if (playerY + playerHeight > canvas.height) playerY = canvas.height - playerHeight;
+  if (playerX < 0) playerX = 0;
+  if (playerY < 0) playerY = 0;
+  if (playerX + playerWidth > canvas.width) playerX = canvas.width - playerWidth;
+  if (playerY + playerHeight > canvas.height) playerY = canvas.height - playerHeight;
 
-// The background (nothing much to say)
-ctx.fillStyle = 'lightgreen';
-ctx.fillRect(0, 0, canvas.width, canvas.height);
-// enemy image(just another square)
-enemies.forEach(enemy => {
-if (enemy.img.complete) {
-    ctx.drawImage(enemy.img, enemy.x, enemy.y, enemy.width, enemy.height);
-  }
+  // The background (nothing much to say)
+  ctx.fillStyle = 'lightgreen';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  // enemy image(just another square)
+  enemies.forEach(enemy => {
+    if (enemy.img.complete) {
+      ctx.drawImage(enemy.img, enemy.x, enemy.y, enemy.width, enemy.height);
+    }
 
-// the text above the enemy that says hp
-  ctx.fillStyle = 'black';
-  ctx.font = '14px Comic Sans MS';
-  ctx.fillText('HP: ' + enemy.hp, enemy.x, enemy.y - 5);
-});
-// WARNING: EVERYTHING FROM 174 to 253 IS JUST ABT LINES, AHHHHHHHH I HATE LINES THEIR BORING, JUST LINES AND LINES.
-// x move animation
-if (xMoveActive) {
-  playerHue = (playerHue + 40) % 360;
-  // Spawn lines, lines, and more lines..................
-  if (xLines.length === 0) {
-    for (let i = 0; i < 12; i++) {
-      const angle = (Math.PI * 2 / 12) * i;
-      xLines.push({
-        angle,
-        distance: 0,
-        growing: true
-      });
-    }
-  }
-  // draw more lines!!!!!! 
-  ctx.strokeStyle = `hsl(${(Date.now()/10)%360}, 100%, 50%)`; 
-  ctx.lineWidth = 3;
-// Lines?!?!?!?!?!?!?!?!?!?!?!?!?
-  
-xLines.forEach(line => {
-    //when line growing,
-    if (line.growing) {
-      // it grows,
-      line.distance += 10;
-      // if line too long,
-      if (line.distance > 150) line.growing = false;
-    } else {
-      //line shrink,
-      line.distance -= 10;
-      //until 0.
-      if (line.distance <= 0) line.distance = 0;
-    }
-  const startX = playerX + playerWidth / 2;
-  const startY = playerY + playerHeight / 2;
-  const endX = startX + Math.cos(line.angle) * line.distance;
-  const endY = startY + Math.sin(line.angle) * line.distance;
-  ctx.beginPath();
-  ctx.moveTo(startX, startY);
-  ctx.lineTo(endX, endY);
-  ctx.stroke();
+    // the text above the enemy that says hp
+    ctx.fillStyle = 'black';
+    ctx.font = '14px Comic Sans MS';
+    ctx.fillText('HP: ' + enemy.hp, enemy.x, enemy.y - 5);
   });
-}
-// draw lines........ D:
-  ctx.strokeStyle = `hsl(${(Date.now()/10)%360}, 100%, 50%)`; // flashy colors
+  // WARNING: EVERYTHING FROM 174 to 253 IS JUST ABT LINES, AHHHHHHHH I HATE LINES THEIR BORING, JUST LINES AND LINES.
+  // x move animation
+  if (xMoveActive) {
+    playerHue = (playerHue + 40) % 360;
+    // Spawn lines, lines, and more lines..................
+    if (xLines.length === 0) {
+      for (let i = 0; i < 12; i++) {
+        const angle = (Math.PI * 2 / 12) * i;
+        xLines.push({
+          angle,
+          distance: 0,
+          growing: true
+        });
+      }
+    }
+    // draw more lines!!!!!! 
+    ctx.strokeStyle = `hsl(${(Date.now() / 10) % 360}, 100%, 50%)`;
+    ctx.lineWidth = 3;
+    // Lines?!?!?!?!?!?!?!?!?!?!?!?!?
+
+    xLines.forEach(line => {
+      //when line growing,
+      if (line.growing) {
+        // it grows,
+        line.distance += 10;
+        // if line too long,
+        if (line.distance > 150) line.growing = false;
+      } else {
+        //line shrink,
+        line.distance -= 10;
+        //until 0.
+        if (line.distance <= 0) line.distance = 0;
+      }
+      const startX = playerX + playerWidth / 2;
+      const startY = playerY + playerHeight / 2;
+      const endX = startX + Math.cos(line.angle) * line.distance;
+      const endY = startY + Math.sin(line.angle) * line.distance;
+      ctx.beginPath();
+      ctx.moveTo(startX, startY);
+      ctx.lineTo(endX, endY);
+      ctx.stroke();
+    });
+  }
+  // draw lines........ D:
+  ctx.strokeStyle = `hsl(${(Date.now() / 10) % 360}, 100%, 50%)`; // flashy colors
   ctx.lineWidth = 6;
-// when x clicked,
+  // when x clicked,
   xLines.forEach(line => {
-// and line growing
+    // and line growing
     if (line.growing) {
       line.distance += 10;
       // if line too long
@@ -283,393 +291,438 @@ xLines.forEach(line => {
     ctx.lineTo(endX, endY);
     ctx.stroke();
   });
-// Lines touching checker thing.
-checkXLineCollisions();
-// move time
+  // Lines touching checker thing.
+  checkXLineCollisions();
+  // move time
   xMoveTimer--;
   // so if like, the timer runs out, you wouldn't believe if i said this, the move stops.
   if (xMoveTimer <= 0) {
     xMoveActive = false;
     xLines = [];
   }
-  
 
-// Basically c move start-up animation
-if (flashyCircle) {
-  flashyCircle.radius += 15;
-}
-// when c clicked,
-if (cMoveActive) {
-  // make center that circles rotate around
-  const centerX = playerX + playerWidth / 2;
-  const centerY = playerY + playerHeight / 2;
 
-  // Animate small rotating circles,
-  orbitCircles.forEach(circle => {
-    // math the animation
-    circle.angle += circle.speed;
-    circle.radius = Math.max(0, circle.radius - 2); 
-// some trigonometry nonsense 
-    const x = centerX + Math.cos(circle.angle) * circle.radius;
-    const y = centerY + Math.sin(circle.angle) * circle.radius;
-  ctx.beginPath();
-    ctx.arc(x, y, 10, 0, Math.PI * 2);
-    ctx.fillStyle = `hsl(${(Date.now()/10)%360}, 100%, 50%)`;
-    ctx.fill();
-
-    
-    if (circle.radius <= 0 && !flashyCircle) {
-      flashyCircle = { radius: 0, growing: true };
-    }
-  });
-
-  // Animate circle ●(like the actual attack)
-
-  //when circle grow,
-if (flashyCircle) {
-  if (flashyCircle.growing) {
-    // expand circle,
+  // Basically c move start-up animation
+  if (flashyCircle) {
     flashyCircle.radius += 15;
-    //if circle too big, circle no grow,
-    if (flashyCircle.radius > 150) flashyCircle.growing = false;
-  } else {
-    //then circle shrink.
-    flashyCircle.radius -= 15;
-    if (flashyCircle.radius <= 0) flashyCircle = null;
   }
-  ctx.beginPath();
-  ctx.arc(centerX, centerY, flashyCircle.radius, 0, Math.PI * 2);
-  ctx.fillStyle = `hsla(${(Date.now()/5)%360}, 100%, 50%, 0.4)`; // colorful fill
-  ctx.fill();
-  ctx.strokeStyle = `hsl(${(Date.now()/5)%360}, 100%, 50%)`; // outline
-  ctx.lineWidth = 6;
-  ctx.stroke();
-  enemies.forEach(enemy => {
-     for (let i = enemies.length - 1; i >= 0; i--) {
-  enemydeathrip(i, enemies, canvas, ctx);
-} 
-    const ex = enemy.x + enemy.width / 2;
-    const ey = enemy.y + enemy.height / 2;
-    const dist = Math.sqrt((ex - centerX) ** 2 + (ey - centerY) ** 2);
+  // when c clicked,
+  if (cMoveActive) {
+    // make center that circles rotate around
+    const centerX = playerX + playerWidth / 2;
+    const centerY = playerY + playerHeight / 2;
 
-    if (dist < flashyCircle.radius) {
-      // stops damage from hitting 60 times a second bc, just too juch to handle
-      if (Date.now() - enemy.lastHitTime > 80) {
-        console.log('c move hitting')
-        enemy.hp -= 10; 
-        enemy.hp = Math.max(0, enemy.hp);
-        enemy.lastHitTime = Date.now();
-      }
-
-      // Knockback
-      const dxFromPlayer = ex - centerX;
-      const dyFromPlayer = ey - centerY;
-      const distFromPlayer = Math.sqrt(dxFromPlayer * dxFromPlayer + dyFromPlayer * dyFromPlayer);
-
-      if (distFromPlayer > 0) {
-        enemy.x += (dxFromPlayer / distFromPlayer) * (knockback / 0.7); // pushy push in x-axis
-        enemy.y += (dyFromPlayer / distFromPlayer) * (knockback / 0.7);//pushy push in y-axis
-      }
-      // So the enemy stays in the game
-      enemystayinboundsplzz(enemy, canvas)
-    }
-  });
-}
+    // Animate small rotating circles,
+    orbitCircles.forEach(circle => {
+      // math the animation
+      circle.angle += circle.speed;
+      circle.radius = Math.max(0, circle.radius - 2);
+      // some trigonometry nonsense 
+      const x = centerX + Math.cos(circle.angle) * circle.radius;
+      const y = centerY + Math.sin(circle.angle) * circle.radius;
+      ctx.beginPath();
+      ctx.arc(x, y, 10, 0, Math.PI * 2);
+      ctx.fillStyle = `hsl(${(Date.now() / 10) % 360}, 100%, 50%)`;
+      ctx.fill();
 
 
-
-  // Countdown
-  cMoveTimer--;
-  if (cMoveTimer <= 0) {
-    cMoveActive = false;
-    orbitCircles = [];
-    flashyCircle = null;
-  }
-}
-// Cooldown sound v
-if (soundcooldownV > 0) soundcooldownV--;
-
-if (soundVon) {
-  // Draw orb so you see it
-  const hue = (Date.now() / 20) % 360; //so i just learned that %360 is th 359 colors
-ctx.fillStyle = `hsla(${hue}, 100%, 50%, 0.4)`; 
-  ctx.beginPath();
-  ctx.arc(centerofSoundV.x, centerofSoundV.y, 20, 0, Math.PI * 2);
-  ctx.fill();
-
-  // Pull enemies
-  enemies.forEach(enemy => {
-    const ex = enemy.x + enemy.width / 2;
-    const ey = enemy.y + enemy.height / 2;
-    const dx = centerofSoundV.x - ex;
-    const dy = centerofSoundV.y - ey;
-    const dist = Math.sqrt(dx*dx + dy*dy);
-
-    if (dist > 5) {
-      enemy.x += dx / dist * 5.5;//}
-                               //} speed & streength of sucking
-      enemy.y += dy / dist * 5.5;//}
-      console.log('enemy pulled')
-    }
-  });
-
-  // Stars!
-  stars.forEach(star => {
-  const dx = centerofSoundV.x - star.x;
-  const dy = centerofSoundV.y - star.y;
-  const dist = Math.sqrt(dx*dx + dy*dy);
-
-  // Move star toward center
-  star.x += dx / dist * star.speed;
-  star.y += dy / dist * star.speed;
-
-  // Rainbow for variety
-  const hue = (Date.now() / 10 + star.x) % 360;
-  ctx.fillStyle = `hsl(${hue}, 100%, 50%)`;
-
-  // 
-  ctx.beginPath();
-  ctx.arc(star.x, star.y, 3, 0, Math.PI * 2);
-  ctx.fill();
-
-  // 
-  enemies.forEach(enemy => {
-    const ex = enemy.x + enemy.width / 2;
-    const ey = enemy.y + enemy.height / 2;
-    const edx = star.x - ex;
-    const edy = star.y - ey;
-    const edist = Math.sqrt(edx*edx + edy*edy);
-
-    // If star touches enemy 
-    if (edist < enemy.width / 2) {
-       for (let i = enemies.length - 1; i >= 0; i--) {
-  enemydeathrip(i, enemies, canvas, ctx);
-}
-      if (!star.lastHitTime || Date.now() - star.lastHitTime > 200) {
-  enemy.hp -= 3;
-  enemy.hp = Math.round(enemy.hp);
-  star.lastHitTime = Date.now();
-}
-      enemy.hp = Math.max(0, enemy.hp);//basically says when enemy hp is 0 it can't go any lower
-      
-      
-    }
-  });
-});
-
-
-  //FAHHHHHHH
-  soundVTimer--;
-   for (let i = enemies.length - 1; i >= 0; i--) {
-  enemydeathrip(i, enemies, canvas, ctx);
-} 
-  if (soundVTimer <= 120 && !soundVExploded) {
-    soundVExploded = true;
-
-    enemies.forEach(enemy => {
-      const ex = enemy.x + enemy.width / 2;
-      const ey = enemy.y + enemy.height / 2;
-      const dx = ex - centerofSoundV.x;
-      const dy = ey - centerofSoundV.y;
-      const dist = Math.sqrt(dx*dx + dy*dy);
-
-      if (dist < 450) {//dmg blast radius
-        enemy.hp -= 425
-        enemy.hp = Math.max(0, enemy.hp);
-        enemy.x += dx / dist * 50;
-        enemy.y += dy / dist * 50;
-        enemystayinboundsplzz(enemy, canvas)
+      if (circle.radius <= 0 && !flashyCircle) {
+        flashyCircle = { radius: 0, growing: true };
       }
     });
 
+    // Animate circle ●(like the actual attack)
+
+    //when circle grow,
+    if (flashyCircle) {
+      if (flashyCircle.growing) {
+        // expand circle,
+        flashyCircle.radius += 15;
+        //if circle too big, circle no grow,
+        if (flashyCircle.radius > 150) flashyCircle.growing = false;
+      } else {
+        //then circle shrink.
+        flashyCircle.radius -= 15;
+        if (flashyCircle.radius <= 0) flashyCircle = null;
+      }
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, flashyCircle.radius, 0, Math.PI * 2);
+      ctx.fillStyle = `hsla(${(Date.now() / 5) % 360}, 100%, 50%, 0.4)`; // colorful fill
+      ctx.fill();
+      ctx.strokeStyle = `hsl(${(Date.now() / 5) % 360}, 100%, 50%)`; // outline
+      ctx.lineWidth = 6;
+      ctx.stroke();
+      enemies.forEach(enemy => {
+        for (let i = enemies.length - 1; i >= 0; i--) {
+          enemydeathrip(i, enemies, canvas, ctx);
+        }
+        const ex = enemy.x + enemy.width / 2;
+        const ey = enemy.y + enemy.height / 2;
+        const dist = Math.sqrt((ex - centerX) ** 2 + (ey - centerY) ** 2);
+
+        if (dist < flashyCircle.radius) {
+          // stops damage from hitting 60 times a second bc, just too juch to handle
+          if (Date.now() - enemy.lastHitTime > 80) {
+            console.log('c move hitting')
+            enemy.hp -= 10;
+            enemy.hp = Math.max(0, enemy.hp);
+            enemy.lastHitTime = Date.now();
+          }
+
+          // Knockback
+          const dxFromPlayer = ex - centerX;
+          const dyFromPlayer = ey - centerY;
+          const distFromPlayer = Math.sqrt(dxFromPlayer * dxFromPlayer + dyFromPlayer * dyFromPlayer);
+
+          if (distFromPlayer > 0) {
+            enemy.x += (dxFromPlayer / distFromPlayer) * (knockback / 0.7); // pushy push in x-axis
+            enemy.y += (dyFromPlayer / distFromPlayer) * (knockback / 0.7);//pushy push in y-axis
+          }
+          // So the enemy stays in the game
+          enemystayinboundsplzz(enemy, canvas)
+        }
+      });
+    }
+
+
+
+    // Countdown
+    cMoveTimer--;
+    if (cMoveTimer <= 0) {
+      cMoveActive = false;
+      orbitCircles = [];
+      flashyCircle = null;
+    }
+  }
+  // Cooldown sound v
+  if (soundcooldownV > 0) soundcooldownV--;
+
+  if (soundVon) {
+    // Draw orb so you see it
+    const hue = (Date.now() / 20) % 360; //so i just learned that %360 is th 359 colors
+    ctx.fillStyle = `hsla(${hue}, 100%, 50%, 0.4)`;
     ctx.beginPath();
-    ctx.arc(centerofSoundV.x, centerofSoundV.y, 450, 0, Math.PI * 2);//visual blast radius
-    ctx.fillStyle = 'rgba(255, 200, 0, 0.5)';
+    ctx.arc(centerofSoundV.x, centerofSoundV.y, 20, 0, Math.PI * 2);
     ctx.fill();
-  }
 
-  // End move
-  if (soundVTimer <= 0) {
-    soundVon = false;
-    stars = [];
-    soundVExploded = false;
-    soundcooldownV = 300; 
-  }
-}
-// Flame Z
-if(flameZActive){
-  // Death checker
-    for (let i = enemies.length - 1; i >= 0; i--) {
-  enemydeathrip(i, enemies, canvas, ctx);
-} 
-
-// Bullet stats here
-  if (flameZTimer % 10 === 0) {
-    flameBullets.push({
-      x: playerX + playerWidth / 2,
-      y: playerY + playerHeight / 2,
-      angle: lastAngle,
-      speed: 8,
-      exploded: false,
-      alpha: 1
-    });
-  }
-
-
-flameBullets.forEach((bullet, index) => {
-  if (!bullet.exploded) {
-    // Move bullet
-    bullet.x += Math.cos(bullet.angle) * bullet.speed;
-    bullet.y += Math.sin(bullet.angle) * bullet.speed;
-
-    // Draw bullet
-    ctx.drawImage(flameZbullets, bullet.x - 8, bullet.y - 8, 16, 16);
-
-    // touching with player
+    // Pull enemies
     enemies.forEach(enemy => {
       const ex = enemy.x + enemy.width / 2;
       const ey = enemy.y + enemy.height / 2;
-      const dist = Math.sqrt((bullet.x - ex) ** 2 + (bullet.y - ey) ** 2);
+      const dx = centerofSoundV.x - ex;
+      const dy = centerofSoundV.y - ey;
+      const dist = Math.sqrt(dx * dx + dy * dy);
 
-      if (dist < enemy.width / 2) {   // bullet touches enemy
-        bullet.exploded = true;
-        enemy.hp -= 10;               // damage 
-        enemy.hp = Math.max(0, enemy.hp);
+      if (dist > 5) {
+        enemy.x += dx / dist * 5.5;//}
+        //} speed & streength of sucking
+        enemy.y += dy / dist * 5.5;//}
+        console.log('enemy pulled')
       }
-  
     });
-  } else {
-    // Explosion phase
-    ctx.globalAlpha = bullet.alpha;
-    ctx.drawImage(flameZbulletkaboom, bullet.x - 16, bullet.y - 16, 32, 32);
-    ctx.globalAlpha = 1;
 
-    // Fade out
-    bullet.alpha -= 0.05;
-    if (bullet.alpha <= 0) {
-      flameBullets.splice(index, 1); 
+    // Stars!
+    stars.forEach(star => {
+      const dx = centerofSoundV.x - star.x;
+      const dy = centerofSoundV.y - star.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+
+      // Move star toward center
+      star.x += dx / dist * star.speed;
+      star.y += dy / dist * star.speed;
+
+      // Rainbow for variety
+      const hue = (Date.now() / 10 + star.x) % 360;
+      ctx.fillStyle = `hsl(${hue}, 100%, 50%)`;
+
+      // 
+      ctx.beginPath();
+      ctx.arc(star.x, star.y, 3, 0, Math.PI * 2);
+      ctx.fill();
+
+      // 
+      enemies.forEach(enemy => {
+        const ex = enemy.x + enemy.width / 2;
+        const ey = enemy.y + enemy.height / 2;
+        const edx = star.x - ex;
+        const edy = star.y - ey;
+        const edist = Math.sqrt(edx * edx + edy * edy);
+
+        // If star touches enemy 
+        if (edist < enemy.width / 2) {
+          for (let i = enemies.length - 1; i >= 0; i--) {
+            enemydeathrip(i, enemies, canvas, ctx);
+          }
+          if (!star.lastHitTime || Date.now() - star.lastHitTime > 200) {
+            enemy.hp -= 3;
+            enemy.hp = Math.round(enemy.hp);
+            star.lastHitTime = Date.now();
+          }
+          enemy.hp = Math.max(0, enemy.hp);//basically says when enemy hp is 0 it can't go any lower
+
+
+        }
+      });
+    });
+
+
+    //FAHHHHHHH
+    soundVTimer--;
+    for (let i = enemies.length - 1; i >= 0; i--) {
+      enemydeathrip(i, enemies, canvas, ctx);
+    }
+    if (soundVTimer <= 120 && !soundVExploded) {
+      soundVExploded = true;
+
+      enemies.forEach(enemy => {
+        const ex = enemy.x + enemy.width / 2;
+        const ey = enemy.y + enemy.height / 2;
+        const dx = ex - centerofSoundV.x;
+        const dy = ey - centerofSoundV.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist < 450) {//dmg blast radius
+          enemy.hp -= 425
+          enemy.hp = Math.max(0, enemy.hp);
+          enemy.x += dx / dist * 50;
+          enemy.y += dy / dist * 50;
+          enemystayinboundsplzz(enemy, canvas)
+        }
+      });
+
+      ctx.beginPath();
+      ctx.arc(centerofSoundV.x, centerofSoundV.y, 450, 0, Math.PI * 2);//visual blast radius
+      ctx.fillStyle = 'rgba(255, 200, 0, 0.5)';
+      ctx.fill();
+    }
+
+    // End move
+    if (soundVTimer <= 0) {
+      soundVon = false;
+      stars = [];
+      soundVExploded = false;
+      soundcooldownV = 300;
     }
   }
-});
- flameZTimer--;
+  // Flame Z
+  if (flameZActive) {
+    // Death checker
+    for (let i = enemies.length - 1; i >= 0; i--) {
+      enemydeathrip(i, enemies, canvas, ctx);
+    }
 
- 
-}
-if (flameZTimer <= 0) {
+    // Bullet stats here
+    if (flameZTimer % 10 === 0) {
+      flameBullets.push({
+        x: playerX + playerWidth / 2,
+        y: playerY + playerHeight / 2,
+        angle: lastAngle,
+        speed: 8,
+        exploded: false,
+        alpha: 1
+      });
+    }
+
+
+    flameBullets.forEach((bullet, index) => {
+      if (!bullet.exploded) {
+        // Move bullet
+        bullet.x += Math.cos(bullet.angle) * bullet.speed;
+        bullet.y += Math.sin(bullet.angle) * bullet.speed;
+
+        // Draw bullet
+        ctx.drawImage(flameZbullets, bullet.x - 8, bullet.y - 8, 16, 16);
+
+        // touching with player
+        enemies.forEach(enemy => {
+          const ex = enemy.x + enemy.width / 2;
+          const ey = enemy.y + enemy.height / 2;
+          const dist = Math.sqrt((bullet.x - ex) ** 2 + (bullet.y - ey) ** 2);
+
+          if (dist < enemy.width / 2) {   
+            bullet.exploded = true;
+            enemy.hp -= 10;               // damage 
+            enemy.hp = Math.max(0, enemy.hp);
+          }
+
+        });
+      } else {
+        // Explosion phase
+        ctx.globalAlpha = bullet.alpha;
+        ctx.drawImage(flameZbulletkaboom, bullet.x - 16, bullet.y - 16, 32, 32);
+        ctx.globalAlpha = 1;
+
+        // Fade out
+        bullet.alpha -= 0.05;
+        if (bullet.alpha <= 0) {
+          flameBullets.splice(index, 1);
+        }
+      }
+    });
+    flameZTimer--;
+
+
+  }
+  if (flameZTimer <= 0) {
     flameZActive = false;
     flameBullets.length = 0;
   }
-if (flameZCooldown > 0) {
-  flameZCooldown--;
-}
-// RAINBOW BARF BEAM
- soundBeams.forEach((beam, index) => {
-  if (beam.delay > 0) {
-    beam.delay--;
-    return;
+  if (flameZCooldown > 0) {
+    flameZCooldown--;
+  }
+  if (flamexon) {
+    flamextime--;
+    for (let i = flamexProjectiles.length - 1; i >= 0; i--) {
+      const proj = flamexProjectiles[i];
+
+      if (!proj.exploded) {
+        // Move projectile
+        proj.x += Math.cos(proj.angle) * proj.speed;
+        proj.y += Math.sin(proj.angle) * proj.speed;
+
+        // 
+       ctx.drawImage(flameXbullet, proj.x - proj.size / 2, proj.y - proj.size / 2, proj.size, proj.size);
+
+        // Collision with enemies
+        enemies.forEach(enemy => {
+          const ex = enemy.x + enemy.width / 2;
+          const ey = enemy.y + enemy.height / 2;
+          const dist = Math.sqrt((proj.x - ex) ** 2 + (proj.y - ey) ** 2);
+
+          if (dist < enemy.width / 2) {
+            proj.exploded = true;
+            enemy.hp -= 175; // damage
+            enemy.hp = Math.max(0, enemy.hp);
+          }
+        });
+      } else {
+        // Explosion effect
+        ctx.globalAlpha = proj.alpha;
+        ctx.drawImage(flameZbulletkaboom, proj.x - 64, proj.y - 64, 128, 128);
+        ctx.globalAlpha = 1;
+
+        proj.alpha -= 0.05;
+        if (proj.alpha <= 0) {
+          flamexProjectiles.splice(i, 1);
+        }
+      }
+    }
+  }
+  if (flamextime <= 0) {
+    flamexon = false;
+  }
+  if (flamexcooldown > 0) {
+    flamexcooldown--;
   }
 
-//how far beam be going fr
-  beam.distance += 15;
+  // RAINBOW BARF BEAM
+  soundBeams.forEach((beam, index) => {
+    if (beam.delay > 0) {
+      beam.delay--;
+      return;
+    }
 
-  // size scale for da beam
-  beam.scale += 0.03;
-  beam.alpha -= 0.02;
+    //how far beam be going fr
+    beam.distance += 15;
 
-  //how fast da color changes(I should really make an epilepsy warning)
-  beam.hue = (beam.hue + 2) % 360; // COLORS!
+    // size scale for da beam
+    beam.scale += 0.03;
+    beam.alpha -= 0.02;
 
-  if (beam.alpha <= 0) {
-    soundBeams.splice(index, 1);
-    return;
+    //how fast da color changes(I should really make an epilepsy warning)
+    beam.hue = (beam.hue + 2) % 360; // COLORS!
+
+    if (beam.alpha <= 0) {
+      soundBeams.splice(index, 1);
+      return;
+    }
+
+    const drawX = beam.x + Math.cos(beam.angle) * beam.distance;//}
+    //  } trigonomtry nonsense
+    const drawY = beam.y + Math.sin(beam.angle) * beam.distance;//}
+    const beamLength = 120 * beam.scale;
+    const beamWidth = 90 * beam.scale;
+
+    // Draw og beam 
+    ctx.save();
+    ctx.globalAlpha = beam.alpha;
+    ctx.translate(drawX, drawY);
+    ctx.rotate(beam.angle);
+    ctx.drawImage(soundBeamImage, 0, -beamWidth / 2, beamLength, beamWidth);
+    ctx.globalCompositeOperation = 'source-atop';
+    ctx.fillStyle = `hsla(${beam.hue}, 100%, 50%, ${beam.alpha})`;
+    ctx.fillRect(0, -beamWidth / 2, beamLength, beamWidth);
+    ctx.restore();
+    ctx.globalCompositeOperation = 'source-over'; // reset blend mode
+  });
+
+  checkBeamCollisions();
+  let angle = lastAngle;
+
+  if (mouseInsideCanvas) {
+    const dx = mouseX - (playerX + playerWidth / 2);
+    const dy = mouseY - (playerY + playerHeight / 2);
+    angle = Math.atan2(dy, dx);
+    // store the latest angle so we can freeze it later
+    lastAngle = angle;
   }
-
-  const drawX = beam.x + Math.cos(beam.angle) * beam.distance;//}
-                                                              //  } trigonomtry nonsense
-  const drawY = beam.y + Math.sin(beam.angle) * beam.distance;//}
-  const beamLength = 120 * beam.scale;
-  const beamWidth = 90 * beam.scale;
-
-  // Draw og beam 
-  ctx.save();
-  ctx.globalAlpha = beam.alpha;
-  ctx.translate(drawX, drawY);
-  ctx.rotate(beam.angle);
-  ctx.drawImage(soundBeamImage, 0, -beamWidth / 2, beamLength, beamWidth);
-  ctx.globalCompositeOperation = 'source-atop';
-  ctx.fillStyle = `hsla(${beam.hue}, 100%, 50%, ${beam.alpha})`;
-  ctx.fillRect(0, -beamWidth / 2, beamLength, beamWidth);
-  ctx.restore();
-  ctx.globalCompositeOperation = 'source-over'; // reset blend mode
- });
-
-checkBeamCollisions();
-let angle = lastAngle; 
-
-if (mouseInsideCanvas) {
-  const dx = mouseX - (playerX + playerWidth / 2);
-  const dy = mouseY - (playerY + playerHeight / 2);
-  angle = Math.atan2(dy, dx);
-  // store the latest angle so we can freeze it later
-  lastAngle = angle;
-}
-// Player go weweweweweweweweeeeee!
+  // Player go weweweweweweweweeeeee!
   if (playerImage.complete) {
     ctx.save();
     ctx.translate(playerX + playerWidth / 2, playerY + playerHeight / 2);
     ctx.rotate(angle);
     ctx.drawImage(playerImage, -playerWidth / 2, -playerHeight / 2, playerWidth, playerHeight);
-  
+
     if (xMoveActive) {
-    ctx.globalCompositeOperation = 'source-atop';
-    ctx.fillStyle = `hsla(${playerHue}, 100%, 50%, 0.6)`;
-    ctx.fillRect(-playerWidth / 2, -playerHeight / 2, playerWidth, playerHeight);
-    ctx.globalCompositeOperation = 'source-over';
+      ctx.globalCompositeOperation = 'source-atop';
+      ctx.fillStyle = `hsla(${playerHue}, 100%, 50%, 0.6)`;
+      ctx.fillRect(-playerWidth / 2, -playerHeight / 2, playerWidth, playerHeight);
+      ctx.globalCompositeOperation = 'source-over';
     }
     ctx.restore();
   }
 
 
-updateEnemies()
+  updateEnemies()
 
   // Text of what fruit u have
-ctx.fillStyle = 'black';
-ctx.font = '20px Arial';
-ctx.fillText('Active Fruit: ' + getActiveFruitName(), 20, canvas.height - 30);
-//Cooldown
-if (soundcooldownC > 0){
-  soundcooldownC--;
-}
-if (soundcooldownX > 0) {
-  soundcooldownX--;
-}
-if (soundcooldownZ > 0) {
-  soundcooldownZ--;
-}
+  ctx.fillStyle = 'black';
+  ctx.font = '20px Arial';
+  ctx.fillText('Active Fruit: ' + getActiveFruitName(), 20, canvas.height - 30);
+  //Cooldown
+  if (soundcooldownC > 0) {
+    soundcooldownC--;
+  }
+  if (soundcooldownX > 0) {
+    soundcooldownX--;
+  }
+  if (soundcooldownZ > 0) {
+    soundcooldownZ--;
+  }
 
   // TH3 END 0F THE GAM3L00P
-drawImageBar();
-requestAnimationFrame(gameLoop);
+  drawImageBar();
+  requestAnimationFrame(gameLoop);
 }
- 
+
 //Collisions here!
 
 //beam touching the enemy
 function checkBeamCollisions() {
   for (let i = enemies.length - 1; i >= 0; i--) {
-  enemydeathrip(i, enemies, canvas, ctx);
-} 
+    enemydeathrip(i, enemies, canvas, ctx);
+  }
   soundBeams.forEach(beam => {
     enemies.forEach(enemy => {
       const ex = enemy.x + enemy.width / 2;
       const ey = enemy.y + enemy.height / 2;
-    // trigonometry nonsense
+      // trigonometry nonsense
       const bx = beam.x + Math.cos(beam.angle) * beam.distance;
       const by = beam.y + Math.sin(beam.angle) * beam.distance;
 
       const dx = bx - ex;
       const dy = by - ey;
-      const dist = Math.sqrt(dx*dx + dy*dy);
+      const dist = Math.sqrt(dx * dx + dy * dy);
 
       const now = Date.now();
 
@@ -680,7 +733,7 @@ function checkBeamCollisions() {
           if (isTouchingPlayer(enemy)) {
             damage = 1; // touching = reduced damage
           }
-      
+
           enemy.hp -= damage;
           enemy.hp = Math.round(enemy.hp);
           //so enemy hp doesn't fly into the negatives
@@ -693,12 +746,12 @@ function checkBeamCollisions() {
           const distFromPlayer = Math.sqrt(dxFromPlayer * dxFromPlayer + dyFromPlayer * dyFromPlayer);
 
           if (distFromPlayer > 0) {
-            enemy.x += (dxFromPlayer / distFromPlayer) * knockback/0.8;
-            enemy.y += (dyFromPlayer / distFromPlayer) * knockback/0.8;
+            enemy.x += (dxFromPlayer / distFromPlayer) * knockback / 0.8;
+            enemy.y += (dyFromPlayer / distFromPlayer) * knockback / 0.8;
           }
           enemystayinboundsplzz(enemy, canvas)
+        }
       }
-    }
     });
   });
 }
@@ -706,9 +759,9 @@ function checkBeamCollisions() {
 //lines touch i think.
 function checkXLineCollisions() {
   const now = Date.now();
-   for (let i = enemies.length - 1; i >= 0; i--) {
-  enemydeathrip(i, enemies, canvas, ctx);
-   } 
+  for (let i = enemies.length - 1; i >= 0; i--) {
+    enemydeathrip(i, enemies, canvas, ctx);
+  }
   enemies.forEach(enemy => {
     const ex = enemy.x + enemy.width / 2;
     const ey = enemy.y + enemy.height / 2;
@@ -721,14 +774,14 @@ function checkXLineCollisions() {
 
       const dx = endX - startX;
       const dy = endY - startY;
-      const lengthSq = dx*dx + dy*dy;
+      const lengthSq = dx * dx + dy * dy;
       let t = ((ex - startX) * dx + (ey - startY) * dy) / lengthSq;
       t = Math.max(0, Math.min(1, t));
       const closestX = startX + t * dx;
       const closestY = startY + t * dy;
-      const dist = Math.sqrt((ex - closestX)**2 + (ey - closestY)**2);
+      const dist = Math.sqrt((ex - closestX) ** 2 + (ey - closestY) ** 2);
       // same thing as the beam
-      if (dist < enemy.width/2) {
+      if (dist < enemy.width / 2) {
         if (now - enemy.lastHitTime > 75) {
           enemy.hp -= 11;
           enemy.hp = Math.max(0, enemy.hp);
@@ -741,8 +794,8 @@ function checkXLineCollisions() {
         const distFromPlayer = Math.sqrt(dxFromPlayer * dxFromPlayer + dyFromPlayer * dyFromPlayer);
 
         if (distFromPlayer > 0) {
-          enemy.x += (dxFromPlayer / distFromPlayer) * (knockback/1.4);
-          enemy.y += (dyFromPlayer / distFromPlayer) * (knockback/1.4);
+          enemy.x += (dxFromPlayer / distFromPlayer) * (knockback / 1.4);
+          enemy.y += (dyFromPlayer / distFromPlayer) * (knockback / 1.4);
         }
         enemystayinboundsplzz(enemy, canvas)
       }
@@ -751,59 +804,59 @@ function checkXLineCollisions() {
 }
 
 //enemy stats!
-const enemies=[];
-function spawnEnemy1(){
+const enemies = [];
+function spawnEnemy1() {
   enemies.push({
-    x: Math.random()* canvas.width,
-    y: Math.random()*canvas.height,
-    width:50,
-    height:50,
-    hp:500,
-    maxhp:500,
-    speed:1.4,
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    width: 50,
+    height: 50,
+    hp: 500,
+    maxhp: 500,
+    speed: 1.4,
     img: enemyImage,
     lastHitTime: 0
   });
 }
-function spawnrandom(){
-  const randomHP = Math.floor(Math.random() * (1100 - 50 + 1)) + 50;
-  const randomSpeed = Math.random() * (5 - 1) + 1;
+function spawnrandom() {
+  const randomHP = Math.floor(Math.random() * (1200 - 50 + 1)) + 50;
+  const randomSpeed = Math.random() * (7 - 1) + 1;
   enemies.push({
-    x:Math.random()*canvas.width,
-    y:Math.random()*canvas.height,
-    width:40,
-    height:40,
-    hp:randomHP,
-    maxhp:randomHP,
-    speed:randomSpeed,
-    img:randomenemyimage,
-    lastHitTime:0,
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    width: 40,
+    height: 40,
+    hp: randomHP,
+    maxhp: randomHP,
+    speed: randomSpeed,
+    img: randomenemyimage,
+    lastHitTime: 0,
   });
 }
 //TASK MANGER!
 function enemydeathrip(enemyIndex, enemies, canvas, ctx) {
   const enemy = enemies[enemyIndex];
-//wait keep him in......
+  //wait keep him in......
   enemystayinboundsplzz(enemy, canvas);
-// Alr, now take him out.
+  // Alr, now take him out.
   if (enemy.hp <= 0) {
     enemies.splice(enemyIndex, 1);
-    return; 
+    return;
   }
-//But boss! He isn't dead.
-//alr. he's off the hook for now
+  //But boss! He isn't dead.
+  //alr. he's off the hook for now
   ctx.drawImage(enemy.img, enemy.x, enemy.y, enemy.width, enemy.height);
 }
 
-  
+
 
 //Enemy movement
-function updateEnemies(){
+function updateEnemies() {
   enemies.forEach(enemy => {
-    const dx= playerX-enemy.x;
-    const dy= playerY-enemy.y;
+    const dx = playerX - enemy.x;
+    const dy = playerY - enemy.y;
     //Formula for distance here!(my math teacher taught me well)
-    const dist = Math.sqrt(dx*dx + dy*dy);
+    const dist = Math.sqrt(dx * dx + dy * dy);
     if (dist > 0) {
       enemy.x += (dx / dist) * enemy.speed;
       enemy.y += (dy / dist) * enemy.speed;
@@ -821,16 +874,16 @@ function isTouchingPlayer(enemy) {
   );
 }
 function enemystayinboundsplzz(enemy, canvas) {
-  
+
   if (enemy.x < 0) enemy.x = 0;
 
-   if (enemy.y < 0) enemy.y = 0;
+  if (enemy.y < 0) enemy.y = 0;
 
-if (enemy.x + enemy.width > canvas.width) {
+  if (enemy.x + enemy.width > canvas.width) {
     enemy.x = canvas.width - enemy.width;
   }
 
-if (enemy.y + enemy.height > canvas.height) {
+  if (enemy.y + enemy.height > canvas.height) {
     enemy.y = canvas.height - enemy.height;
   }
 }
@@ -843,98 +896,114 @@ window.addEventListener('keydown', (e) => {
   const key = e.key.toLowerCase();
   keys[key] = true;
 
-  if(key==='z' && flameSelected && !flameZActive && flameZCooldown <= 0 ){
+  if (key === 'x' && flameSelected && flamexcooldown <= 0) {
+    //  one fast Fireball
+    flamexon = true;
+    flamextime = 60;
+    flamexProjectiles.push({
+      x: playerX + playerWidth / 2,
+      y: playerY + playerHeight / 2,
+      angle: lastAngle,
+      speed: 40,
+      exploded: false,
+      alpha: 1,
+      size:35,
+    });
+flamexcooldown=200;
+  }
+
+  if (key === 'z' && flameSelected && !flameZActive && flameZCooldown <= 0) {
     flameZActive = true;
-  flameZTimer = 100;       // how long the move lasts (frames)
-  flameZCooldown = 180;
+    flameZTimer = 100;       // how long the move lasts (frames)
+    flameZCooldown = 180;
     flameBullets.push({
-    x: playerX + playerWidth/2,
-    y:playerY+playerHeight/2,
-    angle: lastAngle,
-    speed:16,
-    exploded: false,
-    alpha:1,
+      x: playerX + playerWidth / 2,
+      y: playerY + playerHeight / 2,
+      angle: lastAngle,
+      speed: 16,
+      exploded: false,
+      alpha: 1,
     });
   }
 
   //Sound V I SPENT 2 HOURSSSSSS
   if (key === 'v' && soundSelected && !soundVon && soundcooldownV <= 0) {
-  soundVon = true;
-  soundVTimer = 180; 
-  centerofSoundV.x = playerX + playerWidth / 2;
-  centerofSoundV.y = playerY + playerHeight / 2;
+    soundVon = true;
+    soundVTimer = 180;
+    centerofSoundV.x = playerX + playerWidth / 2;
+    centerofSoundV.y = playerY + playerHeight / 2;
 
-  // spawn stars
-  stars = [];
-  for (let i = 0; i < 30; i++) {
-    stars.push({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      speed: 2 + Math.random() * 2
-    });
+    // spawn stars
+    stars = [];
+    for (let i = 0; i < 30; i++) {
+      stars.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        speed: 2 + Math.random() * 2
+      });
+    }
   }
-}
 
   // Sound C
-if (key === 'c' && soundSelected && soundcooldownC <= 0) {
-  cMoveActive = true;
-  cMoveTimer = 250; // 
-  orbitCircles = [];
-  flashyCircle = null;
+  if (key === 'c' && soundSelected && soundcooldownC <= 0) {
+    cMoveActive = true;
+    cMoveTimer = 250; // 
+    orbitCircles = [];
+    flashyCircle = null;
 
-  // Spawn 4 orbiting circles
-  for (let i = 0; i < 4; i++) {
-    orbitCircles.push({
-      angle: (Math.PI * 2 / 4) * i,
-      radius: 130, // hwo far the circle start
-      speed: 0.27   // spinny circle go weweweweweweweweweweeweweweweeweweweweweeweweweweweweweweeweweweweweweweeweweweweweweweweweeweweweweweweweweweweweweweweweeweweweweweweweweweweweeweweweweweweweweweweweweeweweweweweweweweeweweweweweweweweweweeweweweweweeweweweweweweweweeweweweweweeweweweweweeweweweweweweeweweweweweeweweweweweweweweew
-    });
+    // Spawn 4 orbiting circles
+    for (let i = 0; i < 4; i++) {
+      orbitCircles.push({
+        angle: (Math.PI * 2 / 4) * i,
+        radius: 130, // hwo far the circle start
+        speed: 0.27   // spinny circle go weweweweweweweweweweeweweweweeweweweweweeweweweweweweweweeweweweweweweweeweweweweweweweweweeweweweweweweweweweweweweweweweeweweweweweweweweweweweeweweweweweweweweweweweweeweweweweweweweweeweweweweweweweweweweeweweweweweeweweweweweweweweeweweweweweeweweweweweeweweweweweweeweweweweweeweweweweweweweweew
+      });
+    }
+    soundcooldownC = 480;
   }
-  soundcooldownC = 480; 
-}
 
-//Sound x
-if (key === 'x' && soundSelected && soundcooldownX <= 0) {
-  xMoveActive = true;
-  xMoveTimer = 150; 
-   xLines = []; // reset lines
-   soundcooldownX =360;
-}
-//sound z
-if (key === 'z' && soundSelected && soundcooldownZ <= 0) {
-  const angle = Math.atan2(
-    mouseY - (playerY + playerHeight / 2),
-    mouseX - (playerX + playerWidth / 2)
-  );
-// Sound z stats
-  for (let i = 0; i < 30; i++) {
-    soundBeams.push({
-      x: playerX + playerWidth / 2,
-      y: playerY + playerHeight / 2,
-      angle: angle,
-      distance: 0,
-      scale: 0.5 + i * 0.03,
-      alpha: 1,
-      delay: i * 2,
-       hue: i * 50
-    });
+  //Sound x
+  if (key === 'x' && soundSelected && soundcooldownX <= 0) {
+    xMoveActive = true;
+    xMoveTimer = 150;
+    xLines = []; // reset lines
+    soundcooldownX = 360;
   }
-  soundcooldownZ= 210;
-}
+  //sound z
+  if (key === 'z' && soundSelected && soundcooldownZ <= 0) {
+    const angle = Math.atan2(
+      mouseY - (playerY + playerHeight / 2),
+      mouseX - (playerX + playerWidth / 2)
+    );
+    // Sound z stats
+    for (let i = 0; i < 30; i++) {
+      soundBeams.push({
+        x: playerX + playerWidth / 2,
+        y: playerY + playerHeight / 2,
+        angle: angle,
+        distance: 0,
+        scale: 0.5 + i * 0.03,
+        alpha: 1,
+        delay: i * 2,
+        hue: i * 50
+      });
+    }
+    soundcooldownZ = 210;
+  }
 
-// hue hue hue
-//purple guy spawning simulator
+  // hue hue hue
+  //purple guy spawning simulator
 
-if (key === "1") {
-  spawnEnemy1();
-  console.log("enemy created out of nothing")
-}
-if (key === "2") {
-  spawnrandom();
-  console.log("enemy created out of nothing")
-}
+  if (key === "1") {
+    spawnEnemy1();
+    console.log("enemy created out of nothing")
+  }
+  if (key === "2") {
+    spawnrandom();
+    console.log("enemy created out of nothing")
+  }
 });
-  
+
 document.addEventListener('fullscreenchange', () => {
   resizeCanvas();
 });
@@ -943,28 +1012,28 @@ window.addEventListener('keyup', (e) => {
   keys[e.key.toLowerCase()] = false;
 });
 // Variables
-function handleImageClick(name){
-  flameSelected=0;
-  soundSelected=0;
-  gravitySelected=0;
-  iceSelected=0;
- switch (name){
+function handleImageClick(name) {
+  flameSelected = 0;
+  soundSelected = 0;
+  gravitySelected = 0;
+  iceSelected = 0;
+  switch (name) {
     case 'flame':
-      flameSelected=1;
+      flameSelected = 1;
       console.log('Flame fruit activated');
       break;
-      case 'sound':
-        soundSelected=1;
-        console.log('Sound fruit activated')
-        break;
-        case 'ice':
-        iceSelected=1;
-        console.log('Ice fruit activated')
-        break;
-        case 'gravity':
-        gravitySelected=1;
-        console.log('Gravity fruit activated')
-        break;
+    case 'sound':
+      soundSelected = 1;
+      console.log('Sound fruit activated')
+      break;
+    case 'ice':
+      iceSelected = 1;
+      console.log('Ice fruit activated')
+      break;
+    case 'gravity':
+      gravitySelected = 1;
+      console.log('Gravity fruit activated')
+      break;
   }
 }
 // What fruit you have :)
