@@ -83,6 +83,8 @@ const flameBullets = [];
 let flamexon = false;
 let flamexcooldown = 0;
 let flamextime = 0;
+// My radomizer!
+const multiplyrandom = (x, y) => Math.round((Math.random()*(x * y))+1);
 //Player
 const playerWidth = 40;
 const playerHeight = 40;
@@ -90,7 +92,6 @@ const speed = 5;
 
 const soundBeams = [];
 const flamexProjectiles = [];
-
 
 // how to play
 const tutorial = document.getElementById("tutorial");
@@ -526,13 +527,12 @@ function gameLoop() {
 
     flameBullets.forEach((bullet, index) => {
       if (!bullet.exploded) {
-        // Move bullet
-        bullet.x += Math.cos(bullet.angle) * bullet.speed;
-        bullet.y += Math.sin(bullet.angle) * bullet.speed;
-
         // Draw bullet
         ctx.drawImage(flameZbullets, bullet.x - 8, bullet.y - 8, 16, 16);
-
+        
+// Move bullet
+        bullet.x += Math.cos(bullet.angle) * bullet.speed;
+        bullet.y += Math.sin(bullet.angle) * bullet.speed;
         // touching with player
         enemies.forEach(enemy => {
           const ex = enemy.x + enemy.width / 2;
@@ -591,7 +591,7 @@ function gameLoop() {
 
           if (dist < enemy.width / 2) {
             proj.exploded = true;
-            enemy.hp -= 175; // damage
+            enemy.hp -= 125; // damage
             enemy.hp = Math.max(0, enemy.hp);
           }
         });
@@ -600,6 +600,18 @@ function gameLoop() {
         ctx.globalAlpha = proj.alpha;
         ctx.drawImage(flameZbulletkaboom, proj.x - 64, proj.y - 64, 128, 128);
         ctx.globalAlpha = 1;
+            
+          }
+enemies.forEach(enemy => {
+          const ex = enemy.x + enemy.width / 2;
+          const ey = enemy.y + enemy.height / 2;
+          const dist = Math.sqrt((proj.x - ex) ** 2 + (proj.y - ey) ** 2);
+
+          if (dist < 64) {
+            enemy.hp -= 1; // damage
+            enemy.hp = Math.max(0, enemy.hp);
+          }
+        });
 
         proj.alpha -= 0.05;
         if (proj.alpha <= 0) {
@@ -607,7 +619,7 @@ function gameLoop() {
         }
       }
     }
-  }
+  
   if (flamextime <= 0) {
     flamexon = false;
   }
@@ -819,8 +831,8 @@ function spawnEnemy1() {
   });
 }
 function spawnrandom() {
-  const randomHP = Math.floor(Math.random() * (1200 - 50 + 1)) + 50;
-  const randomSpeed = Math.random() * (7 - 1) + 1;
+  const randomHP = multiplyrandom(1,1200)
+  const randomSpeed = multiplyrandom(1,4)
   enemies.push({
     x: Math.random() * canvas.width,
     y: Math.random() * canvas.height,
