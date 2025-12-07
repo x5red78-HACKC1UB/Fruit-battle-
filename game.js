@@ -1089,6 +1089,7 @@ flamexcooldown=200;
     spawnEnemy1();
     console.log("enemy created out of nothing")
   }
+  
   if (key === "2") {
     spawnrandom();
     console.log("enemy created out of nothing")
