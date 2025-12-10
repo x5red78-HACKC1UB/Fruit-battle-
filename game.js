@@ -546,7 +546,7 @@ function gameLoop() {
 
           if (dist < enemy.width / 2) {   
             bullet.exploded = true;
-            enemy.hp -= 10;               // damage 
+            enemy.hp -= 15;               // damage 
             enemy.hp = Math.max(0, enemy.hp);
           }
 
@@ -613,7 +613,7 @@ enemies.forEach(enemy => {
           const dist = Math.sqrt((proj.x - ex) ** 2 + (proj.y - ey) ** 2);
 
           if (dist < 64) {
-            enemy.hp -= 1; // damage
+            enemy.hp -= 2; // damage
             enemy.hp = Math.max(0, enemy.hp);
           }
         });
@@ -669,7 +669,7 @@ if (flameCActive) {
       const dist = Math.sqrt((p.x - ex) ** 2 + (p.y - ey) ** 2);
 
       if (dist < enemy.width / 2) {
-        if (Date.now() - enemy.lastHitTime > 50) {
+        if (Date.now() - enemy.lastHitTime > 75) {
           enemy.hp -= 8; // tick damage
           enemy.hp = Math.max(0, enemy.hp);
           enemy.lastHitTime = Date.now();
@@ -863,7 +863,7 @@ function checkXLineCollisions() {
       // same thing as the beam
       if (dist < enemy.width / 2) {
         if (now - enemy.lastHitTime > 75) {
-          enemy.hp -= 11;
+          enemy.hp -= 8;
           enemy.hp = Math.max(0, enemy.hp);
           enemy.lastHitTime = now;
         }
