@@ -613,7 +613,7 @@ enemies.forEach(enemy => {
           const dist = Math.sqrt((proj.x - ex) ** 2 + (proj.y - ey) ** 2);
 
           if (dist < 64) {
-            enemy.hp -= 2; // damage
+            enemy.hp -= 3; // damage
             enemy.hp = Math.max(0, enemy.hp);
           }
         });
@@ -862,7 +862,7 @@ function checkXLineCollisions() {
       const dist = Math.sqrt((ex - closestX) ** 2 + (ey - closestY) ** 2);
       // same thing as the beam
       if (dist < enemy.width / 2) {
-        if (now - enemy.lastHitTime > 75) {
+        if (now - enemy.lastHitTime > 50) {
           enemy.hp -= 8;
           enemy.hp = Math.max(0, enemy.hp);
           enemy.lastHitTime = now;
