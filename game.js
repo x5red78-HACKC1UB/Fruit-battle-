@@ -88,6 +88,10 @@ let flameCActive = false;
 let flameCduration = 0;
 let flameCCooldown = 0;
 let flameParticles = [];
+//Flame V
+let flamevon=false;
+let flamevcooldown=0;
+ let flamevdestruction=null;
 // My radomizer!
 const multiplyrandom = (x, y) => Math.round((Math.random()*(x * y))+1);
 //Player
@@ -694,6 +698,69 @@ if (flameCActive) {
 // Cooldown countdown
 if (flameCCooldown > 0) flameCCooldown--;
 
+if (flamevon && flamevdestruction) {
+  const e = flamevdestruction;
+
+  if (!e.exploded) {
+    // Move ball forward
+    e.x += Math.cos(e.angle) * e.speed;
+    e.y += Math.sin(e.angle) * e.speed;
+
+    // Draw ball
+    ctx.fillStyle = `rgba(255, 100, 0, ${e.alpha})`;
+    ctx.beginPath();
+    ctx.arc(e.x, e.y, e.radius*e.size, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Collision check
+    enemies.forEach(enemy => {
+      const ex = enemy.x + enemy.width / 2;
+      const ey = enemy.y + enemy.height / 2;
+      const dist = Math.sqrt((e.x - ex) ** 2 + (e.y - ey) ** 2);
+
+      if (dist < e.radius) {
+        enemy.hp -= 200; 
+          enemy.hp = Math.max(0, enemy.hp);
+        e.exploded = true;
+        e.growing = 6; 
+        e.radius = 60*e.size; 
+      }
+    });
+  } else {
+    // Explosion phase
+    e.radius += e.growing; // grow explosion
+    e.alpha -= 0.02;      // fade out
+
+    ctx.fillStyle = `rgba(255, 150, 0, ${e.alpha})`;
+    ctx.beginPath();
+    ctx.arc(e.x, e.y, e.radius, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Damage enemies inside explosion
+    enemies.forEach(enemy => {
+      const ex = enemy.x + enemy.width / 2;
+      const ey = enemy.y + enemy.height / 2;
+      const dist = Math.sqrt((e.x - ex) ** 2 + (e.y - ey) ** 2);
+
+      if (dist < e.radius) {
+        if (Date.now() - enemy.lastHitTime > 100) {
+          enemy.hp -= 20; // heavy damage
+          enemy.hp = Math.max(0, enemy.hp);
+          enemy.lastHitTime = Date.now();
+        }
+      }
+    });
+
+    // End explosion
+    if (e.alpha <= 0) {
+      flamevon= false;
+      flamevdestruction = null;
+    }
+  }
+}
+
+if (flamevcooldown > 0) flamevcooldown--;
+
 
   // RAINBOW BARF BEAM
   soundBeams.forEach((beam, index) => {
@@ -885,8 +952,25 @@ function checkXLineCollisions() {
 function activateFlames() {
   if (!flameCActive && flameCCooldown <= 0) {
     flameCActive = true;
-    flameCduration = 240; 
-    flameCCooldown = 280;
+    flameCduration =240; 
+    flameCCooldown = 420;
+  }
+}
+function puredestruction(){
+  if (!flamevon && flamevcooldown <= 0) {
+    flamevon = true;
+    flamevcooldown = 400; // cooldown frames
+    flamevdestruction = {
+      x: playerX + playerWidth / 2,
+      y: playerY + playerHeight / 2,
+      angle: lastAngle,
+      speed: 3,
+      radius: 30,  
+      exploded: false,
+      growing: 0,    // explosion growth per frame
+      alpha: 1,
+      size: 4,
+    };
   }
 }
 
@@ -942,7 +1026,6 @@ function updateEnemies() {
   enemies.forEach(enemy => {
     const dx = playerX - enemy.x;
     const dy = playerY - enemy.y;
-    //Formula for distance here!(my math teacher taught me well)
     const dist = Math.sqrt(dx * dx + dy * dy);
     if (dist > 0) {
       enemy.x += (dx / dist) * enemy.speed;
@@ -982,6 +1065,9 @@ function enemystayinboundsplzz(enemy, canvas) {
 window.addEventListener('keydown', (e) => {
   const key = e.key.toLowerCase();
   keys[key] = true;
+  if (key === 'v' && flameSelected && flamevcooldown <= 0) {
+  puredestruction();
+}
 
   if (key === 'c' && flameSelected && flameCCooldown <= 0) {
   activateFlames();
