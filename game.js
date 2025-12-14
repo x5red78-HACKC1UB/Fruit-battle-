@@ -99,6 +99,7 @@ const playerWidth = 40;
 const playerHeight = 40;
 const speed = 5;
 
+
 const soundBeams = [];
 const flamexProjectiles = [];
 
@@ -717,8 +718,9 @@ if (flamevon && flamevdestruction) {
       const ex = enemy.x + enemy.width / 2;
       const ey = enemy.y + enemy.height / 2;
       const dist = Math.sqrt((e.x - ex) ** 2 + (e.y - ey) ** 2);
+      const enemyHitBox = Math.max(enemy.width, enemy.height) / 2;
 
-      if (dist < e.radius) {
+      if (dist < e.radius + enemyHitBox) {
         enemy.hp -= 200; 
           enemy.hp = Math.max(0, enemy.hp);
         e.exploded = true;
@@ -742,7 +744,7 @@ if (flamevon && flamevdestruction) {
       const ey = enemy.y + enemy.height / 2;
       const dist = Math.sqrt((e.x - ex) ** 2 + (e.y - ey) ** 2);
 
-      if (dist < e.radius) {
+      if (dist < e.radius*e.size) {
         if (Date.now() - enemy.lastHitTime > 100) {
           enemy.hp -= 20; // heavy damage
           enemy.hp = Math.max(0, enemy.hp);
@@ -996,7 +998,7 @@ function spawnrandom() {
     x: Math.random() * canvas.width,
     y: Math.random() * canvas.height,
     width: 40,
-    height: 40,
+    height: 40, 
     hp: randomHP,
     maxhp: randomHP,
     speed: randomSpeed,
