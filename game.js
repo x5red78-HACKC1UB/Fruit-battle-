@@ -493,7 +493,7 @@ function gameLoop() {
         const dist = Math.sqrt(dx * dx + dy * dy);
 
         if (dist < 400) {//dmg blast radius
-          enemy.hp -= 160
+          enemy.hp -= 110
           enemy.hp = Math.max(0, enemy.hp);
           enemy.x += dx / dist * 50;
           enemy.y += dy / dist * 50;
