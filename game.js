@@ -425,9 +425,9 @@ function gameLoop() {
       const dist = Math.sqrt(dx * dx + dy * dy);
 
       if (dist > 5) {
-        enemy.x += dx / dist * 5.5;//}
+        enemy.x += dx / dist * 4.5;//}
         //} speed & streength of sucking
-        enemy.y += dy / dist * 5.5;//}
+        enemy.y += dy / dist * 4.5;//}
         console.log('enemy pulled')
       }
     });
@@ -482,7 +482,7 @@ function gameLoop() {
     for (let i = enemies.length - 1; i >= 0; i--) {
       enemydeathrip(i, enemies, canvas, ctx);
     }
-    if (soundVTimer <= 120 && !soundVExploded) {
+    if (soundVTimer <= 80 && !soundVExploded) {
       soundVExploded = true;
 
       enemies.forEach(enemy => {
@@ -492,8 +492,8 @@ function gameLoop() {
         const dy = ey - centerofSoundV.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
 
-        if (dist < 450) {//dmg blast radius
-          enemy.hp -= 425
+        if (dist < 400) {//dmg blast radius
+          enemy.hp -= 160
           enemy.hp = Math.max(0, enemy.hp);
           enemy.x += dx / dist * 50;
           enemy.y += dy / dist * 50;
@@ -502,7 +502,7 @@ function gameLoop() {
       });
 
       ctx.beginPath();
-      ctx.arc(centerofSoundV.x, centerofSoundV.y, 450, 0, Math.PI * 2);//visual blast radius
+      ctx.arc(centerofSoundV.x, centerofSoundV.y, 400, 0, Math.PI * 2);//visual blast radius
       ctx.fillStyle = 'rgba(255, 200, 0, 0.5)';
       ctx.fill();
     }
@@ -993,7 +993,7 @@ function spawnEnemy1() {
 }
 function spawnrandom() {
   const randomHP = multiplyrandom(1,1200)
-  const randomSpeed = multiplyrandom(1,4)
+  const randomSpeed = multiplyrandom(1,3.5)
   enemies.push({
     x: Math.random() * canvas.width,
     y: Math.random() * canvas.height,
