@@ -464,8 +464,8 @@ function gameLoop() {
           for (let i = enemies.length - 1; i >= 0; i--) {
             enemydeathrip(i, enemies, canvas, ctx);
           }
-          if (!star.lastHitTime || Date.now() - star.lastHitTime > 200) {
-            enemy.hp -= 3;
+          if (!star.lastHitTime || Date.now() - star.lastHitTime > 400) {
+            enemy.hp -= 2;
             enemy.hp = Math.round(enemy.hp);
             star.lastHitTime = Date.now();
           }
@@ -493,7 +493,7 @@ function gameLoop() {
         const dist = Math.sqrt(dx * dx + dy * dy);
 
         if (dist < 400) {//dmg blast radius
-          enemy.hp -= 110
+          enemy.hp -= 210
           enemy.hp = Math.max(0, enemy.hp);
           enemy.x += dx / dist * 50;
           enemy.y += dy / dist * 50;
@@ -721,7 +721,7 @@ if (flamevon && flamevdestruction) {
       const enemyHitBox = Math.max(enemy.width, enemy.height) / 2;
 
       if (dist < e.radius + enemyHitBox) {
-        enemy.hp -= 200; 
+        enemy.hp -= 250; 
           enemy.hp = Math.max(0, enemy.hp);
         e.exploded = true;
         e.growing = 6; 
@@ -746,7 +746,7 @@ if (flamevon && flamevdestruction) {
 
       if (dist < e.radius*e.size) {
         if (Date.now() - enemy.lastHitTime > 100) {
-          enemy.hp -= 20; // heavy damage
+          enemy.hp -= 30; 
           enemy.hp = Math.max(0, enemy.hp);
           enemy.lastHitTime = Date.now();
         }
