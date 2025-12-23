@@ -97,6 +97,8 @@ let flamevcooldown=0;
  let flamevdestruction=null;
 // My radomizer!
 const multiplyrandom = (x, y) => Math.round((Math.random()*(x * y))+1);
+
+
 //Player
 const playerWidth = 40;
 const playerHeight = 40;
@@ -119,7 +121,7 @@ closetutorial.addEventListener("click", () => {
   tutorial.classList.add("hidden");
 });
 
-//Track da keys!
+
 const keys = {};
 
 //This is kinda long to explain, but when the mouse leaves the canvas the player would just stare at the last angle so this detects if the mouse is in the game.
@@ -841,6 +843,9 @@ if (flamevcooldown > 0) flamevcooldown--;
   ctx.fillStyle = 'black';
   ctx.font = '20px Arial';
   ctx.fillText('Active Fruit: ' + getActiveFruitName(), 20, canvas.height - 30);
+
+
+
   //Cooldown
   if (soundcooldownC > 0) {
     soundcooldownC--;
@@ -855,7 +860,7 @@ if (flamevcooldown > 0) flamevcooldown--;
   // TH3 END 0F THE GAM3L00P
   drawImageBar();
   requestAnimationFrame(gameLoop);
-  }
+}
 
 //Collisions here!
 
@@ -995,21 +1000,23 @@ function spawnEnemy1() {
   });
 }
 function spawnEnemy2() {
-  enemies.push({
+  const goons = multiplyrandom(1,3)
+  for (let i = 0; i < goons; i++) {
+  spawnEnemy1();
+}
+enemies.push({
     x: Math.random() * canvas.width,
     y: Math.random() * canvas.height,
-    width: 80,
-    height: 80,
+    width: 60,
+    height: 60,
     hp: 900,
     maxhp: 900,
     speed: 0.9,
     img: enemyImage,
-    lastHitTime: 0
+    lastHitTime: 0,
+    type:"beefy"
+    
   });
-if(enemy.hp<1){
-spawnEnemy1()
-spawnEnemy1()
-}
 }
 function spawnrandom() {
   const randomHP = multiplyrandom(1,1200)
@@ -1200,6 +1207,11 @@ flamexcooldown=200;
 
   if (key === "2") {
     spawnrandom();
+    console.log("enemy created out of nothing")
+  }
+
+   if (key === "3") {
+    spawnEnemy2();
     console.log("enemy created out of nothing")
   }
 });
