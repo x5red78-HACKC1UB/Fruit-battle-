@@ -19,7 +19,10 @@ const flameZbulletkaboom = new Image();
 flameZbulletkaboom.src = "flame explosion.svg"
 
 const flameXbullet = new Image();
-flameXbullet.src = "flamex.svg"
+flameXbullet.src = "flamex.svg";
+
+
+
 //Constants!
 // //Knockback
 let knockback = 5;
@@ -990,6 +993,23 @@ function spawnEnemy1() {
     img: enemyImage,
     lastHitTime: 0
   });
+}
+function spawnEnemy2() {
+  enemies.push({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    width: 80,
+    height: 80,
+    hp: 900,
+    maxhp: 900,
+    speed: 0.9,
+    img: enemyImage,
+    lastHitTime: 0
+  });
+if(enemy.hp<1){
+spawnEnemy1()
+spawnEnemy1()
+}
 }
 function spawnrandom() {
   const randomHP = multiplyrandom(1,1200)
