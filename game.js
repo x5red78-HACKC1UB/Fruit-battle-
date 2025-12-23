@@ -1000,9 +1000,10 @@ function spawnEnemy1() {
   });
 }
 function spawnEnemy2() {
-  const goons = multiplyrandom(1,3)
+  const goons = multiplyrandom(1,4)
   for (let i = 0; i < goons; i++) {
   spawnEnemy1();
+    }
 }
 enemies.push({
     x: Math.random() * canvas.width,
@@ -1014,10 +1015,10 @@ enemies.push({
     speed: 0.9,
     img: enemyImage,
     lastHitTime: 0,
-    type:"beefy"
+    
     
   });
-}
+
 function spawnrandom() {
   const randomHP = multiplyrandom(1,1200)
   const randomSpeed = multiplyrandom(1,3.5)
