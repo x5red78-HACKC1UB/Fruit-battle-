@@ -65,10 +65,10 @@ canvas{
 }
 
 .popupBox{
-  background: rgba(237, 192, 107, 0.684); /* turquoise like Start button */
+  background: rgba(237, 192, 107, 0.684); 
     color: rgb(0, 0, 0);
-    width: 300px;
-    height: 400px;
+    width: 600px;
+    height: 600px;
     padding: 20px;
     border-radius: 12px;
     text-align: center;
