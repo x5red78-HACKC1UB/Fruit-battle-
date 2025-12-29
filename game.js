@@ -252,6 +252,7 @@ function gameLoop() {
     ctx.font = '14px Comic Sans MS';
     ctx.fillText('HP: ' + enemy.hp, enemy.x, enemy.y - 5);
   });
+
   // WARNING: EVERYTHING FROM 174 to 253 IS JUST ABT LINES, AHHHHHHHH I HATE LINES THEIR BORING, JUST LINES AND LINES.
   // x move animation
   if (xMoveActive) {
@@ -785,21 +786,18 @@ if (flamevcooldown > 0) flamevcooldown--;
 
  
 // Ice Z 
+// Ice Z 
 if (icezactive) {
-
-  for (let i = enemies.length - 1; i >= 0; i--) {
-    enemydeathrip(i, enemies, canvas, ctx);
-  }
 
   icezduration--;
 
- 
+  
   if (icezduration <= 0) {
     icezactive = false;
     iceBullets.length = 0;
-    return;
   }
 
+  // Fire bullets
   if (icezduration % 10 === 0) {
     iceBullets.push({
       x: playerX + playerWidth / 2,
@@ -830,16 +828,18 @@ if (icezactive) {
           enemy.hp -= 8;
           enemy.hp = Math.max(0, enemy.hp);
 
-          enemy.isSlowed = true;
-          enemy.slowTimer = 165;
+          
+          if (!enemy.isSlowed) {
+            enemy.isSlowed = true;
+            enemy.slowTimer = 165;
 
-          let iceZslow = slowpercent(40, enemy.baseSpeed);
-          enemy.speed = enemy.baseSpeed - iceZslow;
+            const slowAmount = slowpercent(40, enemy.baseSpeed);
+            enemy.speed = enemy.baseSpeed - slowAmount;
+          }
         }
       });
 
     } else {
-
       ctx.globalAlpha = bullet.alpha;
       ctx.drawImage(shatterediceZ, bullet.x - 16, bullet.y - 16, 32, 32);
       ctx.globalAlpha = 1;
@@ -851,6 +851,8 @@ if (icezactive) {
     }
   });
 }
+
+// Cooldown
 if (icezcooldown > 0) icezcooldown--;
 
   
@@ -922,8 +924,10 @@ if (icezcooldown > 0) icezcooldown--;
   }
 
 
-  updateEnemies()
-
+  updateEnemies();
+for (let i = enemies.length - 1; i >= 0; i--) { 
+  enemydeathrip(i, enemies, canvas, ctx); 
+}
   // Text of what fruit u have
   ctx.fillStyle = 'black';
   ctx.font = '20px Arial';
@@ -1139,9 +1143,8 @@ function enemydeathrip(enemyIndex, enemies, canvas, ctx) {
     enemies.splice(enemyIndex, 1);
     return;
   }
-  //But boss! He isn't dead.
-  //alr. he's off the hook for now
-  ctx.drawImage(enemy.img, enemy.x, enemy.y, enemy.width, enemy.height);
+  
+  
 }
 
 
