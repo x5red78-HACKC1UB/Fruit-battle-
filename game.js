@@ -65,19 +65,22 @@ let gravitySelected = 0;
 // sound X 
 let xMoveActive = false;
 let xMoveTimer = 0;
-let xLines = [];
+
 let playerHue = 0;
 //sound C
 let cMoveActive = false;
 let cMoveTimer = 0;
+
 let orbitCircles = [];
 let flashyCircle = null;
 //Sound cooldowns
 let soundcooldownZ = 0;
+
 let soundcooldownX = 0;
 let soundcooldownC = 0;
 //Sound V
 let soundVon = false;
+
 let soundVTimer = 0;
 let soundcooldownV = 0;
 let soundVExploded = false;
@@ -86,6 +89,7 @@ let stars = [];
 //Flame Z
 let flameZActive = false;
 let flameZTimer = 0;
+
 let flameZCooldown = 0;
 const flameBullets = [];
 let flamexon = false;
@@ -95,17 +99,19 @@ let flamextime = 0;
 let flameCActive = false;
 let flameCduration = 0;
 let flameCCooldown = 0;
+
 let flameParticles = [];
 //Flame V
 let flamevon=false;
 let flamevcooldown=0;
+
  let flamevdestruction=null;
- //Ice Z &
+
  let icezcooldown=0;
  let icezactive=false;
  let icezduration=0;
  let iceZslow= 0;
- 
+ let xLines = [];
 // My radomizer!
 const multiplyrandom = (x, y) => Math.round((Math.random()*(x * y))+1);
 // ice z slow. x is the percentage of the slow and y is enemy speed
@@ -785,7 +791,7 @@ if (flamevon && flamevdestruction) {
 if (flamevcooldown > 0) flamevcooldown--;
 
  
-// Ice Z 
+//3 HOURS ON ONE MOVE
 // Ice Z 
 if (icezactive) {
 
@@ -797,7 +803,7 @@ if (icezactive) {
     iceBullets.length = 0;
   }
 
-  // Fire bullets
+  // ice destruction i like it it looks cool
   if (icezduration % 10 === 0) {
     iceBullets.push({
       x: playerX + playerWidth / 2,
@@ -818,9 +824,9 @@ if (icezactive) {
       bullet.y += Math.sin(bullet.angle) * bullet.speed;
 
       enemies.forEach(enemy => {
-        const ex = enemy.x + enemy.width / 2;
-        const ey = enemy.y + enemy.height / 2;
-        const dist = Math.sqrt((bullet.x - ex) ** 2 + (bullet.y - ey) ** 2);
+        const enemyx = enemy.x + enemy.width / 2;
+        const enemyy = enemy.y + enemy.height / 2;
+        const dist = Math.sqrt((bullet.x - enemyx) ** 2 + (bullet.y - enemyy) ** 2);
 
         if (dist < enemy.width / 2) {
           bullet.exploded = true;
@@ -828,13 +834,13 @@ if (icezactive) {
           enemy.hp -= 8;
           enemy.hp = Math.max(0, enemy.hp);
 
-          
+          //halt! (enemy slow)
           if (!enemy.isSlowed) {
             enemy.isSlowed = true;
             enemy.slowTimer = 165;
 
-            const slowAmount = slowpercent(40, enemy.baseSpeed);
-            enemy.speed = enemy.baseSpeed - slowAmount;
+            const slowplz = slowpercent(40, enemy.baseSpeed);
+            enemy.speed = enemy.baseSpeed - slowplz;
           }
         }
       });
