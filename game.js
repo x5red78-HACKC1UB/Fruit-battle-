@@ -121,6 +121,7 @@ const speed = 5;
 
 const soundBeams = [];
 const flamexProjectiles = [];
+const iceBullets=[];
 
 // how to play
 const tutorial = document.getElementById("tutorial");
@@ -782,7 +783,7 @@ if (flamevon && flamevdestruction) {
 
 if (flamevcooldown > 0) flamevcooldown--;
 
-// Ice Z 
+ 
 // Ice Z 
 if (icezactive) {
 
@@ -796,7 +797,7 @@ if (icezactive) {
   if (icezduration <= 0) {
     icezactive = false;
     iceBullets.length = 0;
-    return; // stop rnning Ice z logic
+    return;
   }
 
   if (icezduration % 10 === 0) {
