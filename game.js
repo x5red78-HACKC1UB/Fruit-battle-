@@ -21,6 +21,11 @@ flameZbulletkaboom.src = "flame explosion.svg"
 const flameXbullet = new Image();
 flameXbullet.src = "flamex.svg";
 
+const iceZneedle = new Image();
+iceZneedle.src = "iceneedle.svg";
+
+const shatterediceZ = new Image();
+shatterediceZ.src = "iceshatter.svg";
 
 
 //Constants!
@@ -95,9 +100,18 @@ let flameParticles = [];
 let flamevon=false;
 let flamevcooldown=0;
  let flamevdestruction=null;
+ //Ice Z &
+ let icezcooldown=0;
+ let icezactive=false;
+ let icezduration=0;
+ let iceZslow= 0;
+ 
 // My radomizer!
 const multiplyrandom = (x, y) => Math.round((Math.random()*(x * y))+1);
-
+// ice z slow. x is the percentage of the slow and y is enemy speed
+const slowpercent = (x,y) => (x/100)*y
+// ice z slow revese x is enemy speed and y is the percent of the enemy speed that remains
+const reverseslow =(x,y)=>x*(100/y)
 
 //Player
 const playerWidth = 40;
@@ -768,8 +782,78 @@ if (flamevon && flamevdestruction) {
 
 if (flamevcooldown > 0) flamevcooldown--;
 
+// Ice Z 
+// Ice Z 
+if (icezactive) {
 
-  // RAINBOW BARF BEAM
+  for (let i = enemies.length - 1; i >= 0; i--) {
+    enemydeathrip(i, enemies, canvas, ctx);
+  }
+
+  icezduration--;
+
+ 
+  if (icezduration <= 0) {
+    icezactive = false;
+    iceBullets.length = 0;
+    return; // stop rnning Ice z logic
+  }
+
+  if (icezduration % 10 === 0) {
+    iceBullets.push({
+      x: playerX + playerWidth / 2,
+      y: playerY + playerHeight / 2,
+      angle: lastAngle,
+      speed: 7,
+      exploded: false,
+      alpha: 1
+    });
+  }
+
+  iceBullets.forEach((bullet, index) => {
+    if (!bullet.exploded) {
+
+      ctx.drawImage(iceZneedle, bullet.x - 8, bullet.y - 8, 16, 16);
+
+      bullet.x += Math.cos(bullet.angle) * bullet.speed;
+      bullet.y += Math.sin(bullet.angle) * bullet.speed;
+
+      enemies.forEach(enemy => {
+        const ex = enemy.x + enemy.width / 2;
+        const ey = enemy.y + enemy.height / 2;
+        const dist = Math.sqrt((bullet.x - ex) ** 2 + (bullet.y - ey) ** 2);
+
+        if (dist < enemy.width / 2) {
+          bullet.exploded = true;
+
+          enemy.hp -= 8;
+          enemy.hp = Math.max(0, enemy.hp);
+
+          enemy.isSlowed = true;
+          enemy.slowTimer = 165;
+
+          let iceZslow = slowpercent(40, enemy.baseSpeed);
+          enemy.speed = enemy.baseSpeed - iceZslow;
+        }
+      });
+
+    } else {
+
+      ctx.globalAlpha = bullet.alpha;
+      ctx.drawImage(shatterediceZ, bullet.x - 16, bullet.y - 16, 32, 32);
+      ctx.globalAlpha = 1;
+
+      bullet.alpha -= 0.05;
+      if (bullet.alpha <= 0) {
+        iceBullets.splice(index, 1);
+      }
+    }
+  });
+}
+if (icezcooldown > 0) icezcooldown--;
+
+  
+
   soundBeams.forEach((beam, index) => {
     if (beam.delay > 0) {
       beam.delay--;
@@ -994,9 +1078,14 @@ function spawnEnemy1() {
     height: 50,
     hp: 500,
     maxhp: 500,
-    speed: 1.4,
+    speed:1.4,
+    baseSpeed: 1.4,
     img: enemyImage,
-    lastHitTime: 0
+    lastHitTime: 0,
+    isSlowed:false,
+    slowTimer:0,
+  
+  
   });
 }
 function spawnEnemy2() {
@@ -1004,6 +1093,7 @@ function spawnEnemy2() {
   for (let i = 0; i < goons; i++) {
   spawnEnemy1();
     }
+
 }
 enemies.push({
     x: Math.random() * canvas.width,
@@ -1012,11 +1102,12 @@ enemies.push({
     height: 60,
     hp: 900,
     maxhp: 900,
-    speed: 0.9,
+    speed:0.9,
+    baseSpeed: 0.9,
     img: enemyImage,
     lastHitTime: 0,
-    
-    
+    isSlowed:false,
+    slowTimer:0,
   });
 
 function spawnrandom() {
@@ -1029,9 +1120,12 @@ function spawnrandom() {
     height: 40, 
     hp: randomHP,
     maxhp: randomHP,
-    speed: randomSpeed,
+    speed:randomSpeed,
+    baseSpeed: randomSpeed,
     img: randomenemyimage,
     lastHitTime: 0,
+    isSlowed:false,
+    slowTimer:0,
   });
 }
 //TASK MANGER!
@@ -1054,6 +1148,15 @@ function enemydeathrip(enemyIndex, enemies, canvas, ctx) {
 //Enemy movement
 function updateEnemies() {
   enemies.forEach(enemy => {
+    if (enemy.isSlowed) {
+  enemy.slowTimer--;
+
+  if (enemy.slowTimer <= 0) {
+    enemy.isSlowed = false;
+    enemy.speed = enemy.baseSpeed;
+  }
+}
+
     const dx = playerX - enemy.x;
     const dy = playerY - enemy.y;
     const dist = Math.sqrt(dx * dx + dy * dy);
@@ -1073,6 +1176,7 @@ function isTouchingPlayer(enemy) {
     enemy.y + enemy.height > playerY
   );
 }
+
 function enemystayinboundsplzz(enemy, canvas) {
 
   if (enemy.x < 0) enemy.x = 0;
@@ -1095,6 +1199,12 @@ function enemystayinboundsplzz(enemy, canvas) {
 window.addEventListener('keydown', (e) => {
   const key = e.key.toLowerCase();
   keys[key] = true;
+  if (key === "z" && iceSelected&& icezcooldown<=0){
+    icezactive= true;
+    icezduration=120;
+    icezcooldown=180;
+    
+  }
   if (key === 'v' && flameSelected && flamevcooldown <= 0) {
   puredestruction();
 }
