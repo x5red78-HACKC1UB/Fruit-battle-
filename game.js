@@ -533,7 +533,7 @@ function gameLoop() {
       ctx.fill();
     }
 
-    // End move
+    
     if (soundVTimer <= 0) {
       soundVon = false;
       stars = [];
@@ -548,7 +548,7 @@ function gameLoop() {
       enemydeathrip(i, enemies, canvas, ctx);
     }
 
-    // Bullet stats here
+    // Bullet stats here(loong day)
     if (flameZTimer % 10 === 0) {
       flameBullets.push({
         x: playerX + playerWidth / 2,
@@ -569,7 +569,7 @@ function gameLoop() {
 // Move bullet
         bullet.x += Math.cos(bullet.angle) * bullet.speed;
         bullet.y += Math.sin(bullet.angle) * bullet.speed;
-        // touching with player
+        // touching with player???
         enemies.forEach(enemy => {
           const enemyx = enemy.x + enemy.width / 2;
           const enemyy = enemy.y + enemy.height / 2;
@@ -588,7 +588,7 @@ function gameLoop() {
         ctx.drawImage(flameZbulletkaboom, bullet.x - 16, bullet.y - 16, 32, 32);
         ctx.globalAlpha = 1;
 
-        // Fade out
+        // disappear
         bullet.alpha -= 0.05;
         if (bullet.alpha <= 0) {
           flameBullets.splice(index, 1);
@@ -612,14 +612,14 @@ function gameLoop() {
       const proj = flamexProjectiles[i];
 
       if (!proj.exploded) {
-        // Move projectile
+        //wally west speed
         proj.x += Math.cos(proj.angle) * proj.speed;
         proj.y += Math.sin(proj.angle) * proj.speed;
 
         // 
        ctx.drawImage(flameXbullet, proj.x - proj.size / 2, proj.y - proj.size / 2, proj.size, proj.size);
 
-        // Collision with enemies
+       
         enemies.forEach(enemy => {
           //btw enemyx and y are like hitboxes(kinda)
           const enemyx = enemy.x + enemy.width / 2;
@@ -628,17 +628,18 @@ function gameLoop() {
 
           if (distance < enemy.width / 2) {
             proj.exploded = true;
-            enemy.hp -= 125; // damage
+            enemy.hp -= 125; // beeg damage
             enemy.hp = Math.max(0, enemy.hp);
           }
         });
       } else {
-        // Explosion effect
+       
         ctx.globalAlpha = proj.alpha;
         ctx.drawImage(flameZbulletkaboom, proj.x - 64, proj.y - 64, 128, 128);
         ctx.globalAlpha = 1;
             
           }
+
 enemies.forEach(enemy => {
           const enemyx = enemy.x + enemy.width / 2;
           const enemyy = enemy.y + enemy.height / 2;
@@ -673,15 +674,15 @@ if (flameCActive) {
     flameParticles.push({
       x: centerX,
       y: centerY,
-      angle: lastAngle + (Math.random() - 0.5) * 0.6, // spread
+      angle: lastAngle + (Math.random() - 0.5) * 0.6, // spread circle illusion cool right, ok maybe not
       speed: 6 + Math.random() * 2,
       radius: 8 + Math.random() * 4,
       alpha: 1,
-      life: 40 // frames
+      life: 40 // circle li3fespan
     });
   }
 
-  // Update particles
+
   flameParticles.forEach((p, i) => {
     p.x += Math.cos(p.angle) * p.speed;
     p.y += Math.sin(p.angle) * p.speed;
@@ -731,17 +732,17 @@ if (flamevon && flamevdestruction) {
   const e = flamevdestruction;
 
   if (!e.exploded) {
-    // Move ball forward
+    
     e.x += Math.cos(e.angle) * e.speed;
     e.y += Math.sin(e.angle) * e.speed;
 
-    // Draw ball
+    
     ctx.fillStyle = `rgba(255, 100, 0, ${e.alpha})`;
     ctx.beginPath();
     ctx.arc(e.x, e.y, e.radius*e.size, 0, Math.PI * 2);
     ctx.fill();
 
-    // Collision check
+    // Collision:D
     enemies.forEach(enemy => {
       const ex = enemy.x + enemy.width / 2;
       const ey = enemy.y + enemy.height / 2;
@@ -757,8 +758,8 @@ if (flamevon && flamevdestruction) {
       }
     });
   } else {
-    // Explosion phase
-    e.radius += e.growing; // grow 
+    // like the actual explosion
+    e.radius += e.growing; 
     e.alpha -= 0.02;      
 
     ctx.fillStyle = `rgba(255, 150, 0, ${e.alpha})`;
@@ -781,7 +782,7 @@ if (flamevon && flamevdestruction) {
       }
     });
 
-    // End explosion
+    // End 
     if (e.alpha <= 0) {
       flamevon= false;
       flamevdestruction = null;
@@ -859,7 +860,7 @@ if (icezactive) {
   });
 }
 
-// Cooldown
+
 if (icezcooldown > 0) icezcooldown--;
 
   
@@ -1381,6 +1382,6 @@ function getActiveFruitName() {
 playerImage.onload = () => {
   resizeCanvas();
 };
-requestAnimationFrame(gameLoop);
+
 
 // 24hrs!
