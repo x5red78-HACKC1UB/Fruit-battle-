@@ -116,8 +116,7 @@ let flamevcooldown=0;
 const multiplyrandom = (x, y) => Math.round((Math.random()*(x * y))+1);
 // ice z slow. x is the percentage of the slow and y is enemy speed
 const slowpercent = (x,y) => (x/100)*y
-// ice z slow revese x is enemy speed and y is the percent of the enemy speed that remains
-const reverseslow =(x,y)=>x*(100/y)
+
 
 //Player
 const playerWidth = 40;
@@ -437,8 +436,8 @@ function gameLoop() {
 
   if (soundVon) {
     // Draw orb so you see it
-    const hue = (Date.now() / 20) % 360; //so i just learned that %360 is th 359 colors
-    ctx.fillStyle = `hsla(${hue}, 100%, 50%, 0.4)`;
+    const color = (Date.now() / 20) % 360; //so i just learned that %360 is th 359 colors
+    ctx.fillStyle = `hsla(${color}, 100%, 50%, 0.4)`;
     ctx.beginPath();
     ctx.arc(centerofSoundV.x, centerofSoundV.y, 20, 0, Math.PI * 2);
     ctx.fill();
@@ -461,13 +460,13 @@ function gameLoop() {
 
     // Stars!
     stars.forEach(star => {
-      const dx = centerofSoundV.x - star.x;
-      const dy = centerofSoundV.y - star.y;
-      const dist = Math.sqrt(dx * dx + dy * dy);
+      const starx = centerofSoundV.x - star.x;
+      const stary = centerofSoundV.y - star.y;
+      const stardistance = Math.sqrt(starx * starx + stary * stary);
 
       // Move star toward center
-      star.x += dx / dist * star.speed;
-      star.y += dy / dist * star.speed;
+      star.x += starx / stardistance * star.speed;
+      star.y += stary / stardistance * star.speed;
 
       // Rainbow for variety
       const hue = (Date.now() / 10 + star.x) % 360;
@@ -480,14 +479,14 @@ function gameLoop() {
 
       // 
       enemies.forEach(enemy => {
-        const ex = enemy.x + enemy.width / 2;
-        const ey = enemy.y + enemy.height / 2;
-        const edx = star.x - ex;
-        const edy = star.y - ey;
-        const edist = Math.sqrt(edx * edx + edy * edy);
+        const enemyx = enemy.x + enemy.width / 2;
+        const enemyy = enemy.y + enemy.height / 2;
+        const starandenemyx = star.x - enemyx;
+        const starandenemyy = star.y - enemyy;
+        const starandenemydistance = Math.sqrt(starandenemyx * starandenemyx + starandenemyy * starandenemyy);
 
         // If star touches enemy 
-        if (edist < enemy.width / 2) {
+        if (starandenemydistance< enemy.width / 2) {
           for (let i = enemies.length - 1; i >= 0; i--) {
             enemydeathrip(i, enemies, canvas, ctx);
           }
@@ -513,13 +512,13 @@ function gameLoop() {
       soundVExploded = true;
 
       enemies.forEach(enemy => {
-        const ex = enemy.x + enemy.width / 2;
-        const ey = enemy.y + enemy.height / 2;
-        const dx = ex - centerofSoundV.x;
-        const dy = ey - centerofSoundV.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
+        const enemyx = enemy.x + enemy.width / 2;
+        const enemyy = enemy.y + enemy.height / 2;
+        const enemyandcenterx = enemyx - centerofSoundV.x;
+        const enemyandcentery = enemyy - centerofSoundV.y;
+        const enemyandcenterdistance = Math.sqrt(enemyandcenterx * enemyandcenterx + enemyandcentery * enemyandcentery);
 
-        if (dist < 400) {//dmg blast radius
+        if (enemyandcenterdistance < 400) {//dmg blast radius
           enemy.hp -= 210
           enemy.hp = Math.max(0, enemy.hp);
           enemy.x += dx / dist * 50;
@@ -572,11 +571,11 @@ function gameLoop() {
         bullet.y += Math.sin(bullet.angle) * bullet.speed;
         // touching with player
         enemies.forEach(enemy => {
-          const ex = enemy.x + enemy.width / 2;
-          const ey = enemy.y + enemy.height / 2;
-          const dist = Math.sqrt((bullet.x - ex) ** 2 + (bullet.y - ey) ** 2);
+          const enemyx = enemy.x + enemy.width / 2;
+          const enemyy = enemy.y + enemy.height / 2;
+          const distance = Math.sqrt((bullet.x - enemyx) ** 2 + (bullet.y - enemyy) ** 2);
 
-          if (dist < enemy.width / 2) {   
+          if (distance < enemy.width / 2) {   
             bullet.exploded = true;
             enemy.hp -= 15;               // damage 
             enemy.hp = Math.max(0, enemy.hp);
@@ -622,11 +621,12 @@ function gameLoop() {
 
         // Collision with enemies
         enemies.forEach(enemy => {
-          const ex = enemy.x + enemy.width / 2;
-          const ey = enemy.y + enemy.height / 2;
-          const dist = Math.sqrt((proj.x - ex) ** 2 + (proj.y - ey) ** 2);
+          //btw enemyx and y are like hitboxes(kinda)
+          const enemyx = enemy.x + enemy.width / 2;
+          const enemyy = enemy.y + enemy.height / 2;
+          const distance = Math.sqrt((proj.x - enemyx) ** 2 + (proj.y - enemyy) ** 2);
 
-          if (dist < enemy.width / 2) {
+          if (distance < enemy.width / 2) {
             proj.exploded = true;
             enemy.hp -= 125; // damage
             enemy.hp = Math.max(0, enemy.hp);
@@ -640,11 +640,11 @@ function gameLoop() {
             
           }
 enemies.forEach(enemy => {
-          const ex = enemy.x + enemy.width / 2;
-          const ey = enemy.y + enemy.height / 2;
-          const dist = Math.sqrt((proj.x - ex) ** 2 + (proj.y - ey) ** 2);
+          const enemyx = enemy.x + enemy.width / 2;
+          const enemyy = enemy.y + enemy.height / 2;
+          const distance = Math.sqrt((proj.x - enemyx) ** 2 + (proj.y - enemyy) ** 2);
 
-          if (dist < 64) {
+          if (distance < 64) {
             enemy.hp -= 3; // damage
             enemy.hp = Math.max(0, enemy.hp);
           }
@@ -696,13 +696,14 @@ if (flameCActive) {
 
     
     enemies.forEach(enemy => {
-      const ex = enemy.x + enemy.width / 2;
-      const ey = enemy.y + enemy.height / 2;
-      const dist = Math.sqrt((p.x - ex) ** 2 + (p.y - ey) ** 2);
+      const enemyx = enemy.x + enemy.width / 2;
+      const enemyy = enemy.y + enemy.height / 2;
+      const distance = Math.sqrt((p.x - enemyx) ** 2 + (p.y - enemyy) ** 2);
 
-      if (dist < enemy.width / 2) {
+      if (distance < enemy.width / 2) {
+     //So flame C doesn't absolutly destroy the enmy
         if (Date.now() - enemy.lastHitTime > 75) {
-          enemy.hp -= 8; // tick damage
+          enemy.hp -= 8; 
           enemy.hp = Math.max(0, enemy.hp);
           enemy.lastHitTime = Date.now();
         }
@@ -757,21 +758,21 @@ if (flamevon && flamevdestruction) {
     });
   } else {
     // Explosion phase
-    e.radius += e.growing; // grow explosion
-    e.alpha -= 0.02;      // fade out
+    e.radius += e.growing; // grow 
+    e.alpha -= 0.02;      
 
     ctx.fillStyle = `rgba(255, 150, 0, ${e.alpha})`;
     ctx.beginPath();
     ctx.arc(e.x, e.y, e.radius, 0, Math.PI * 2);
     ctx.fill();
 
-    // Damage enemies inside explosion
+    
     enemies.forEach(enemy => {
-      const ex = enemy.x + enemy.width / 2;
-      const ey = enemy.y + enemy.height / 2;
-      const dist = Math.sqrt((e.x - ex) ** 2 + (e.y - ey) ** 2);
+      const enemyx = (enemy.x + enemy.width / 2);
+      const enemyy = (enemy.y + enemy.height / 2);
+      const distance = Math.sqrt((e.x - enemyx) ** 2 + (e.y - enemyy) ** 2);
 
-      if (dist < e.radius*e.size) {
+      if (distance < e.radius*e.size) {
         if (Date.now() - enemy.lastHitTime > 100) {
           enemy.hp -= 30; 
           enemy.hp = Math.max(0, enemy.hp);
@@ -826,15 +827,15 @@ if (icezactive) {
       enemies.forEach(enemy => {
         const enemyx = enemy.x + enemy.width / 2;
         const enemyy = enemy.y + enemy.height / 2;
-        const dist = Math.sqrt((bullet.x - enemyx) ** 2 + (bullet.y - enemyy) ** 2);
+        const distance = Math.sqrt((bullet.x - enemyx) ** 2 + (bullet.y - enemyy) ** 2);
 
-        if (dist < enemy.width / 2) {
+        if (distance < enemy.width / 2) {
           bullet.exploded = true;
 
           enemy.hp -= 8;
           enemy.hp = Math.max(0, enemy.hp);
 
-          //halt! (enemy slow)
+          //enemy slowing(cool but hard)
           if (!enemy.isSlowed) {
             enemy.isSlowed = true;
             enemy.slowTimer = 165;
@@ -900,7 +901,7 @@ if (icezcooldown > 0) icezcooldown--;
     ctx.fillStyle = `hsla(${beam.hue}, 100%, 50%, ${beam.alpha})`;
     ctx.fillRect(0, -beamWidth / 2, beamLength, beamWidth);
     ctx.restore();
-    ctx.globalCompositeOperation = 'source-over'; // reset blend mode
+    ctx.globalCompositeOperation = 'source-over'; 
   });
 
   checkBeamCollisions();
@@ -966,19 +967,19 @@ function checkBeamCollisions() {
   }
   soundBeams.forEach(beam => {
     enemies.forEach(enemy => {
-      const ex = enemy.x + enemy.width / 2;
-      const ey = enemy.y + enemy.height / 2;
+      const enemyx = enemy.x + enemy.width / 2;
+      const enemyy = enemy.y + enemy.height / 2;
       // trigonometry nonsense
-      const bx = beam.x + Math.cos(beam.angle) * beam.distance;
-      const by = beam.y + Math.sin(beam.angle) * beam.distance;
+      const soundzx = beam.x + Math.cos(beam.angle) * beam.distance;
+      const soundzy = beam.y + Math.sin(beam.angle) * beam.distance;
 
-      const dx = bx - ex;
-      const dy = by - ey;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-
+      const totalx = soundzx - enemyx;
+      const totaly = soundzy - enemyy;
+      const distance = Math.sqrt(totalx * totalx + totaly * totaly);
+// this isn't completely nessesary but why not
       const now = Date.now();
 
-      if (dist < enemy.width / 2) {
+      if (distance < enemy.width / 2) {
         if (now - enemy.lastHitTime > 40) { // limit hits per enemy so the z move didn't do 2642.393939393023974567236424638 dmg (yes that's the actual dmg)
           let damage = 4;
 
@@ -1167,12 +1168,12 @@ function updateEnemies() {
   }
 }
 
-    const dx = playerX - enemy.x;
-    const dy = playerY - enemy.y;
-    const dist = Math.sqrt(dx * dx + dy * dy);
-    if (dist > 0) {
-      enemy.x += (dx / dist) * enemy.speed;
-      enemy.y += (dy / dist) * enemy.speed;
+    const distancebetweenplayerandenemyx = playerX - enemy.x;
+    const distancebetweenplayerandenemyy = playerY - enemy.y;
+    const distancebetweenplayerandenemy = Math.sqrt(distancebetweenplayerandenemyx * distancebetweenplayerandenemyx + distancebetweenplayerandenemyy * distancebetweenplayerandenemyy);
+    if (distancebetweenplayerandenemy > 0) {
+      enemy.x += (distancebetweenplayerandenemyx / distancebetweenplayerandenemy) * enemy.speed;
+      enemy.y += (distancebetweenplayerandenemyy / distancebetweenplayerandenemy) * enemy.speed;
     }
     enemystayinboundsplzz(enemy, canvas)
   });
@@ -1211,7 +1212,7 @@ window.addEventListener('keydown', (e) => {
   keys[key] = true;
   if (key === "z" && iceSelected&& icezcooldown<=0){
     icezactive= true;
-    icezduration=120;
+    icezduration=180;
     icezcooldown=180;
     
   }
@@ -1380,4 +1381,6 @@ function getActiveFruitName() {
 playerImage.onload = () => {
   resizeCanvas();
 };
+requestAnimationFrame(gameLoop);
+
 // 24hrs!
