@@ -521,8 +521,8 @@ function gameLoop() {
         if (enemyandcenterdistance < 400) {//dmg blast radius
           enemy.hp -= 210
           enemy.hp = Math.max(0, enemy.hp);
-          enemy.x += dx / dist * 50;
-          enemy.y += dy / dist * 50;
+          enemy.x += enemyx / enemyandcenterdistance * 50;
+          enemy.y += enemyy / enemyandcenterdistance * 50;
           enemystayinboundsplzz(enemy, canvas)
         }
       });
