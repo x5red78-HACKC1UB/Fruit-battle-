@@ -1,11 +1,18 @@
 //Canvas
 const canvas = document.getElementById('Battleground');
 const ctx = canvas.getContext('2d');
-// Sound Z Image
+
+//=======================================================//
+//======================IMAGES===========================//
+//=======================================================//
+
 const soundBeamImage = new Image();
 soundBeamImage.src = 'sound z.svg';
 
-//Enemy image
+//The actual player image
+const playerImage = new Image();
+playerImage.src = 'regular.svg';
+
 const enemyImage = new Image();
 enemyImage.src = 'Base.svg';
 
@@ -27,8 +34,13 @@ iceZneedle.src = "iceneedle.svg";
 const shatterediceZ = new Image();
 shatterediceZ.src = "iceshatter.svg";
 
-
-//Constants!
+//.               __________      _______________.         ----------------
+//|              |                      |.                /
+//|.             ___________            |                 \
+//|.             |                      |.                  ________________
+//|__________    ____________           |.                                  \
+//.                                                                         /
+//.     n.                                                __________________                 
 // //Knockback
 let knockback = 5;
 
@@ -91,7 +103,7 @@ let flameZActive = false;
 let flameZTimer = 0;
 
 let flameZCooldown = 0;
-const flameBullets = [];
+
 let flamexon = false;
 let flamexcooldown = 0;
 let flamextime = 0;
@@ -111,7 +123,13 @@ let flamevcooldown=0;
  let icezactive=false;
  let icezduration=0;
  let iceZslow= 0;
+ let icexcooldown=0;
+ let icexactive=false;
+ let repeatingicex=0;
  let xLines = [];
+ 
+ //My fuctions!
+
 // My radomizer!
 const multiplyrandom = (x, y) => Math.round((Math.random()*(x * y))+1);
 // ice z slow. x is the percentage of the slow and y is enemy speed
@@ -125,8 +143,11 @@ const speed = 5;
 
 
 const soundBeams = [];
+const flameBullets = [];
 const flamexProjectiles = [];
 const iceBullets=[];
+
+//HTML STUFF :D
 
 // how to play
 const tutorial = document.getElementById("tutorial");
@@ -141,7 +162,7 @@ closetutorial.addEventListener("click", () => {
   tutorial.classList.add("hidden");
 });
 
-
+// Player facing mouse code
 const keys = {};
 
 //This is kinda long to explain, but when the mouse leaves the canvas the player would just stare at the last angle so this detects if the mouse is in the game.
@@ -170,9 +191,7 @@ canvas.addEventListener('mousemove', (e) => {
     mouseY >= 0 && mouseY <= canvas.height;
 });
 
-//The actual player image
-const playerImage = new Image();
-playerImage.src = 'regular.svg';
+
 
 //Screen resizing
 function resizeCanvas() {
@@ -183,7 +202,11 @@ function resizeCanvas() {
 window.addEventListener('resize', resizeCanvas);
 resizeCanvas();
 
-//Toolbar and what it got in it
+//=======================================================//
+//======================TOOLBAR===========================//yes, imma reuse im not manually doing this for everything
+//=======================================================//
+
+
 const imageBar = [
   { name: 'flame', src: 'flame.svg', img: new Image(), x: 50, y: 20 },
   { name: 'sound', src: 'backdrop1.svg', img: new Image(), x: 120, y: 20 },
@@ -233,7 +256,10 @@ document.getElementById('startButton').addEventListener('click', () => {
 
 // I used to think this was just for smooth movement, but I slowly realize this is just the entire game.
 function gameLoop() {
-  // Smooth player movement
+  //=======================================================//
+//======================Player Movement===========================//
+//=======================================================//
+
   if (keys['arrowup'] || keys['w']) playerY -= speed;
   if (keys['arrowdown'] || keys['s']) playerY += speed;
   if (keys['arrowleft'] || keys['a']) playerX -= speed;
@@ -259,6 +285,9 @@ function gameLoop() {
   });
 
   // WARNING: EVERYTHING FROM 174 to 253 IS JUST ABT LINES, AHHHHHHHH I HATE LINES THEIR BORING, JUST LINES AND LINES.
+
+  //Every single move in the entire game.(dont imma use my format)
+
   // x move animation
   if (xMoveActive) {
     playerHue = (playerHue + 40) % 360;
@@ -431,8 +460,8 @@ function gameLoop() {
       flashyCircle = null;
     }
   }
-  // Cooldown sound v
-  if (soundcooldownV > 0) soundcooldownV--;
+  
+  
 
   if (soundVon) {
     // Draw orb so you see it
@@ -468,7 +497,7 @@ function gameLoop() {
       star.x += starx / stardistance * star.speed;
       star.y += stary / stardistance * star.speed;
 
-      // Rainbow for variety
+     //ooh color stars!
       const hue = (Date.now() / 10 + star.x) % 360;
       ctx.fillStyle = `hsl(${hue}, 100%, 50%)`;
 
@@ -485,7 +514,7 @@ function gameLoop() {
         const starandenemyy = star.y - enemyy;
         const starandenemydistance = Math.sqrt(starandenemyx * starandenemyx + starandenemyy * starandenemyy);
 
-        // If star touches enemy 
+        
         if (starandenemydistance< enemy.width / 2) {
           for (let i = enemies.length - 1; i >= 0; i--) {
             enemydeathrip(i, enemies, canvas, ctx);
@@ -541,6 +570,8 @@ function gameLoop() {
       soundcooldownV = 300;
     }
   }
+  //end of sound moves
+
   // Flame Z
   if (flameZActive) {
     // Death checker
@@ -566,7 +597,7 @@ function gameLoop() {
         // Draw bullet
         ctx.drawImage(flameZbullets, bullet.x - 8, bullet.y - 8, 16, 16);
         
-// Move bullet
+
         bullet.x += Math.cos(bullet.angle) * bullet.speed;
         bullet.y += Math.sin(bullet.angle) * bullet.speed;
         // touching with player???
@@ -577,13 +608,13 @@ function gameLoop() {
 
           if (distance < enemy.width / 2) {   
             bullet.exploded = true;
-            enemy.hp -= 15;               // damage 
+            enemy.hp -= 15;               
             enemy.hp = Math.max(0, enemy.hp);
           }
 
         });
       } else {
-        // Explosion phase
+        // Explosion....
         ctx.globalAlpha = bullet.alpha;
         ctx.drawImage(flameZbulletkaboom, bullet.x - 16, bullet.y - 16, 32, 32);
         ctx.globalAlpha = 1;
@@ -603,9 +634,7 @@ function gameLoop() {
     flameZActive = false;
     flameBullets.length = 0;
   }
-  if (flameZCooldown > 0) {
-    flameZCooldown--;
-  }
+
   if (flamexon) {
     flamextime--;
     for (let i = flamexProjectiles.length - 1; i >= 0; i--) {
@@ -661,9 +690,7 @@ enemies.forEach(enemy => {
   if (flamextime <= 0) {
     flamexon = false;
   }
-  if (flamexcooldown > 0) {
-    flamexcooldown--;
-  }
+  
 
 if (flameCActive) {
   const centerX = playerX + playerWidth / 2;
@@ -725,8 +752,8 @@ if (flameCActive) {
   if (flameCduration <= 0) flameCActive = false;
 }
 
-// Cooldown countdown
-if (flameCCooldown > 0) flameCCooldown--;
+
+
 
 if (flamevon && flamevdestruction) {
   const e = flamevdestruction;
@@ -790,7 +817,7 @@ if (flamevon && flamevdestruction) {
   }
 }
 
-if (flamevcooldown > 0) flamevcooldown--;
+//end of flame moves
 
  
 //3 HOURS ON ONE MOVE
@@ -861,7 +888,99 @@ if (icezactive) {
 }
 
 
-if (icezcooldown > 0) icezcooldown--;
+
+
+for (let i = iceBullets.length - 1; i >= 0; i--) {
+  const bullet = iceBullets[i];
+
+  if (!bullet.exploded) {
+
+    // draw ice x using the ice z img
+    ctx.drawImage(iceZneedle, bullet.x - 8, bullet.y - 8, 16, 16);
+
+    
+    bullet.x += Math.cos(bullet.angle) * bullet.speed;
+    bullet.y += Math.sin(bullet.angle) * bullet.speed;
+
+    // Collision with all enemies
+    for (let e = enemies.length - 1; e >= 0; e--) {
+      const enemy = enemies[e];
+
+      const enemyx = enemy.x + enemy.width / 2;
+      const enemyy = enemy.y + enemy.height / 2;
+      const distance = Math.hypot(bullet.x - enemyx, bullet.y - enemyy);
+
+      if (distance < enemy.width / 2) {
+        bullet.exploded = true;
+
+        // Damage
+        enemy.hp -= 12;
+        if (enemy.hp < 0) enemy.hp = 0;
+
+        // Slow
+        if (!enemy.isSlowed) {
+          enemy.isSlowed = true;
+          enemy.slowTimer = 300;
+
+          const slowplz = slowpercent(40, enemy.baseSpeed);
+          enemy.speed = enemy.baseSpeed - slowplz;
+        }
+
+        break; 
+      }
+    }
+
+  } else {
+
+    // Explosion fade(low taper fade)
+    ctx.globalAlpha = bullet.alpha;
+    ctx.drawImage(shatterediceZ, bullet.x - 16, bullet.y - 16, 32, 32);
+    ctx.globalAlpha = 1;
+
+    bullet.alpha -= 0.05;
+    if (bullet.alpha <= 0) {
+      iceBullets.splice(i, 1);
+    }
+  }
+}
+
+
+// satisfying ice spread
+if (repeatingicex > 0) {
+
+  const angletilt = repeatingicex * 0.2;
+  for (let i = 0; i < 12; i++) {
+    const a = (Math.PI * 2 / 9) * i + angletilt;
+    iceZX1(a);
+   
+  }
+  repeatingicex--;
+   
+}
+
+
+
+function iceZX1(a) {
+  iceBullets.push({
+    x: playerX + playerWidth / 2,
+    y: playerY + playerHeight / 2,
+    angle: a,
+    speed: 10,
+    exploded: false,
+    alpha: 1
+  });
+}
+ 
+
+
+if (icexactive && icexcooldown <= 0) {
+  repeatingicex = 9;
+  icexcooldown = 120;
+  icexactive = false;
+}
+
+
+
 
   
 
@@ -879,7 +998,7 @@ if (icezcooldown > 0) icezcooldown--;
     beam.alpha -= 0.02;
 
     //how fast da color changes(I should really make an epilepsy warning)
-    beam.hue = (beam.hue + 2) % 360; // COLORS!
+    beam.hue = (beam.hue + 2) % 360; // C0LORS!
 
     if (beam.alpha <= 0) {
       soundBeams.splice(index, 1);
@@ -887,7 +1006,7 @@ if (icezcooldown > 0) icezcooldown--;
     }
 
     const drawX = beam.x + Math.cos(beam.angle) * beam.distance;//}
-    //  } trigonomtry nonsense
+    //                                                             } trigonomtry nonsense
     const drawY = beam.y + Math.sin(beam.angle) * beam.distance;//}
     const beamLength = 120 * beam.scale;
     const beamWidth = 90 * beam.scale;
@@ -942,8 +1061,33 @@ for (let i = enemies.length - 1; i >= 0; i--) {
   ctx.fillText('Active Fruit: ' + getActiveFruitName(), 20, canvas.height - 30);
 
 
+//=======================================================//
+//====================Cooldowns:)===========================//
+//=======================================================//
 
-  //Cooldown
+if (icexcooldown > 0){ 
+  icexcooldown--;
+}
+if (icezcooldown > 0){ 
+  icezcooldown--;
+}
+if (flamevcooldown > 0){ 
+  flamevcooldown--;
+}
+if (flameCCooldown > 0){ 
+  flameCCooldown--;
+}
+if (flamexcooldown > 0) {
+    flamexcooldown--;
+  }
+
+  if (flameZCooldown > 0) {
+    flameZCooldown--;
+  }
+
+  if (soundcooldownV > 0){
+     soundcooldownV--;
+  }
   if (soundcooldownC > 0) {
     soundcooldownC--;
   }
@@ -959,7 +1103,10 @@ for (let i = enemies.length - 1; i >= 0; i--) {
   requestAnimationFrame(gameLoop);
 }
 
-//Collisions here!
+//=======================================================//
+//======================Collision(over time i realized i don't have to do these ahahahahahahahah, and yes idc abt this message being centered)===========================//
+//=======================================================//
+
 
 //beam touching the enemy
 function checkBeamCollisions() {
@@ -1056,6 +1203,8 @@ function checkXLineCollisions() {
     });
   });
 }
+//just experimenting with functions
+
 function activateFlames() {
   if (!flameCActive && flameCCooldown <= 0) {
     flameCActive = true;
@@ -1074,12 +1223,17 @@ function puredestruction(){
       speed: 3,
       radius: 30,  
       exploded: false,
-      growing: 0,    // explosion growth per frame
+      growing: 0,   
       alpha: 1,
       size: 4,
     };
   }
 }
+
+//=======================================================//
+//======================Enemies=========================//
+//======================================================//
+
 
 //enemy stats!
 const enemies = [];
@@ -1107,7 +1261,7 @@ function spawnEnemy2() {
   spawnEnemy1();
     }
 
-}
+
 enemies.push({
     x: Math.random() * canvas.width,
     y: Math.random() * canvas.height,
@@ -1122,6 +1276,7 @@ enemies.push({
     isSlowed:false,
     slowTimer:0,
   });
+}
 
 function spawnrandom() {
   const randomHP = multiplyrandom(1,1200)
@@ -1211,10 +1366,13 @@ function enemystayinboundsplzz(enemy, canvas) {
 window.addEventListener('keydown', (e) => {
   const key = e.key.toLowerCase();
   keys[key] = true;
+   if (key === "x" && iceSelected&& icexcooldown<=0){
+    icexactive= true;
+     }
   if (key === "z" && iceSelected&& icezcooldown<=0){
     icezactive= true;
     icezduration=180;
-    icezcooldown=180;
+    icezcooldown=250;
     
   }
   if (key === 'v' && flameSelected && flamevcooldown <= 0) {
@@ -1346,7 +1504,9 @@ document.addEventListener('fullscreenchange', () => {
 window.addEventListener('keyup', (e) => {
   keys[e.key.toLowerCase()] = false;
 });
-// Variables
+
+// fruit selection
+
 function handleImageClick(name) {
   flameSelected = 0;
   soundSelected = 0;
