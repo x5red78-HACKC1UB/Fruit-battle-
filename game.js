@@ -833,7 +833,7 @@ if (icezactive) {
   }
 
   // ice destruction i like it it looks cool
-  if (icezduration % 10 === 0) {
+  if (icezduration % 50 === 0) {
     iceBullets.push({
       x: playerX + playerWidth / 2,
       y: playerY + playerHeight / 2,
@@ -852,27 +852,7 @@ if (icezactive) {
       bullet.x += Math.cos(bullet.angle) * bullet.speed;
       bullet.y += Math.sin(bullet.angle) * bullet.speed;
 
-      enemies.forEach(enemy => {
-        const enemyx = enemy.x + enemy.width / 2;
-        const enemyy = enemy.y + enemy.height / 2;
-        const distance = Math.sqrt((bullet.x - enemyx) ** 2 + (bullet.y - enemyy) ** 2);
-
-        if (distance < enemy.width / 2) {
-          bullet.exploded = true;
-
-          enemy.hp -= 8;
-          enemy.hp = Math.max(0, enemy.hp);
-
-          //enemy slowing(cool but hard)
-          if (!enemy.isSlowed) {
-            enemy.isSlowed = true;
-            enemy.slowTimer = 165;
-
-            const slowplz = slowpercent(40, enemy.baseSpeed);
-            enemy.speed = enemy.baseSpeed - slowplz;
-          }
-        }
-      });
+      
 
     } else {
       ctx.globalAlpha = bullet.alpha;
@@ -914,19 +894,19 @@ for (let i = iceBullets.length - 1; i >= 0; i--) {
         bullet.exploded = true;
 
         // Damage
-        enemy.hp -= 12;
+        enemy.hp -= 25;
         if (enemy.hp < 0) enemy.hp = 0;
 
         // Slow
-        if (!enemy.isSlowed) {
+        if (enemy.isSlowed) {
           enemy.isSlowed = true;
-          enemy.slowTimer = 300;
+          enemy.slowTimer = 450;
 
           const slowplz = slowpercent(40, enemy.baseSpeed);
           enemy.speed = enemy.baseSpeed - slowplz;
         }
 
-        break; 
+       
       }
     }
 
@@ -948,9 +928,9 @@ for (let i = iceBullets.length - 1; i >= 0; i--) {
 // satisfying ice spread
 if (repeatingicex > 0) {
 
-  const angletilt = repeatingicex * 0.2;
-  for (let i = 0; i < 12; i++) {
-    const a = (Math.PI * 2 / 9) * i + angletilt;
+  
+  for (let i = 0; i < 5; i++) {
+let a = +15*repeatingicex
     iceZX1(a);
    
   }
@@ -965,7 +945,7 @@ function iceZX1(a) {
     x: playerX + playerWidth / 2,
     y: playerY + playerHeight / 2,
     angle: a,
-    speed: 10,
+    speed: 12,
     exploded: false,
     alpha: 1
   });
@@ -974,8 +954,8 @@ function iceZX1(a) {
 
 
 if (icexactive && icexcooldown <= 0) {
-  repeatingicex = 9;
-  icexcooldown = 120;
+  repeatingicex = 100;
+  icexcooldown = 240;
   icexactive = false;
 }
 
