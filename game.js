@@ -833,7 +833,7 @@ if (icezactive) {
   }
 
   // ice destruction i like it it looks cool
-  if (icezduration % 50 === 0) {
+  if (icezduration % 40 === 0) {
     iceBullets.push({
       x: playerX + playerWidth / 2,
       y: playerY + playerHeight / 2,
