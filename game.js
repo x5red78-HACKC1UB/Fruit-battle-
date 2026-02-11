@@ -929,7 +929,7 @@ for (let i = iceBullets.length - 1; i >= 0; i--) {
 if (repeatingicex > 0) {
 
   
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 2; i++) {
 let a = +15*repeatingicex
     iceZX1(a);
    
