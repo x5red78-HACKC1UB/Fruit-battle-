@@ -46,6 +46,7 @@ let knockback = 5;
 
 // Last place da mouse was
 let lastAngle = 0;
+let playerAngle=0;
 
 // Mouse in window???!?!?!?!??! (grug see mouse)
 let mouseInsideCanvas = true;
@@ -127,6 +128,9 @@ let flamevcooldown=0;
  let icexactive=false;
  let repeatingicex=0;
  let xLines = [];
+ let iceCactive=0;
+ let iceCduration=0;
+ let iceCcooldown=0;
  
  //My fuctions!
 
@@ -189,6 +193,8 @@ canvas.addEventListener('mousemove', (e) => {
   mouseInsideCanvas =
     mouseX >= 0 && mouseX <= canvas.width &&
     mouseY >= 0 && mouseY <= canvas.height;
+
+    playerAngle = Math.atan2(mouseY - (playerY + playerHeight / 2), mouseX - (playerX + playerWidth / 2));
 });
 
 
@@ -585,7 +591,7 @@ function gameLoop() {
         x: playerX + playerWidth / 2,
         y: playerY + playerHeight / 2,
         angle: lastAngle,
-        speed: 8,
+        speed: 16,
         exploded: false,
         alpha: 1
       });
@@ -696,6 +702,10 @@ if (flameCActive) {
   const centerX = playerX + playerWidth / 2;
   const centerY = playerY + playerHeight / 2;
 
+flameCduration--; 
+if (flameCduration <= 0) { 
+  flameCActive = false; 
+} else{
  
   for (let i = 0; i < 8; i++) {
     flameParticles.push({
@@ -708,6 +718,7 @@ if (flameCActive) {
       life: 40 // circle li3fespan
     });
   }
+ 
 
 
   flameParticles.forEach((p, i) => {
@@ -740,17 +751,10 @@ if (flameCActive) {
         enemy.y += Math.sin(p.angle) * (knockback / 1.2);
       }
     });
-
-    
-    if (p.life <= 0 || p.alpha <= 0) {
-      flameParticles.splice(i, 1);
-    }
   });
+flameParticles = flameParticles.filter(p => p.life > 0 && p.alpha > 0);
 
-
-  flameCduration--;
-  if (flameCduration <= 0) flameCActive = false;
-}
+}}
 
 
 
@@ -766,7 +770,7 @@ if (flamevon && flamevdestruction) {
     
     ctx.fillStyle = `rgba(255, 100, 0, ${e.alpha})`;
     ctx.beginPath();
-    ctx.arc(e.x, e.y, e.radius*e.size, 0, Math.PI * 2);
+    ctx.arc(e.x, e.y, e.radius, 0, Math.PI * 2);
     ctx.fill();
 
     // Collision:D
@@ -774,14 +778,14 @@ if (flamevon && flamevdestruction) {
       const ex = enemy.x + enemy.width / 2;
       const ey = enemy.y + enemy.height / 2;
       const dist = Math.sqrt((e.x - ex) ** 2 + (e.y - ey) ** 2);
-      const enemyHitBox = Math.max(enemy.width, enemy.height) / 2;
+      const enemydmgarea = Math.max(enemy.width, enemy.height) / 2;
 
-      if (dist < e.radius + enemyHitBox) {
+      if (dist < e.radius + enemydmgarea) {
         enemy.hp -= 250; 
           enemy.hp = Math.max(0, enemy.hp);
         e.exploded = true;
         e.growing = 6; 
-        e.radius = 60*e.size; 
+        e.radius = 60; 
       }
     });
   } else {
@@ -957,6 +961,28 @@ if (icexactive && icexcooldown <= 0) {
   repeatingicex = 100;
   icexcooldown = 240;
   icexactive = false;
+}
+if(iceCactive){
+  for (let i = 0; i < 12; i++) { 
+    const randomAngle = Math.random() * Math.PI * 2; 
+    iceParticles.push({ 
+      x: centerX, 
+      y: centerY, 
+      angle: randomAngle, 
+      speed: 2 + Math.random() * 1.5, 
+      radius: 4 + Math.random() * 3, 
+      alpha: 1, 
+      life: 45 }); 
+    }
+    iceParticles.forEach(p => { 
+      p.x += Math.cos(p.angle) * p.speed; 
+      p.y += Math.sin(p.angle) * p.speed; 
+      p.alpha -= 0.02; 
+      p.life--; 
+      ctx.fillStyle = `rgba(180, 220, 255, ${p.alpha})`; 
+      ctx.beginPath(); c
+      tx.arc(p.x, p.y, p.radius, 0, Math.PI * 2); ctx.fill(); 
+    });
 }
 
 
@@ -1189,7 +1215,8 @@ function activateFlames() {
   if (!flameCActive && flameCCooldown <= 0) {
     flameCActive = true;
     flameCduration =240; 
-    flameCCooldown = 420;
+    flameCCooldown = 400;
+lastAngle = playerAngle;
   }
 }
 function puredestruction(){
@@ -1201,7 +1228,7 @@ function puredestruction(){
       y: playerY + playerHeight / 2,
       angle: lastAngle,
       speed: 3,
-      radius: 30,  
+      radius: 120,  
       exploded: false,
       growing: 0,   
       alpha: 1,
@@ -1346,6 +1373,12 @@ function enemystayinboundsplzz(enemy, canvas) {
 window.addEventListener('keydown', (e) => {
   const key = e.key.toLowerCase();
   keys[key] = true;
+
+  if (key === "c" && iceSelected&& iceCcooldown<=0){
+    iceCactive= true;
+    iceCduration=280;
+    lastAngle = playerAngle;
+     }
    if (key === "x" && iceSelected&& icexcooldown<=0){
     icexactive= true;
      }
@@ -1383,6 +1416,9 @@ flamexcooldown=200;
     flameZActive = true;
     flameZTimer = 100;       // how long the move lasts (frames)
     flameZCooldown = 180;
+
+lastAngle = playerAngle;
+
     flameBullets.push({
       x: playerX + playerWidth / 2,
       y: playerY + playerHeight / 2,
