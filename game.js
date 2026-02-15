@@ -128,7 +128,7 @@ let flamevcooldown=0;
  let icexactive=false;
  let repeatingicex=0;
  let xLines = [];
- let iceCactive=0;
+ let iceCactive=false;
  let iceCduration=0;
  let iceCcooldown=0;
  
@@ -150,6 +150,7 @@ const soundBeams = [];
 const flameBullets = [];
 const flamexProjectiles = [];
 const iceBullets=[];
+let iceCParticles = [];
 
 //HTML STUFF :D
 
@@ -892,7 +893,7 @@ for (let i = iceBullets.length - 1; i >= 0; i--) {
 
       const enemyx = enemy.x + enemy.width / 2;
       const enemyy = enemy.y + enemy.height / 2;
-      const distance = Math.hypot(bullet.x - enemyx, bullet.y - enemyy);
+      const distance = Math.sqrt((p.x - enemyx) ** 2 + (p.y - enemyy) ** 2);
 
       if (distance < enemy.width / 2) {
         bullet.exploded = true;
@@ -962,28 +963,84 @@ if (icexactive && icexcooldown <= 0) {
   icexcooldown = 240;
   icexactive = false;
 }
-if(iceCactive){
-  for (let i = 0; i < 12; i++) { 
-    const randomAngle = Math.random() * Math.PI * 2; 
-    iceParticles.push({ 
-      x: centerX, 
-      y: centerY, 
-      angle: randomAngle, 
-      speed: 2 + Math.random() * 1.5, 
-      radius: 4 + Math.random() * 3, 
-      alpha: 1, 
-      life: 45 }); 
+
+if (iceCactive) { 
+  iceCduration--; 
+
+  if (iceCduration <= 0) { 
+    iceCactive = false; 
+
+
+    for (let ice = 0; ice < 32; ice++) {
+      iceBullets.push({
+        x: playerX + playerWidth / 2,
+        y: playerY + playerHeight / 2,
+        angle: (Math.PI * 2 / 32) * ice,
+        speed: 8,
+        exploded: false,
+        alpha: 1
+      });
     }
-    iceParticles.forEach(p => { 
-      p.x += Math.cos(p.angle) * p.speed; 
-      p.y += Math.sin(p.angle) * p.speed; 
-      p.alpha -= 0.02; 
-      p.life--; 
-      ctx.fillStyle = `rgba(180, 220, 255, ${p.alpha})`; 
-      ctx.beginPath(); c
-      tx.arc(p.x, p.y, p.radius, 0, Math.PI * 2); ctx.fill(); 
-    });
+
+  } else {
+
+    const centerX = playerX + playerWidth / 2; 
+    const centerY = playerY + playerHeight / 2; 
+
+    for (let i = 0; i < 12; i++) { 
+      const randomAngle = Math.random() * Math.PI * 2; 
+      iceCParticles.push({ 
+        x: centerX, 
+        y: centerY, 
+        spinny: 0.06 + Math.random() * 0.05, 
+        distance: 0, 
+        angle: randomAngle, 
+        speed: 5 + Math.random() * 1.5, 
+        radius: 5 + Math.random() * 3, 
+        alpha: 1, 
+        life: 45 
+      }); 
+    } 
+  }
 }
+
+
+
+iceCParticles.forEach(p => { 
+  p.x += Math.cos(p.angle) * p.speed; 
+  p.y += Math.sin(p.angle) * p.speed; 
+  p.angle += p.spinny;
+  p.alpha -= 0.02; 
+  p.life--; 
+
+  
+  enemies.forEach(enemy => {
+    const enemyCenterX = enemy.x + enemy.width / 2;
+    const enemyCenterY = enemy.y + enemy.height / 2;
+
+    const distance = Math.hypot(p.x - enemyCenterX, p.y - enemyCenterY);
+
+    if (distance < enemy.width / 2) {
+      enemy.hp -= 1;  
+
+      // slow effect
+      enemy.isSlowed = true;
+      enemy.slowTimer = 450;
+
+      const slowplz = slowpercent(60, enemy.baseSpeed);
+      enemy.speed = enemy.baseSpeed - slowplz;
+    }
+  });
+
+  // drawing
+  ctx.fillStyle = `rgba(120, 180, 255, ${p.alpha})`; 
+  ctx.beginPath(); 
+  ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2); 
+  ctx.fill(); 
+});
+
+  iceCParticles = iceCParticles.filter(p => p.life > 0 && p.alpha > 0);
+
 
 
 
@@ -1067,9 +1124,14 @@ for (let i = enemies.length - 1; i >= 0; i--) {
   ctx.fillText('Active Fruit: ' + getActiveFruitName(), 20, canvas.height - 30);
 
 
+
 //=======================================================//
 //====================Cooldowns:)===========================//
 //=======================================================//
+
+if (iceCcooldown > 0){ 
+  iceCcooldown--;
+}
 
 if (icexcooldown > 0){ 
   icexcooldown--;
@@ -1374,11 +1436,12 @@ window.addEventListener('keydown', (e) => {
   const key = e.key.toLowerCase();
   keys[key] = true;
 
-  if (key === "c" && iceSelected&& iceCcooldown<=0){
+  if (key === "c" && iceSelected && iceCcooldown<=0){
     iceCactive= true;
     iceCduration=280;
+    iceCcooldown=400;
     lastAngle = playerAngle;
-     }
+  }
    if (key === "x" && iceSelected&& icexcooldown<=0){
     icexactive= true;
      }
