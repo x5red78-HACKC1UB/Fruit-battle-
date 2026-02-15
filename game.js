@@ -34,6 +34,14 @@ iceZneedle.src = "iceneedle.svg";
 const shatterediceZ = new Image();
 shatterediceZ.src = "iceshatter.svg";
 
+
+//=======================================================//
+//======================Audio===========================//
+//=======================================================//
+const iceVCracking = new Audio("glass-break-cracking_A_minor.wav");
+const iceVShatter = new Audio("broken-glass-sound-effect-made-with-Voicemod.mp3");
+
+
 //.               __________      _______________.         ----------------
 //|              |                      |.                /
 //|.             ___________            |                 \
@@ -131,6 +139,10 @@ let flamevcooldown=0;
  let iceCactive=false;
  let iceCduration=0;
  let iceCcooldown=0;
+ let iceVactive=false;
+ let iceVcooldown=0;
+ let iceVduration=0;
+ let iceVstarted = false;
  
  //My fuctions!
 
@@ -899,7 +911,7 @@ for (let i = iceBullets.length - 1; i >= 0; i--) {
         bullet.exploded = true;
 
         // Damage
-        enemy.hp -= 25;
+        enemy.hp -= 20;
         if (enemy.hp < 0) enemy.hp = 0;
 
         // Slow
@@ -959,7 +971,7 @@ function iceZX1(a) {
 
 
 if (icexactive && icexcooldown <= 0) {
-  repeatingicex = 100;
+  repeatingicex = 50;
   icexcooldown = 240;
   icexactive = false;
 }
@@ -1015,6 +1027,7 @@ iceCParticles.forEach(p => {
 
   
   enemies.forEach(enemy => {
+    
     const enemyCenterX = enemy.x + enemy.width / 2;
     const enemyCenterY = enemy.y + enemy.height / 2;
 
@@ -1032,7 +1045,7 @@ iceCParticles.forEach(p => {
       enemy.isSlowed = true;
       enemy.slowTimer = 450;
 
-      const slowplz = slowpercent(60, enemy.baseSpeed);
+      const slowplz = slowpercent(75, enemy.baseSpeed);
       enemy.speed = enemy.baseSpeed - slowplz;
     }
   });
@@ -1047,6 +1060,55 @@ iceCParticles.forEach(p => {
   iceCParticles = iceCParticles.filter(p => p.life > 0 && p.alpha > 0);
 
 
+if (iceVactive) {
+
+  iceVduration--;
+
+  if (!iceVstarted) {
+    enemies.forEach(enemy => {
+      enemy.slowTimer = 190;
+      enemy.enemyjustuniced = false;
+    });
+    iceVstarted = true;
+  }
+
+  ctx.fillStyle = `rgba(134, 229, 255, 0.75)`;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  enemies.forEach(enemy => {
+
+    ctx.fillStyle = 'black';
+    ctx.font = '14px Comic Sans MS';
+    ctx.fillText('HP: ' + enemy.hp, enemy.x, enemy.y - 5);
+
+    enemy.isSlowed = true;
+
+    if (enemy.boss > 0) {
+      const slowplz = slowpercent(80, enemy.baseSpeed);
+      enemy.speed = enemy.baseSpeed - slowplz;
+    } else {
+      const slowplz = slowpercent(100, enemy.baseSpeed);
+      enemy.speed = enemy.baseSpeed - slowplz;
+    }
+
+    enemy.slowTimer--;
+
+    
+    if (enemy.slowTimer <= 0 && !enemy.enemyjustuniced) {
+      enemy.hp -= 1200;
+      enemy.enemyjustuniced = true;
+        iceVCracking.play();
+        iceVCracking.play();
+      iceVShatter.play();
+    }
+
+  });
+
+  if (iceVduration <= 0) {
+    iceVactive = false;
+    iceVstarted = false;
+  }
+}
 
 
 
@@ -1322,39 +1384,45 @@ function spawnEnemy1() {
     speed:1.4,
     baseSpeed: 1.4,
     img: enemyImage,
+    boss:0,
     lastHitTime: 0,
     isSlowed:false,
     slowTimer:0,
-  
+   enemyjustuniced:false,
   
   });
 }
 function spawnEnemy2() {
-  const goons = multiplyrandom(1,4)
+  setTimeout(() => { 
+    console.log("5 seconds pass"); 
+  
+  const goons = multiplyrandom(1,3)
   for (let i = 0; i < goons; i++) {
   spawnEnemy1();
     }
-
+ }, 5000);
 
 enemies.push({
     x: Math.random() * canvas.width,
     y: Math.random() * canvas.height,
     width: 60,
     height: 60,
-    hp: 700,
-    maxhp: 700,
+    hp: 1800,
+    maxhp: 1800,
     speed:0.9,
     baseSpeed: 0.9,
+    boss: 1,
     img: enemyImage,
     lastHitTime: 0,
     isSlowed:false,
     slowTimer:0,
+    enemyjustuniced:false,
   });
 }
 
 function spawnrandom() {
-  const randomHP = multiplyrandom(1,1500)
-  const randomSpeed = multiplyrandom(1,3.5)
+  const randomHP = multiplyrandom(1,2000)
+  const randomSpeed = multiplyrandom(1,4.5)
   enemies.push({
     x: Math.random() * canvas.width,
     y: Math.random() * canvas.height,
@@ -1365,9 +1433,11 @@ function spawnrandom() {
     speed:randomSpeed,
     baseSpeed: randomSpeed,
     img: randomenemyimage,
+    boss:0,
     lastHitTime: 0,
     isSlowed:false,
     slowTimer:0,
+     enemyjustuniced:false,
   });
 }
 //TASK MANGER!
@@ -1391,6 +1461,7 @@ function updateEnemies() {
   enemies.forEach(enemy => {
     if (enemy.isSlowed) {
   enemy.slowTimer--;
+
 
   if (enemy.slowTimer <= 0) {
     enemy.isSlowed = false;
@@ -1440,6 +1511,11 @@ function enemystayinboundsplzz(enemy, canvas) {
 window.addEventListener('keydown', (e) => {
   const key = e.key.toLowerCase();
   keys[key] = true;
+  if (key==="v"&&!iceVcooldown&& iceSelected) {
+     iceVactive = true; 
+     iceVduration = 180; 
+     iceVcooldown = 720; 
+      }
 
   if (key === "c" && iceSelected && iceCcooldown<=0){
     iceCactive= true;
@@ -1447,24 +1523,24 @@ window.addEventListener('keydown', (e) => {
     iceCcooldown=400;
     lastAngle = playerAngle;
   }
-   if (key === "x" && iceSelected&& icexcooldown<=0){
+   if (key ==="x" && iceSelected&& icexcooldown<=0){
     icexactive= true;
      }
-  if (key === "z" && iceSelected&& icezcooldown<=0){
+  if (key ===  "z" && iceSelected&& icezcooldown<=0){
     icezactive= true;
     icezduration=180;
     icezcooldown=250;
     
   }
-  if (key === 'v' && flameSelected && flamevcooldown <= 0) {
+  if (key ===  'v' && flameSelected && flamevcooldown <= 0) {
   puredestruction();
 }
 
-  if (key === 'c' && flameSelected && flameCCooldown <= 0) {
+  if (key ==='c' && flameSelected && flameCCooldown <= 0) {
   activateFlames();
 }
 
-  if (key === 'x' && flameSelected && flamexcooldown <= 0) {
+  if (key ==='x' && flameSelected && flamexcooldown <= 0) {
     //  one fast Fireball
     flamexon = true;
     flamextime = 60;
@@ -1480,7 +1556,7 @@ window.addEventListener('keydown', (e) => {
 flamexcooldown=200;
   }
 
-  if (key === 'z' && flameSelected && !flameZActive && flameZCooldown <= 0) {
+  if (key ===  'z' && flameSelected && !flameZActive && flameZCooldown <= 0) {
     flameZActive = true;
     flameZTimer = 100;       // how long the move lasts (frames)
     flameZCooldown = 180;
@@ -1498,7 +1574,7 @@ lastAngle = playerAngle;
   }
 
   //Sound V I SPENT 2 HOURSSSSSS
-  if (key === 'v' && soundSelected && !soundVon && soundcooldownV <= 0) {
+  if (key === "v"&& soundSelected && !soundVon && soundcooldownV <= 0) {
     soundVon = true;
     soundVTimer = 180;
     centerofSoundV.x = playerX + playerWidth / 2;
