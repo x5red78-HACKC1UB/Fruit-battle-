@@ -1,4 +1,4 @@
-//Canvas
+// battle area thing
 const canvas = document.getElementById('Battleground');
 const ctx = canvas.getContext('2d');
 
@@ -48,7 +48,7 @@ let knockback = 5;
 let lastAngle = 0;
 let playerAngle=0;
 
-// Mouse in window???!?!?!?!??! (grug see mouse)
+// Mouse in window???!?!?!?!??! 
 let mouseInsideCanvas = true;
 
 // uh the tutorial didn't explain this tbh (bro)
@@ -114,12 +114,12 @@ let flameCduration = 0;
 let flameCCooldown = 0;
 
 let flameParticles = [];
-//Flame V
+
 let flamevon=false;
 let flamevcooldown=0;
 
  let flamevdestruction=null;
-
+// at this point this is too repetitve i can't keep commenting on this but will explain my code further on
  let icezcooldown=0;
  let icezactive=false;
  let icezduration=0;
@@ -134,9 +134,9 @@ let flamevcooldown=0;
  
  //My fuctions!
 
-// My radomizer!
+// My radomizer!hi
 const multiplyrandom = (x, y) => Math.round((Math.random()*(x * y))+1);
-// ice z slow. x is the percentage of the slow and y is enemy speed
+// ice z slow. x is the percentage of the slow and y is enemy speed set it to 100 on x and with the right code freezes the enemy
 const slowpercent = (x,y) => (x/100)*y
 
 
@@ -154,12 +154,12 @@ let iceCParticles = [];
 
 //HTML STUFF :D
 
-// how to play
+// how to play(id's for the html)
 const tutorial = document.getElementById("tutorial");
 const closetutorial = document.getElementById("closeTutorial");
 const howtoplay = document.getElementById("howtoplay");
 
-// Hide and show how to play button
+// x button
 howtoplay.addEventListener("click", () => {
   tutorial.classList.remove("hidden");
 });
@@ -200,7 +200,7 @@ canvas.addEventListener('mousemove', (e) => {
 
 
 
-//Screen resizing
+//Screen resizing so the bg fits
 function resizeCanvas() {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
@@ -261,7 +261,7 @@ document.getElementById('startButton').addEventListener('click', () => {
   console.log('Menu good');
 });
 
-// I used to think this was just for smooth movement, but I slowly realize this is just the entire game.
+// I used to think this was just for smooth movement, but I slowly realize this is just the entire game.(required for the game to play at 60fps)
 function gameLoop() {
   //=======================================================//
 //======================Player Movement===========================//
@@ -291,9 +291,9 @@ function gameLoop() {
     ctx.fillText('HP: ' + enemy.hp, enemy.x, enemy.y - 5);
   });
 
-  // WARNING: EVERYTHING FROM 174 to 253 IS JUST ABT LINES, AHHHHHHHH I HATE LINES THEIR BORING, JUST LINES AND LINES.
+  // WARNING: EVERYTHING FROM 174 to 253 IS JUST ABT LINES, boring right?
 
-  //Every single move in the entire game.(dont imma use my format)
+  //Every single move in the entire game.
 
   // x move animation
   if (xMoveActive) {
@@ -360,7 +360,7 @@ function gameLoop() {
     const endY = startY + Math.sin(line.angle) * line.distance;
 
     ctx.beginPath();
-    ctx.moveTo(startX, startY);
+    ctx.moveTo(startX, startY); // ctx is used form form and color lines and shapes so i dont have to draw it
     ctx.lineTo(endX, endY);
     ctx.stroke();
   });
@@ -420,9 +420,9 @@ function gameLoop() {
       }
       ctx.beginPath();
       ctx.arc(centerX, centerY, flashyCircle.radius, 0, Math.PI * 2);
-      ctx.fillStyle = `hsla(${(Date.now() / 5) % 360}, 100%, 50%, 0.4)`; // colorful fill
-      ctx.fill();
-      ctx.strokeStyle = `hsl(${(Date.now() / 5) % 360}, 100%, 50%)`; // outline
+      ctx.fillStyle = `hsla(${(Date.now() / 5) % 360}, 100%, 50%, 0.4)`; 
+      ctx.fill();                                                              // one circle, one circle, one big circle.
+      ctx.strokeStyle = `hsl(${(Date.now() / 5) % 360}, 100%, 50%)`; 
       ctx.lineWidth = 6;
       ctx.stroke();
       enemies.forEach(enemy => {
@@ -435,9 +435,9 @@ function gameLoop() {
 
         if (dist < flashyCircle.radius) {
           // stops damage from hitting 60 times a second bc, just too juch to handle
-          if (Date.now() - enemy.lastHitTime > 80) {
+          if (Date.now() - enemy.lastHitTime > 20) {
             console.log('c move hitting')
-            enemy.hp -= 10;
+            enemy.hp -= 12;
             enemy.hp = Math.max(0, enemy.hp);
             enemy.lastHitTime = Date.now();
           }
@@ -480,7 +480,7 @@ function gameLoop() {
 
     // Pull enemies
     enemies.forEach(enemy => {
-      const ex = enemy.x + enemy.width / 2;
+      const ex = enemy.x + enemy.width / 2; // just to say sorry im not very consistent with names
       const ey = enemy.y + enemy.height / 2;
       const dx = centerofSoundV.x - ex;
       const dy = centerofSoundV.y - ey;
@@ -510,7 +510,7 @@ function gameLoop() {
 
       // 
       ctx.beginPath();
-      ctx.arc(star.x, star.y, 3, 0, Math.PI * 2);
+      ctx.arc(star.x, star.y, 3, 0, Math.PI * 2); // draw star
       ctx.fill();
 
       // 
@@ -526,8 +526,8 @@ function gameLoop() {
           for (let i = enemies.length - 1; i >= 0; i--) {
             enemydeathrip(i, enemies, canvas, ctx);
           }
-          if (!star.lastHitTime || Date.now() - star.lastHitTime > 400) {
-            enemy.hp -= 2;
+          if (!star.lastHitTime || Date.now() - star.lastHitTime > 400) { // last hit time is basically after the stars do dmg wait 400ms
+            enemy.hp -= 4;
             enemy.hp = Math.round(enemy.hp);
             star.lastHitTime = Date.now();
           }
@@ -555,7 +555,7 @@ function gameLoop() {
         const enemyandcenterdistance = Math.sqrt(enemyandcenterx * enemyandcenterx + enemyandcentery * enemyandcentery);
 
         if (enemyandcenterdistance < 400) {//dmg blast radius
-          enemy.hp -= 210
+          enemy.hp -= 1000   //Did you know this is the most powerful explosion in the game
           enemy.hp = Math.max(0, enemy.hp);
           enemy.x += enemyx / enemyandcenterdistance * 50;
           enemy.y += enemyy / enemyandcenterdistance * 50;
@@ -587,14 +587,14 @@ function gameLoop() {
     }
 
     // Bullet stats here(loong day)
-    if (flameZTimer % 10 === 0) {
+    if (flameZTimer % 10 === 0) { // % 10 means 10 bullets
       flameBullets.push({
         x: playerX + playerWidth / 2,
         y: playerY + playerHeight / 2,
         angle: lastAngle,
         speed: 16,
         exploded: false,
-        alpha: 1
+        alpha: 1 // cant really explain this one so ill use an analogy imagine we're using alpha on a candle alpha:1 would be a bright candle and alpha:0.02 would be a dim candle
       });
     }
 
@@ -664,7 +664,7 @@ function gameLoop() {
 
           if (distance < enemy.width / 2) {
             proj.exploded = true;
-            enemy.hp -= 125; // beeg damage
+            enemy.hp -= 305; // beeg damage
             enemy.hp = Math.max(0, enemy.hp);
           }
         });
@@ -682,7 +682,7 @@ enemies.forEach(enemy => {
           const distance = Math.sqrt((proj.x - enemyx) ** 2 + (proj.y - enemyy) ** 2);
 
           if (distance < 64) {
-            enemy.hp -= 3; // damage
+            enemy.hp -= 5; // damage
             enemy.hp = Math.max(0, enemy.hp);
           }
         });
@@ -742,7 +742,7 @@ if (flameCduration <= 0) {
 
       if (distance < enemy.width / 2) {
      //So flame C doesn't absolutly destroy the enmy
-        if (Date.now() - enemy.lastHitTime > 75) {
+        if (Date.now() - enemy.lastHitTime > 25) {
           enemy.hp -= 8; 
           enemy.hp = Math.max(0, enemy.hp);
           enemy.lastHitTime = Date.now();
@@ -782,7 +782,7 @@ if (flamevon && flamevdestruction) {
       const enemydmgarea = Math.max(enemy.width, enemy.height) / 2;
 
       if (dist < e.radius + enemydmgarea) {
-        enemy.hp -= 250; 
+        enemy.hp -= 600; 
           enemy.hp = Math.max(0, enemy.hp);
         e.exploded = true;
         e.growing = 6; 
@@ -806,8 +806,8 @@ if (flamevon && flamevdestruction) {
       const distance = Math.sqrt((e.x - enemyx) ** 2 + (e.y - enemyy) ** 2);
 
       if (distance < e.radius*e.size) {
-        if (Date.now() - enemy.lastHitTime > 100) {
-          enemy.hp -= 30; 
+        if (Date.now() - enemy.lastHitTime > 50) {
+          enemy.hp -= 40; 
           enemy.hp = Math.max(0, enemy.hp);
           enemy.lastHitTime = Date.now();
         }
@@ -893,7 +893,7 @@ for (let i = iceBullets.length - 1; i >= 0; i--) {
 
       const enemyx = enemy.x + enemy.width / 2;
       const enemyy = enemy.y + enemy.height / 2;
-      const distance = Math.sqrt((p.x - enemyx) ** 2 + (p.y - enemyy) ** 2);
+      const distance = Math.sqrt((bullet.x - enemyx) ** 2 + (bullet.y - enemyy) ** 2);
 
       if (distance < enemy.width / 2) {
         bullet.exploded = true;
@@ -1021,7 +1021,12 @@ iceCParticles.forEach(p => {
     const distance = Math.hypot(p.x - enemyCenterX, p.y - enemyCenterY);
 
     if (distance < enemy.width / 2) {
-      enemy.hp -= 1;  
+             if (Date.now() - enemy.lastHitTime > 10) {
+          enemy.hp -= 3; 
+          enemy.hp = Math.max(0, enemy.hp);
+          enemy.lastHitTime = Date.now();
+        }
+     
 
       // slow effect
       enemy.isSlowed = true;
@@ -1197,7 +1202,7 @@ function checkBeamCollisions() {
 
       if (distance < enemy.width / 2) {
         if (now - enemy.lastHitTime > 40) { // limit hits per enemy so the z move didn't do 2642.393939393023974567236424638 dmg (yes that's the actual dmg)
-          let damage = 4;
+          let damage = 8;
 
           if (isTouchingPlayer(enemy)) {
             damage = 1; // touching = reduced damage
@@ -1252,7 +1257,7 @@ function checkXLineCollisions() {
       // same thing as the beam
       if (dist < enemy.width / 2) {
         if (now - enemy.lastHitTime > 50) {
-          enemy.hp -= 8;
+          enemy.hp -= 20;
           enemy.hp = Math.max(0, enemy.hp);
           enemy.lastHitTime = now;
         }
@@ -1312,8 +1317,8 @@ function spawnEnemy1() {
     y: Math.random() * canvas.height,
     width: 50,
     height: 50,
-    hp: 500,
-    maxhp: 500,
+    hp: 350,
+    maxhp: 350,
     speed:1.4,
     baseSpeed: 1.4,
     img: enemyImage,
@@ -1336,8 +1341,8 @@ enemies.push({
     y: Math.random() * canvas.height,
     width: 60,
     height: 60,
-    hp: 900,
-    maxhp: 900,
+    hp: 700,
+    maxhp: 700,
     speed:0.9,
     baseSpeed: 0.9,
     img: enemyImage,
@@ -1348,7 +1353,7 @@ enemies.push({
 }
 
 function spawnrandom() {
-  const randomHP = multiplyrandom(1,1200)
+  const randomHP = multiplyrandom(1,1500)
   const randomSpeed = multiplyrandom(1,3.5)
   enemies.push({
     x: Math.random() * canvas.width,
