@@ -19,6 +19,9 @@ enemyImage.src = 'Base.svg';
 const randomenemyimage = new Image();
 randomenemyimage.src = 'random.svg';
 
+const dummy = new Image();
+dummy.src = 'dummy.png';
+
 const flameZbullets = new Image();
 flameZbullets.src = "flame bullets.svg"
 
@@ -301,6 +304,11 @@ function gameLoop() {
     ctx.fillStyle = 'black';
     ctx.font = '14px Comic Sans MS';
     ctx.fillText('HP: ' + enemy.hp, enemy.x, enemy.y - 5);
+
+    if (enemy.dummy) { 
+      ctx.fillStyle = "yellow"; 
+      ctx.font = "18px Comic Sans MS"; 
+      ctx.fillText("Total Damage: " + enemy.totaldmg, enemy.x, enemy.y - 20); }
   });
 
   // WARNING: EVERYTHING FROM 174 to 253 IS JUST ABT LINES, boring right?
@@ -450,6 +458,7 @@ function gameLoop() {
           if (Date.now() - enemy.lastHitTime > 20) {
             console.log('c move hitting')
             enemy.hp -= 12;
+            if (enemy.dummy) enemy.totaldmg+=12;
             enemy.hp = Math.max(0, enemy.hp);
             enemy.lastHitTime = Date.now();
           }
@@ -540,6 +549,7 @@ function gameLoop() {
           }
           if (!star.lastHitTime || Date.now() - star.lastHitTime > 400) { // last hit time is basically after the stars do dmg wait 400ms
             enemy.hp -= 4;
+            if (enemy.dummy) enemy.totaldmg+=4;
             enemy.hp = Math.round(enemy.hp);
             star.lastHitTime = Date.now();
           }
@@ -568,6 +578,7 @@ function gameLoop() {
 
         if (enemyandcenterdistance < 400) {//dmg blast radius
           enemy.hp -= 1000   //Did you know this is the most powerful explosion in the game
+          if (enemy.dummy) enemy.totaldmg+=1000;
           enemy.hp = Math.max(0, enemy.hp);
           enemy.x += enemyx / enemyandcenterdistance * 50;
           enemy.y += enemyy / enemyandcenterdistance * 50;
@@ -627,7 +638,8 @@ function gameLoop() {
 
           if (distance < enemy.width / 2) {   
             bullet.exploded = true;
-            enemy.hp -= 15;               
+            enemy.hp -= 15; 
+                          if (enemy.dummy) enemy.totaldmg+=15
             enemy.hp = Math.max(0, enemy.hp);
           }
 
@@ -677,6 +689,7 @@ function gameLoop() {
           if (distance < enemy.width / 2) {
             proj.exploded = true;
             enemy.hp -= 305; // beeg damage
+            if (enemy.dummy) enemy.totaldmg+=305
             enemy.hp = Math.max(0, enemy.hp);
           }
         });
@@ -695,6 +708,7 @@ enemies.forEach(enemy => {
 
           if (distance < 64) {
             enemy.hp -= 5; // damage
+            if (enemy.dummy) enemy.totaldmg+=5
             enemy.hp = Math.max(0, enemy.hp);
           }
         });
@@ -756,6 +770,7 @@ if (flameCduration <= 0) {
      //So flame C doesn't absolutly destroy the enmy
         if (Date.now() - enemy.lastHitTime > 25) {
           enemy.hp -= 8; 
+          if (enemy.dummy) enemy.totaldmg+=8
           enemy.hp = Math.max(0, enemy.hp);
           enemy.lastHitTime = Date.now();
         }
@@ -795,6 +810,7 @@ if (flamevon && flamevdestruction) {
 
       if (dist < e.radius + enemydmgarea) {
         enemy.hp -= 600; 
+        if (enemy.dummy) enemy.totaldmg+=600
           enemy.hp = Math.max(0, enemy.hp);
         e.exploded = true;
         e.growing = 6; 
@@ -820,6 +836,7 @@ if (flamevon && flamevdestruction) {
       if (distance < e.radius*e.size) {
         if (Date.now() - enemy.lastHitTime > 50) {
           enemy.hp -= 40; 
+          if (enemy.dummy) enemy.totaldmg+=40;
           enemy.hp = Math.max(0, enemy.hp);
           enemy.lastHitTime = Date.now();
         }
@@ -912,6 +929,7 @@ for (let i = iceBullets.length - 1; i >= 0; i--) {
 
         // Damage
         enemy.hp -= 20;
+        if (enemy.dummy) enemy.totaldmg+=20
         if (enemy.hp < 0) enemy.hp = 0;
 
         // Slow
@@ -1036,6 +1054,7 @@ iceCParticles.forEach(p => {
     if (distance < enemy.width / 2) {
              if (Date.now() - enemy.lastHitTime > 10) {
           enemy.hp -= 3; 
+          if (enemy.dummy) enemy.totaldmg+=3
           enemy.hp = Math.max(0, enemy.hp);
           enemy.lastHitTime = Date.now();
         }
@@ -1096,6 +1115,7 @@ if (iceVactive) {
     
     if (enemy.slowTimer <= 0 && !enemy.enemyjustuniced) {
       enemy.hp -= 1200;
+      if (enemy.dummy) enemy.totaldmg+=1200;
       enemy.enemyjustuniced = true;
         iceVCracking.play();
         iceVCracking.play();
@@ -1264,10 +1284,12 @@ function checkBeamCollisions() {
 
       if (distance < enemy.width / 2) {
         if (now - enemy.lastHitTime > 40) { // limit hits per enemy so the z move didn't do 2642.393939393023974567236424638 dmg (yes that's the actual dmg)
-          let damage = 8;
+          let damage = 6;
+          if (enemy.dummy) enemy.totaldmg+=6;
 
           if (isTouchingPlayer(enemy)) {
-            damage = 1; // touching = reduced damage
+            damage = 1; // touching is reduced damage
+            if (enemy.dummy) enemy.totaldmg+=1
           }
 
           enemy.hp -= damage;
@@ -1320,6 +1342,7 @@ function checkXLineCollisions() {
       if (dist < enemy.width / 2) {
         if (now - enemy.lastHitTime > 50) {
           enemy.hp -= 20;
+          if (enemy.dummy) enemy.totaldmg+=20
           enemy.hp = Math.max(0, enemy.hp);
           enemy.lastHitTime = now;
         }
@@ -1373,6 +1396,28 @@ function puredestruction(){
 
 //enemy stats!
 const enemies = [];
+function spawndummy(){
+  enemies.push({
+    x: (Math.random() * canvas.width),
+    y: Math.random() * canvas.height,
+    width: 50,
+    height: 50,
+    basehp: 1000000000000,
+    hp: 1000000000000,
+    maxhp: 1000000000000,
+    speed:0,
+    baseSpeed: 0,
+    img: dummy,
+    boss:0,
+    lastHitTime: 0,
+    isSlowed:false,
+    slowTimer:0,
+   enemyjustuniced:false,
+   dummy: true,
+ totaldmg: 0,
+  
+  });
+}
 function spawnEnemy1() {
   enemies.push({
     x: Math.random() * canvas.width,
@@ -1511,6 +1556,15 @@ function enemystayinboundsplzz(enemy, canvas) {
 window.addEventListener('keydown', (e) => {
   const key = e.key.toLowerCase();
   keys[key] = true;
+
+  if (key==="r") {
+    enemies.forEach(enemy => {
+       if (enemy.dummy) {
+         enemy.hp = enemy.maxhp; 
+         enemy.totaldmg = 0; 
+        } 
+      });
+      }
   if (key==="v"&&!iceVcooldown&& iceSelected) {
      iceVactive = true; 
      iceVduration = 180; 
@@ -1558,7 +1612,7 @@ flamexcooldown=200;
 
   if (key ===  'z' && flameSelected && !flameZActive && flameZCooldown <= 0) {
     flameZActive = true;
-    flameZTimer = 100;       // how long the move lasts (frames)
+    flameZTimer = 100;      
     flameZCooldown = 180;
 
 lastAngle = playerAngle;
@@ -1653,6 +1707,11 @@ lastAngle = playerAngle;
 
    if (key === "3") {
     spawnEnemy2();
+    console.log("enemy created out of nothing")
+  }
+
+    if (key === "4") {
+    spawndummy();
     console.log("enemy created out of nothing")
   }
 });
