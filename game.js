@@ -150,7 +150,12 @@ let flamevcooldown=0;
  //My fuctions!
 
 // My radomizer!hi
+//
 const multiplyrandom = (x, y) => Math.round((Math.random()*(x * y))+1);
+function randomnumber(min, max) { 
+  
+ Math.floor(Math.random() * (max - min + 1)) + min; 
+}
 // ice z slow. x is the percentage of the slow and y is enemy speed set it to 100 on x and with the right code freezes the enemy
 const slowpercent = (x,y) => (x/100)*y
 
@@ -1485,6 +1490,27 @@ function spawnrandom() {
      enemyjustuniced:false,
   });
 }
+
+function spawnrandomboss() {
+  const randomHP = randomnumber(1700,3000)
+  const randomSpeed = multiplyrandom(1,2.5)
+  enemies.push({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    width: 60,
+    height: 60, 
+    hp: randomHP,
+    maxhp: randomHP,
+    speed:randomSpeed,
+    baseSpeed: randomSpeed,
+    img: randomenemyimage,
+    boss:2,
+    lastHitTime: 0,
+    isSlowed:false,
+    slowTimer:0,
+     enemyjustuniced:false,
+  });
+}
 //TASK MANGER!
 function enemydeathrip(enemyIndex, enemies, canvas, ctx) {
   const enemy = enemies[enemyIndex];
@@ -1712,6 +1738,11 @@ lastAngle = playerAngle;
 
     if (key === "4") {
     spawndummy();
+    console.log("enemy created out of nothing")
+  }
+
+    if (key === "5") {
+    spawnrandomboss();
     console.log("enemy created out of nothing")
   }
 });
