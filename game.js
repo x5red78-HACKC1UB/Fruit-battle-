@@ -36,6 +36,8 @@ iceZneedle.src = "iceneedle.svg";
 
 const shatterediceZ = new Image();
 shatterediceZ.src = "iceshatter.svg";
+const gravz = new Image();
+gravz.src="gravityz.svg"
 
 
 //=======================================================//
@@ -146,6 +148,14 @@ let flamevcooldown=0;
  let iceVcooldown=0;
  let iceVduration=0;
  let iceVstarted = false;
+ let gravzcooldown=0;
+ let gravzactive= false;
+ let gravzduration=0;
+ let gravzX = 0
+ let gravzY = 0
+ let gravelocityx=0;
+ let gravelocityy=0;
+
  
  //My fuctions!
 
@@ -154,7 +164,7 @@ let flamevcooldown=0;
 const multiplyrandom = (x, y) => Math.round((Math.random()*(x * y))+1);
 function randomnumber(min, max) { 
   
- Math.floor(Math.random() * (max - min + 1)) + min; 
+ return Math.floor(Math.random() * (max - min + 1)) + min; 
 }
 // ice z slow. x is the percentage of the slow and y is enemy speed set it to 100 on x and with the right code freezes the enemy
 const slowpercent = (x,y) => (x/100)*y
@@ -1096,14 +1106,11 @@ if (iceVactive) {
     iceVstarted = true;
   }
 
+  
   ctx.fillStyle = `rgba(134, 229, 255, 0.75)`;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   enemies.forEach(enemy => {
-
-    ctx.fillStyle = 'black';
-    ctx.font = '14px Comic Sans MS';
-    ctx.fillText('HP: ' + enemy.hp, enemy.x, enemy.y - 5);
 
     enemy.isSlowed = true;
 
@@ -1117,13 +1124,12 @@ if (iceVactive) {
 
     enemy.slowTimer--;
 
-    
     if (enemy.slowTimer <= 0 && !enemy.enemyjustuniced) {
       enemy.hp -= 1200;
-      if (enemy.dummy) enemy.totaldmg+=1200;
+      if (enemy.dummy) enemy.totaldmg += 1200;
       enemy.enemyjustuniced = true;
-        iceVCracking.play();
-        iceVCracking.play();
+
+      iceVCracking.play();
       iceVShatter.play();
     }
 
@@ -1132,12 +1138,55 @@ if (iceVactive) {
   if (iceVduration <= 0) {
     iceVactive = false;
     iceVstarted = false;
+    iceVduration = 180;
   }
+}
+if(gravzactive){
+  gravzduration--
+gravzX+=gravelocityx;
+ gravzY+=gravelocityy;
+
+  enemies.forEach(enemy => { 
+    const totalx = enemy.x - gravzX
+    const totaly = enemy.y - gravzY
+    const distance = Math.hypot(totalx, totaly) 
+
+    if (distance < 110) {
+           
+            enemy.hp -= 5;
+            if (enemy.dummy) enemy.totaldmg+=12;
+            enemy.hp = Math.max(0, enemy.hp);
+            enemy.lastHitTime = Date.now();
+          
+          }
+
+
+    if (distance < 100) {  
+      const pushy = 25 
+      enemy.x += (totalx / distance) * pushy
+      enemy.y += (totaly / distance) * pushy 
+    } 
+  });
+const angle = Math.atan2(gravelocityy, gravelocityx)
+  ctx.save()
+ctx.translate(gravzX, gravzY)
+ctx.rotate(angle)
+ctx.drawImage(gravz, -85, -95, 170, 190)
+ctx.restore();
+
+
+  
+if (gravzduration <= 0) { 
+  gravzactive = false 
+  gravzcooldown=100;
+}
 }
 
 
 
-  
+
+
+
 
   soundBeams.forEach((beam, index) => {
     if (beam.delay > 0) {
@@ -1220,6 +1269,13 @@ for (let i = enemies.length - 1; i >= 0; i--) {
 //=======================================================//
 //====================Cooldowns:)===========================//
 //=======================================================//
+
+if(gravzcooldown>0){
+  gravzcooldown--;
+}
+if (iceVcooldown > 0) {
+  iceVcooldown--;
+}
 
 if (iceCcooldown > 0){ 
   iceCcooldown--;
@@ -1591,6 +1647,19 @@ window.addEventListener('keydown', (e) => {
         } 
       });
       }
+        if (key==="z"&&!gravzcooldown&& gravitySelected) {
+     gravzactive = true; 
+     gravzduration = 180; 
+     gravzcooldown = 100; 
+    const x = mouseX - playerX 
+    const y = mouseY - playerY 
+    const distance = Math.hypot(x, y) 
+gravelocityx = (x / distance) * 10 // the x10 is the speed
+ gravelocityy = (y / distance) * 10
+     gravzX = playerX 
+     gravzY = playerY
+      }
+
   if (key==="v"&&!iceVcooldown&& iceSelected) {
      iceVactive = true; 
      iceVduration = 180; 
