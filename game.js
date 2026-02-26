@@ -1178,7 +1178,7 @@ ctx.restore();
   
 if (gravzduration <= 0) { 
   gravzactive = false 
-  gravzcooldown=100;
+  gravzcooldown=200;
 }
 }
 
@@ -1650,7 +1650,7 @@ window.addEventListener('keydown', (e) => {
         if (key==="z"&&!gravzcooldown&& gravitySelected) {
      gravzactive = true; 
      gravzduration = 180; 
-     gravzcooldown = 100; 
+     gravzcooldown = 200; 
     const x = mouseX - playerX 
     const y = mouseY - playerY 
     const distance = Math.hypot(x, y) 
