@@ -38,6 +38,8 @@ const shatterediceZ = new Image();
 shatterediceZ.src = "iceshatter.svg";
 const gravz = new Image();
 gravz.src="gravityz.svg"
+const gravxwall = new Image();
+gravxwall.src="gravxwall.svg"
 
 
 //=======================================================//
@@ -155,6 +157,12 @@ let flamevcooldown=0;
  let gravzY = 0
  let gravelocityx=0;
  let gravelocityy=0;
+  let gravxcooldown=0;
+ let gravxactive= false;
+ let gravxduration=0;
+ let walls = []; 
+  
+ let wallhealth = 100;
 
  
  //My fuctions!
@@ -1174,7 +1182,70 @@ ctx.rotate(angle)
 ctx.drawImage(gravz, -85, -95, 170, 190)
 ctx.restore();
 
+function wall(x,y,width,height,wallhealth){
+return { 
+  x, 
+  y, 
+   width, 
+   height, 
+  hp: wallhealth, 
+  img: gravxwall,
+  maxHp: wallhealth, 
+  alive: true 
+};
+}
 
+let rotate = 0;
+
+function wall(x, y, width, height, wallhealth) {
+  return {
+    x,  // relative to player center
+    y,
+    width,
+    height,
+    hp: wallhealth,
+    img: gravxwall,
+    maxHp: wallhealth,
+    alive: true
+  };
+}
+
+function drawwalls() {
+  walls.forEach(w => {
+    if (!w.alive) return;
+
+    ctx.save();
+    ctx.translate(playerX, playerY);          
+    ctx.rotate(rotate * Math.PI / 180);       
+    ctx.drawImage(w.img, w.x, w.y, w.width, w.height); 
+    ctx.restore();
+  });
+}
+
+if (gravxactive) {
+  wallhealth += 1;
+  gravxduration--;
+
+  const wallsize = 300;
+  const thick = 14;
+
+ 
+  walls = [
+    wall(-wallsize / 2, -wallsize / 2, wallsize, thick, wallhealth),        // top
+    wall(-wallsize / 2, wallsize / 2 - thick, wallsize, thick, wallhealth), // bottom
+    wall(-wallsize / 2, -wallsize / 2, thick, wallsize, wallhealth),        // left
+    wall(wallsize / 2 - thick, -wallsize / 2, thick, wallsize, wallhealth)  // right
+  ];
+
+  rotate += 2; // rotation speed
+  drawwalls();
+
+  if (gravxduration <= 0) {
+    gravxactive = false;
+    walls = [];
+    rotate = 0;
+  }
+}
   
 if (gravzduration <= 0) { 
   gravzactive = false 
