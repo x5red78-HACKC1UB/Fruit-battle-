@@ -100,7 +100,7 @@ let cMoveActive = false;
 let cMoveTimer = 0;
 
 let orbitCircles = [];
-let flashyCircle = null;
+let soundcarea = null;
 //Sound cooldowns
 let soundcooldownZ = 0;
 
@@ -161,6 +161,7 @@ let flamevcooldown=0;
  let gravxactive= false;
  let gravxduration=0;
  let walls = []; 
+ let rotate = 0;
   
  let wallhealth = 100;
 
@@ -408,7 +409,7 @@ function gameLoop() {
     ctx.stroke();
   });
   // Lines touching checker thing.
-  checkXLineCollisions();
+  checkXsound();
   // move time
   xMoveTimer--;
   // so if like, the timer runs out, you wouldn't believe if i said this, the move stops.
@@ -419,8 +420,8 @@ function gameLoop() {
 
 
   // Basically c move start-up animation
-  if (flashyCircle) {
-    flashyCircle.radius += 15;
+  if (soundcarea) {
+    soundcarea.radius += 15;
   }
   // when c clicked,
   if (cMoveActive) {
@@ -442,27 +443,27 @@ function gameLoop() {
       ctx.fill();
 
 
-      if (circle.radius <= 0 && !flashyCircle) {
-        flashyCircle = { radius: 0, growing: true };
+      if (circle.radius <= 0 && !soundcarea) {
+        soundcarea = { radius: 0, growing: true };
       }
     });
 
-    // Animate circle ●(like the actual attack)
+    // Animate circle (like the actual attack)
 
     //when circle grow,
-    if (flashyCircle) {
-      if (flashyCircle.growing) {
+    if (soundcarea) {
+      if (soundcarea.growing) {
         // expand circle,
-        flashyCircle.radius += 15;
+        soundcarea.radius += 15;
         //if circle too big, circle no grow,
-        if (flashyCircle.radius > 150) flashyCircle.growing = false;
+        if (soundcarea.radius > 150) soundcarea.growing = false;
       } else {
         //then circle shrink.
-        flashyCircle.radius -= 15;
-        if (flashyCircle.radius <= 0) flashyCircle = null;
+        soundcarea.radius -= 15;
+        if (soundcarea.radius <= 0) soundcarea = null;
       }
       ctx.beginPath();
-      ctx.arc(centerX, centerY, flashyCircle.radius, 0, Math.PI * 2);
+      ctx.arc(centerX, centerY, soundcarea.radius, 0, Math.PI * 2);
       ctx.fillStyle = `hsla(${(Date.now() / 5) % 360}, 100%, 50%, 0.4)`; 
       ctx.fill();                                                              // one circle, one circle, one big circle.
       ctx.strokeStyle = `hsl(${(Date.now() / 5) % 360}, 100%, 50%)`; 
@@ -476,7 +477,7 @@ function gameLoop() {
         const ey = enemy.y + enemy.height / 2;
         const dist = Math.sqrt((ex - centerX) ** 2 + (ey - centerY) ** 2);
 
-        if (dist < flashyCircle.radius) {
+        if (dist < soundcarea.radius) {
           // stops damage from hitting 60 times a second bc, just too juch to handle
           if (Date.now() - enemy.lastHitTime > 20) {
             console.log('c move hitting')
@@ -508,7 +509,7 @@ function gameLoop() {
     if (cMoveTimer <= 0) {
       cMoveActive = false;
       orbitCircles = [];
-      flashyCircle = null;
+      soundcarea = null;
     }
   }
   
@@ -516,7 +517,7 @@ function gameLoop() {
 
   if (soundVon) {
     // Draw orb so you see it
-    const color = (Date.now() / 20) % 360; //so i just learned that %360 is th 359 colors
+    const color = (Date.now() / 20) % 360; //so i just learned that %360 is th 359 hue
     ctx.fillStyle = `hsla(${color}, 100%, 50%, 0.4)`;
     ctx.beginPath();
     ctx.arc(centerofSoundV.x, centerofSoundV.y, 20, 0, Math.PI * 2);
@@ -1182,6 +1183,11 @@ ctx.rotate(angle)
 ctx.drawImage(gravz, -85, -95, 170, 190)
 ctx.restore();
 
+if (gravzduration <= 0) { 
+  gravzactive = false 
+  gravzcooldown=200;
+}
+}
 function wall(x,y,width,height,wallhealth){
 return { 
   x, 
@@ -1195,27 +1201,16 @@ return {
 };
 }
 
-let rotate = 0;
 
-function wall(x, y, width, height, wallhealth) {
-  return {
-    x,  // relative to player center
-    y,
-    width,
-    height,
-    hp: wallhealth,
-    img: gravxwall,
-    maxHp: wallhealth,
-    alive: true
-  };
-}
+
+
 
 function drawwalls() {
   walls.forEach(w => {
-    if (!w.alive) return;
+    if (w.hp <= 0) return;
 
     ctx.save();
-    ctx.translate(playerX, playerY);          
+      ctx.translate(playerX + playerWidth / 2, playerY + playerHeight / 2);    
     ctx.rotate(rotate * Math.PI / 180);       
     ctx.drawImage(w.img, w.x, w.y, w.width, w.height); 
     ctx.restore();
@@ -1223,22 +1218,61 @@ function drawwalls() {
 }
 
 if (gravxactive) {
-  wallhealth += 1;
+  
   gravxduration--;
 
   const wallsize = 300;
-  const thick = 14;
-
- 
-  walls = [
-    wall(-wallsize / 2, -wallsize / 2, wallsize, thick, wallhealth),        // top
-    wall(-wallsize / 2, wallsize / 2 - thick, wallsize, thick, wallhealth), // bottom
-    wall(-wallsize / 2, -wallsize / 2, thick, wallsize, wallhealth),        // left
-    wall(wallsize / 2 - thick, -wallsize / 2, thick, wallsize, wallhealth)  // right
-  ];
+    const thick = 14;
+if (walls.length === 0) {
+    
+    wallhealth = 100; 
+    walls = [
+      wall(-wallsize / 2, -wallsize / 2, wallsize, thick, wallhealth),
+      wall(-wallsize / 2, wallsize / 2 - thick, wallsize, thick, wallhealth),
+      wall(-wallsize / 2, -wallsize / 2, thick, wallsize, wallhealth),
+      wall(wallsize / 2 - thick, -wallsize / 2, thick, wallsize, wallhealth)
+    ];
+  }
 
   rotate += 2; // rotation speed
   drawwalls();
+
+  enemies.forEach(enemy =>{
+    const enemyhitboxX=enemy.x +enemy.width/2
+    const enemyhitboxY= enemy.y + enemy.width/2
+    const playerhitboxX= playerX + playerWidth/2
+    const playerhitboxY=playerY +playerHeight/2
+    const hitboxX=enemyhitboxX-playerhitboxX;
+    const hitboxY=enemyhitboxY-playerhitboxY;
+    const totaldistance=Math.hypot(hitboxX,hitboxY);
+    const wallhitbox=wallsize/2
+
+    
+
+ if (totaldistance < wallhitbox-5) {
+      const angle = Math.atan2(hitboxY, hitboxX);
+      const pushpower = 7; 
+      enemy.x += Math.cos(angle) * pushpower;
+      enemy.y += Math.sin(angle) * pushpower;
+    }
+
+
+    if(totaldistance > wallhitbox - 40 && totaldistance < wallhitbox + 40){
+      if(Date.now()- (enemy.lastHitTime||0)>100){
+        enemy.hp -=15;
+                if (enemy.dummy) enemy.totaldmg += 15;
+ walls.forEach(w => w.hp -= 5); 
+        
+        enemy.lastHitTime = Date.now();
+        enemy.hp = Math.max(0, enemy.hp);
+      }
+    }
+
+  });
+  const standingWall = walls.filter(w => w.hp > 0);
+  if (standingWall.length === 0) {
+    gravxduration = 0; // End the move early
+  }
 
   if (gravxduration <= 0) {
     gravxactive = false;
@@ -1246,12 +1280,9 @@ if (gravxactive) {
     rotate = 0;
   }
 }
-  
-if (gravzduration <= 0) { 
-  gravzactive = false 
-  gravzcooldown=200;
-}
-}
+
+
+
 
 
 
@@ -1299,7 +1330,7 @@ if (gravzduration <= 0) {
     ctx.globalCompositeOperation = 'source-over'; 
   });
 
-  checkBeamCollisions();
+  checksoundz();
   let angle = lastAngle;
 
   if (mouseInsideCanvas) {
@@ -1396,7 +1427,7 @@ if (flamexcooldown > 0) {
 
 
 //beam touching the enemy
-function checkBeamCollisions() {
+function checksoundz() {
   for (let i = enemies.length - 1; i >= 0; i--) {
     enemydeathrip(i, enemies, canvas, ctx);
   }
@@ -1447,7 +1478,7 @@ function checkBeamCollisions() {
 }
 
 //lines touch i think.
-function checkXLineCollisions() {
+function checkXsound() {
   const now = Date.now();
   for (let i = enemies.length - 1; i >= 0; i--) {
     enemydeathrip(i, enemies, canvas, ctx);
@@ -1718,6 +1749,12 @@ window.addEventListener('keydown', (e) => {
         } 
       });
       }
+      if (key==="x"&&!gravxcooldown&& gravitySelected) {
+        gravxactive=true;
+        gravxduration=500;
+        gravxcooldown=350;
+        wallhealth=200;
+      }
         if (key==="z"&&!gravzcooldown&& gravitySelected) {
      gravzactive = true; 
      gravzduration = 180; 
@@ -1816,7 +1853,7 @@ lastAngle = playerAngle;
     cMoveActive = true;
     cMoveTimer = 250; // 
     orbitCircles = [];
-    flashyCircle = null;
+    soundcarea = null;
 
     // Spawn 4 orbiting circles
     for (let i = 0; i < 4; i++) {
