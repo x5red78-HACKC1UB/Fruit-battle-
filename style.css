@@ -93,3 +93,14 @@ canvas{
 .closeBtn:hover {
     background: #eee;
 }
+#fpscounter{
+  position:fixed;
+  top:10px;
+  left:10px;
+  color:black;
+  background: #fff;
+  padding: 5px 10px;
+  font-family: momospace;
+  border-radius: 3px;
+  z-index: 20;
+}

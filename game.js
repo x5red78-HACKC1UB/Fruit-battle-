@@ -165,7 +165,9 @@ let flamevcooldown=0;
   
  let wallhealth = 100;
 
- 
+ const fpscounter=document.getElementById("fps");
+ let time=performance.now();
+ let frames=0;
  //My fuctions!
 
 // My radomizer!hi
@@ -208,6 +210,19 @@ closetutorial.addEventListener("click", () => {
 
 // Player facing mouse code
 const keys = {};
+
+function updatefps(){
+frames++;
+const now=performance.now();
+const timepassed=now - time;
+if(timepassed>=1000){
+  const framespersecond=Math.round((frames*1000)/timepassed);
+ fpscounter.textContent=framespersecond;
+ frames=0;
+time=now;
+};
+
+}
 
 //This is kinda long to explain, but when the mouse leaves the canvas the player would just stare at the last angle so this detects if the mouse is in the game.
 canvas.addEventListener('mouseenter', () => {
@@ -302,6 +317,7 @@ document.getElementById('startButton').addEventListener('click', () => {
 
 // I used to think this was just for smooth movement, but I slowly realize this is just the entire game.(required for the game to play at 60fps)
 function gameLoop() {
+  updatefps();
   //=======================================================//
 //======================Player Movement===========================//
 //=======================================================//
@@ -335,7 +351,7 @@ function gameLoop() {
       ctx.fillText("Total Damage: " + enemy.totaldmg, enemy.x, enemy.y - 20); }
   });
 
-  // WARNING: EVERYTHING FROM 174 to 253 IS JUST ABT LINES, boring right?
+  // sound x boring right?
 
   //Every single move in the entire game.
 
