@@ -397,33 +397,7 @@ function gameLoop() {
       ctx.stroke();
     });
   }
-  // draw lines........ D:
-  ctx.strokeStyle = `hsl(${(Date.now() / 10) % 360}, 100%, 50%)`; // flashy colors
-  ctx.lineWidth = 6;
-  // when x clicked,
-  xLines.forEach(line => {
-    // and line growing
-    if (line.growing) {
-      line.distance += 10;
-      // if line too long
-      if (line.distance > 150) line.growing = false;
-    } else {
-      // line shrink
-      line.distance -= 10;
-      if (line.distance <= 0) line.growing = true;
-    }
-
-    const startX = playerX + playerWidth / 2;
-    const startY = playerY + playerHeight / 2;
-    // trigonometry nonsense (imma mark all trigonometry with this)
-    const endX = startX + Math.cos(line.angle) * line.distance;
-    const endY = startY + Math.sin(line.angle) * line.distance;
-
-    ctx.beginPath();
-    ctx.moveTo(startX, startY); // ctx is used form form and color lines and shapes so i dont have to draw it
-    ctx.lineTo(endX, endY);
-    ctx.stroke();
-  });
+  
   // Lines touching checker thing.
   checkXsound();
   // move time
