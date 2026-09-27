@@ -172,7 +172,7 @@ let flamevcooldown=0;
 
 // My radomizer!hi
 //
-const multiplyrandom = (x, y) => Math.round((Math.random()*(x * y))+1);
+const multiplyrandom = (x, y) => Math.round((Math.random()*(x * y))+1);//completely useless now.. but ill keep it
 function randomnumber(min, max) { 
   
  return Math.floor(Math.random() * (max - min + 1)) + min; 
@@ -1752,7 +1752,7 @@ function enemystayinboundsplzz(enemy, canvas) {
 
 
 
-// Key listeners
+// Move activation and other keys
 window.addEventListener('keydown', (e) => {
   const key = e.key.toLowerCase();
   keys[key] = true;
